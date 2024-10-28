@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -57,11 +58,11 @@ fun AddTranScreen(
                 .padding(all = dimensionResource(id = R.dimen.activity_horizontal_margin))
                 .verticalScroll(rememberScrollState())
         ) {
-//            val textFieldColors = OutlinedTextFieldDefaults.colors(
+            val textFieldColors = OutlinedTextFieldDefaults.colors(
 //                focusedBorderColor = Color.Transparent,
-//                unfocusedBorderColor = Color.Transparent,
-//                //cursorColor = MaterialTheme. .colors.secondary.copy(alpha = ContentAlpha.high)
-//            )
+                unfocusedBorderColor = Color.Transparent,
+                //cursorColor = MaterialTheme.colorScheme.colors.secondary.copy(alpha = ContentAlpha.high)
+            )
 
            OutlinedTextField(
                 label = { Text(text = "Amount") },
@@ -69,7 +70,7 @@ fun AddTranScreen(
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { onAmtChange(it) },
                 maxLines = 1,
-                //colors = textFieldColors,
+                colors = textFieldColors,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 

@@ -1,6 +1,5 @@
 package com.example.newnav
 
-import android.R.attr.text
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -141,7 +140,7 @@ fun Greeting(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(ScreenExpenseList)
+                    navController.navigate(ScreenTran)
                 }
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
