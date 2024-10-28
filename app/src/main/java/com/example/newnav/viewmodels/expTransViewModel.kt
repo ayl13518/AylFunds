@@ -26,7 +26,7 @@ class expTransViewModel(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExpTranState())
 
 
-    fun onAmountUpdate(newAmount: String) {
+    fun onAmountUpdate(newAmount: Double) {
         _state.update { it.copy(
             amount = newAmount
         ) }

@@ -31,7 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun AddTranScreen(
     //onBack: () -> Unit,
-    onUserChange: (String) -> Unit,
+    //onUserChange: (String) -> Unit,
     navController: NavHostController = rememberNavController(),
     viewModel: expTransViewModel = viewModel()
 )
@@ -57,34 +57,36 @@ fun AddTranScreen(
                 .padding(all = dimensionResource(id = R.dimen.activity_horizontal_margin))
                 .verticalScroll(rememberScrollState())
         ) {
-            val textFieldColors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
-                //cursorColor = MaterialTheme. .colors.secondary.copy(alpha = ContentAlpha.high)
-            )
-            OutlinedTextField(
-                label = { Text(text = "Amount") },
-                value = state.amount,
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = {onUserChange(it)},
-                maxLines = 1,
-                colors = textFieldColors,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
+//            val textFieldColors = OutlinedTextFieldDefaults.colors(
+//                focusedBorderColor = Color.Transparent,
+//                unfocusedBorderColor = Color.Transparent,
+//                //cursorColor = MaterialTheme. .colors.secondary.copy(alpha = ContentAlpha.high)
+//            )
+
+//            OutlinedTextField(
+//                //label = { Text(text = "Amount") },
+//                value = state.amount,
+//                modifier = Modifier.fillMaxWidth(),
+//                onValueChange = {  },
+//                maxLines = 1,
+//                colors = textFieldColors,
+//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+//            )
+
             OutlinedTextField(
                 value = "category",
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {  },
 
                 maxLines = 1,
-                colors = textFieldColors
+                //colors = textFieldColors
             )
             OutlinedTextField(
                 value = "account",
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {  },
                 maxLines = 1,
-                colors = textFieldColors
+               // colors = textFieldColors
             )
             OutlinedTextField(
                 label = { Text(text = "Date") },
@@ -92,7 +94,7 @@ fun AddTranScreen(
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { },
                 maxLines = 1,
-                colors = textFieldColors
+               // colors = textFieldColors
 
             )
             OutlinedTextField(
@@ -100,7 +102,7 @@ fun AddTranScreen(
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {  },
                 maxLines = 1,
-                colors = textFieldColors
+               // colors = textFieldColors
             )
         }
     }
@@ -111,6 +113,6 @@ fun AddTranScreen(
 @Composable
 fun AddEditExpPreview() {
     AddTranScreen(
-       onUserChange = { }
+      // onUserChange = { }
     )
 }

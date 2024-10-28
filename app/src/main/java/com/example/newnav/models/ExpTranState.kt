@@ -4,5 +4,5 @@ import com.example.newnav.data.expTrans
 
 data class ExpTranState(
     val expTrans: List<expTrans> = emptyList(),
-    val amount: String = "0.00",
+    val amount: Double = 0.00,
 )
