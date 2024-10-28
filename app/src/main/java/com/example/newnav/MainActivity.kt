@@ -92,7 +92,7 @@ class MainActivity : ComponentActivity() {
                     composable<ScreenTran> {
                             AddTranScreen(
                                 //onBack = {navController.navigate(ScreenHome)},
-                                //onUserChange = {viewModel.onAmountUpdate(state.amount)},
+                                onAmtChange = {viewModel.onAmountUpdate(state.amount)},
                                 navController= navController,
                                 viewModel = viewModel
 

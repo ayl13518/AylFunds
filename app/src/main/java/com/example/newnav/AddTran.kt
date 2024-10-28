@@ -31,7 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun AddTranScreen(
     //onBack: () -> Unit,
-    //onUserChange: (String) -> Unit,
+    onAmtChange: (String) -> Unit,
     navController: NavHostController = rememberNavController(),
     viewModel: expTransViewModel = viewModel()
 )
@@ -63,15 +63,15 @@ fun AddTranScreen(
 //                //cursorColor = MaterialTheme. .colors.secondary.copy(alpha = ContentAlpha.high)
 //            )
 
-//            OutlinedTextField(
-//                //label = { Text(text = "Amount") },
-//                value = state.amount,
-//                modifier = Modifier.fillMaxWidth(),
-//                onValueChange = {  },
-//                maxLines = 1,
-//                colors = textFieldColors,
-//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-//            )
+           OutlinedTextField(
+                label = { Text(text = "Amount") },
+                value = state.amount.toString(),
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { onAmtChange(it) },
+                maxLines = 1,
+                //colors = textFieldColors,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
 
             OutlinedTextField(
                 value = "category",
@@ -113,6 +113,6 @@ fun AddTranScreen(
 @Composable
 fun AddEditExpPreview() {
     AddTranScreen(
-      // onUserChange = { }
+       onAmtChange = { }
     )
 }
