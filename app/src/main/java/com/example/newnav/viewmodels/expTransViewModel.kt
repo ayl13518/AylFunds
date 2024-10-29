@@ -21,17 +21,24 @@ class expTransViewModel(
         val state= combine(_state,_exptrn) { state, exptrn ->
             state.copy(
                 expTrans = exptrn,
-                amount = state.amount
+                amount = state.amount,
+                dateTrans = state.dateTrans
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExpTranState())
 
 
-    fun onAmountUpdate(newAmount: Double) {
+    fun onAmountUpdate(newAmount: String) {
         _state.update { it.copy(
-            amount = newAmount
+            amount = newAmount.toDouble()
         ) }
 
     }
+
+//    fun onDateUpdate(newDate: String) {
+//        _state.update { it.copy(
+//            dateTrans = newDate.todate()
+//        ) }
+//    }
 
     fun onSaveExpense() {
         val newExp = expTrans(

@@ -89,13 +89,11 @@ class MainActivity : ComponentActivity() {
                         Greeting(navController)
                     }
                     composable<ScreenTran> {
-                            AddTranScreen(
-                                //onBack = {navController.navigate(ScreenHome)},
-                                onAmtChange = {viewModel.onAmountUpdate(state.amount)},
-                                navController= navController,
-                                viewModel = viewModel
-
-                            )
+                        AddTranScreen(
+                            onAmtChange = {viewModel.onAmountUpdate(it)},
+                            navController= navController,
+                            viewModel = viewModel
+                        )
                     }
                     composable<ScreenExpenseList> {
                         ExpListScreen(
