@@ -34,6 +34,8 @@ import com.example.newnav.ui.theme.NewNavTheme
 import kotlinx.serialization.Serializable
 import com.example.newnav.viewmodels.expTransViewModel
 import androidx.compose.runtime.getValue
+import com.example.newnav.accounts.AccListScreen
+import com.example.newnav.accounts.AccountTran
 import com.example.newnav.navigation.NavigationBottomBar
 
 
@@ -101,7 +103,16 @@ class MainActivity : ComponentActivity() {
                             viewModel = viewModel
                         )
                     }
-
+                    composable<ScreenAccountList> {
+                        AccListScreen(
+                            navController = navController,
+                        )
+                    }
+                    composable<ScreenAccount>{
+                        AccountTran(
+                            navController = navController,
+                        )
+                    }
                 }
 
             }
@@ -113,9 +124,6 @@ class MainActivity : ComponentActivity() {
 object ScreenHome
 
 @Serializable
-object ScreenTran
-
-@Serializable
 object ScreenExpenseList
 
 @Serializable
@@ -123,6 +131,12 @@ object ScreenAccountList
 
 @Serializable
 object ScreenBudgetList
+
+@Serializable
+object ScreenTran
+
+@Serializable
+object ScreenAccount
 
 @Composable
 fun Greeting(
