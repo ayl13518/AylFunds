@@ -34,16 +34,17 @@ class expTransViewModel(
 
     }
 
-//    fun onDateUpdate(newDate: String) {
-//        _state.update { it.copy(
-//            dateTrans = newDate.todate()
-//        ) }
-//    }
+    fun onDateUpdate(newDate: String) {
+        _state.update { it.copy(
+            dateTrans = newDate
+        ) }
+    }
 
     fun onSaveExpense() {
         val newExp = expTrans(
             id = 0,
             amount = _state.value.amount
+            , dateTrans = _state.value.dateTrans
         )
         viewModelScope.launch {
             dao.insertExpTran(newExp)
