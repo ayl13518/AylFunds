@@ -37,28 +37,31 @@ import androidx.compose.runtime.getValue
 import com.example.newnav.accounts.AccListScreen
 import com.example.newnav.accounts.AccountTran
 import com.example.newnav.navigation.NavigationBottomBar
+import dagger.hilt.android.AndroidEntryPoint
 
 
-//@AndroidEntryPoint
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val db by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            BudgetDatabase::class.java,
-            "budgetdatabase.db"
-        ).build()
-    }
+//    private val db by lazy {
+//        Room.databaseBuilder(
+//            applicationContext,
+//            BudgetDatabase::class.java,
+//            "budgetdatabase.db"
+//        ).build()
+//    }
 
-    private val viewModel by viewModels<expTransViewModel>(
-        factoryProducer = {
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return expTransViewModel(db.expDao) as T
-                }
-            }
-        }
-    )
+//    private val viewModel by viewModels<expTransViewModel>(
+//        factoryProducer = {
+//            object : ViewModelProvider.Factory {
+//                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                    return expTransViewModel(db.expDao) as T
+//                }
+//            }
+//        }
+//    )
+
+    private val viewModel: expTransViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

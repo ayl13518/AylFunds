@@ -20,6 +20,7 @@ import androidx.room.RoomDatabase
 )
 abstract class BudgetDatabase: RoomDatabase() {
 
-    abstract val expDao: expDAO
+    abstract fun expDao(): expDAO
+    abstract fun accDao(): accDAO
 
 }

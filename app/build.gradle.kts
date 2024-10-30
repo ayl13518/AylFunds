@@ -3,8 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kapt)
+    //alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -57,10 +58,12 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.hilt.lifecycle.viewmodel)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material.icons.extended)
-    //implementation(libs.androidx.room.compiler)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -69,10 +72,18 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    //implementation(libs.navigation.compose)
+
     implementation(libs.kotlinx.serialization.json)
 
-    kapt(libs.hilt.compiler)
+    //Architeccture
     ksp(libs.androidx.room.compiler)
+    //implementation(libs.androidx.lifecycle.runtimeCompose)
+    //implementation(libs.androidx.lifecycle.viewModelCompose)
+
+    // Hilt
+    implementation(libs.hilt.android.core)
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
+
 
 }
