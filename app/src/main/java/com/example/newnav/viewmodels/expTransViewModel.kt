@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.newnav.models.ExpTranState
 import com.example.newnav.data.expDAO
 import com.example.newnav.data.expTrans
+import com.example.newnav.di.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class expTransViewModel @Inject constructor(
-    private val dao: expDAO
+    private val dao: expDAO,
+    private val mainRepo: MainRepository
 ): ViewModel() {
 
         private val _state = MutableStateFlow(ExpTranState())
@@ -51,7 +53,7 @@ class expTransViewModel @Inject constructor(
             , dateTrans = _state.value.dateTrans
         )
         viewModelScope.launch {
-            dao.insertExpTran(newExp)
+            mainRepo.updateAccountBalance(newExp)
         }
     }
 }

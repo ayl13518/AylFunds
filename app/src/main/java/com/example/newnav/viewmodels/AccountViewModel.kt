@@ -3,6 +3,7 @@ package com.example.newnav.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newnav.data.accDAO
+import com.example.newnav.di.MainRepository
 import com.example.newnav.models.AccState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,12 +14,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
-    private val dao: accDAO
+    private val repo: MainRepository
 
 ): ViewModel() {
     //TODO: Add StateFlow(s)
     private val _state = MutableStateFlow(AccState())
-    private val _accounts = dao.getAllAccounts()
+    private val _accounts = repo.getAllAccounts()
     val state =  combine(
         _state,
         _accounts

@@ -17,17 +17,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.newnav.R
 import com.example.newnav.viewmodels.AccountViewModel
 
 
+
 @Composable
 fun AccountTran(
     navController: NavHostController = rememberNavController(),
-    viewModel: AccountViewModel = viewModel()
+    viewModel: AccountViewModel = hiltViewModel(),
 )
 {
     val state = viewModel.state.collectAsState()

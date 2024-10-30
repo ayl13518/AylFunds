@@ -49,13 +49,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun AddTranScreen(
-    //onBack: () -> Unit,
     onAmtChange: (String) -> Unit,
     navController: NavHostController = rememberNavController(),
-    viewModel: expTransViewModel = viewModel()
+    viewModel: expTransViewModel = hiltViewModel()
 )
 {
     val state by viewModel.state.collectAsState()

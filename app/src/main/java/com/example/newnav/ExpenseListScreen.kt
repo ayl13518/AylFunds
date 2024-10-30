@@ -21,7 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.newnav.navigation.NavigationBottomBar
@@ -31,7 +31,7 @@ import com.example.newnav.viewmodels.expTransViewModel
 @Composable
 fun ExpListScreen(
     navController: NavHostController = rememberNavController(),
-    viewModel: expTransViewModel = viewModel()
+    viewModel: expTransViewModel = hiltViewModel()
 ){
     val state by viewModel.state.collectAsState()
 

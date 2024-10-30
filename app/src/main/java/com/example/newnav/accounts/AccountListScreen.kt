@@ -20,10 +20,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.newnav.ScreenTran
+import com.example.newnav.ScreenAccount
 import com.example.newnav.navigation.NavigationBottomBar
 import com.example.newnav.viewmodels.AccountViewModel
 import kotlin.collections.component1
@@ -34,7 +34,7 @@ import kotlin.collections.component2
 @Composable
 fun AccListScreen(
     navController: NavHostController = rememberNavController(),
-    viewModel: AccountViewModel = viewModel()
+    viewModel: AccountViewModel = hiltViewModel()
 ){
     val state by viewModel.state.collectAsState()
 
@@ -45,13 +45,13 @@ fun AccListScreen(
         bottomBar = {
             NavigationBottomBar(
                 navController= navController
-                , selected = 1
+                , selected = 2
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(ScreenTran)
+                    navController.navigate(ScreenAccount)
                 },
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
