@@ -5,6 +5,8 @@ import javax.inject.Singleton
 import com.example.newnav.data.expDAO
 import com.example.newnav.data.accDAO
 import com.example.newnav.data.accounts
+import com.example.newnav.data.budDAO
+import com.example.newnav.data.budgets
 import com.example.newnav.data.expTrans
 import kotlinx.coroutines.flow.Flow
 
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 class DefaultMainRepository @Inject constructor(
     private val expDao: expDAO,
     private val accDAO: accDAO,
+    private val budDAO: budDAO
 ): MainRepository  {
 
     override suspend fun updateAccountBalance(expTrans: expTrans) {
@@ -24,6 +27,14 @@ class DefaultMainRepository @Inject constructor(
 
     override suspend fun insertAccount(accounts: accounts) {
         accDAO.insertAccount(accounts)
+    }
+
+    override fun getAllBudgets(): Flow<List<budgets>> {
+        return budDAO.getAllBudgets()
+    }
+
+    override suspend fun insertBudget(budgets: budgets) {
+        budDAO.insertBudget(budgets)
     }
 
 }

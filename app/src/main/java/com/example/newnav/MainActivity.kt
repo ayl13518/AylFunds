@@ -22,21 +22,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.room.Room
-import com.example.newnav.data.BudgetDatabase
 import com.example.newnav.ui.theme.NewNavTheme
 import kotlinx.serialization.Serializable
 import com.example.newnav.viewmodels.expTransViewModel
 import androidx.compose.runtime.getValue
 import com.example.newnav.accounts.AccListScreen
 import com.example.newnav.accounts.AccountTran
+import com.example.newnav.budgets.BudgetListScreen
+import com.example.newnav.budgets.BudgetTran
 import com.example.newnav.navigation.NavigationBottomBar
+import com.example.newnav.transactions.AddTranScreen
+import com.example.newnav.transactions.ExpListScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -68,7 +68,6 @@ class MainActivity : ComponentActivity() {
                 darkTheme = false,
                 dynamicColor = true
             ) {
-                val state by viewModel.state.collectAsState()
 
                 val navController = rememberNavController()
                 NavHost(
@@ -80,14 +79,14 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<ScreenTran> {
                         AddTranScreen(
-                            onAmtChange = {viewModel.onAmountUpdate(it)},
-                            navController= navController,
+                            onAmtChange = { viewModel.onAmountUpdate(it) },
+                            navController = navController,
                             viewModel = viewModel
                         )
                     }
                     composable<ScreenExpenseList> {
                         ExpListScreen(
-                            navController= navController,
+                            navController = navController,
                             viewModel = viewModel
                         )
                     }
@@ -98,6 +97,16 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<ScreenAccount>{
                         AccountTran(
+                            navController = navController,
+                        )
+                    }
+                    composable<ScreenBudgetList>{
+                       BudgetListScreen(
+                            navController = navController,
+                        )
+                    }
+                    composable<ScreenBudget>{
+                        BudgetTran(
                             navController = navController,
                         )
                     }
@@ -125,6 +134,9 @@ object ScreenTran
 
 @Serializable
 object ScreenAccount
+
+@Serializable
+object ScreenBudget
 
 @Composable
 fun Greeting(

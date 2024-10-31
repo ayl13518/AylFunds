@@ -1,4 +1,4 @@
-package com.example.newnav.accounts
+package com.example.newnav.budgets
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,29 +27,29 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.newnav.R
+import com.example.newnav.designsys.component.AylOutlinedTextField
 import com.example.newnav.designsys.component.DropdownList
 import com.example.newnav.navigation.AylTopBar
-import com.example.newnav.viewmodels.AccountViewModel
-
+import com.example.newnav.viewmodels.BudgetViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccountTran(
+fun BudgetTran(
     navController: NavHostController = rememberNavController(),
-    viewModel: AccountViewModel = hiltViewModel(),
+    viewModel: BudgetViewModel = hiltViewModel(),
 )
 {
     val state = viewModel.state.collectAsState()
-    var accTypeList = state.value.accTypeList
+    var typeList = state.value.budTypeList
+    var scopeList = state.value.budScopeList
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        contentColor = MaterialTheme.colorScheme.onBackground,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    viewModel.onAccountAdd()
+                    viewModel.onBudgetAdd()
                     navController.popBackStack()
                 },
             ) {
@@ -65,7 +65,7 @@ fun AccountTran(
         ) {
 
             AylTopBar(
-                titleRes = "Account",
+                titleRes = "Budget",
                 navigationIcon = Icons.Rounded.ArrowBackIosNew,
                 navigationIconContentDescription = "Navigation icon",
                 onNavigationClick = {navController.popBackStack()},
@@ -91,17 +91,22 @@ fun AccountTran(
 
             DropdownList(
                 label = "Type",
-                itemList = accTypeList,
-                onTypeChange = { viewModel.onAccTypeChange(it) })
+                itemList = typeList,
+                onTypeChange = { viewModel.onTypeChange(it) })
 
-            OutlinedTextField(
-                label = { Text(text = "Balance") },
+
+            AylOutlinedTextField(
+                label = "Planned amount",
                 value = state.value.balance.toString(),
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { viewModel.onBalanceChange(it) },
                 maxLines = 1,
-                colors = textFieldColors,
             )
+
+            DropdownList(
+                label = "Scope",
+                itemList = scopeList,
+                onTypeChange = { viewModel.onScopeChange(it) })
 
         }
     }

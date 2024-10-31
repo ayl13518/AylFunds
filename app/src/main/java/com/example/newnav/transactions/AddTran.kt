@@ -1,4 +1,4 @@
-package com.example.newnav
+package com.example.newnav.transactions
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,6 +13,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,13 +39,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -51,7 +50,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.newnav.R
+import com.example.newnav.designsys.component.AylOutlinedTextField
+import com.example.newnav.navigation.AylTopBar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTranScreen(
     onAmtChange: (String) -> Unit,
@@ -63,6 +66,16 @@ fun AddTranScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        topBar = {
+            AylTopBar(
+                titleRes = "Transaction",
+                navigationIcon = Icons.Rounded.ArrowBackIosNew,
+                navigationIconContentDescription = "Navigation icon",
+                onNavigationClick = {navController.popBackStack()},
+                actionIcon = Icons.Default.MoreVert,
+                actionIconContentDescription = "Action icon",
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -89,7 +102,7 @@ fun AddTranScreen(
 
            OutlinedTextField(
                 label = { Text(text = "Amount") },
-                value = state.amount.toString(),
+                value = if (state.amount == 0.0) "" else state.amount.toString(),
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { onAmtChange(it) },
                 maxLines = 1,
@@ -97,31 +110,30 @@ fun AddTranScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            OutlinedTextField(
-                value = "category",
+            AylOutlinedTextField(
+                label = "Category",
+                value = "",
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {  },
                 maxLines = 1,
-                colors = textFieldColors
             )
-            OutlinedTextField(
-                value = "account",
+            AylOutlinedTextField(
+                label = "Account",
+                value = "",
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {  },
                 maxLines = 1,
-                colors = textFieldColors
             )
             DateofTransaction(
                 textFieldColors,
                 viewModel
             )
-
-            OutlinedTextField(
-                value = "notes",
+            AylOutlinedTextField(
+                label = "Notes",
+                value = "",
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {  },
                 maxLines = 3,
-                colors = textFieldColors
             )
         }
     }

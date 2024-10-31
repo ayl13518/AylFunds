@@ -10,6 +10,10 @@ data class ExpTranState(
     val expTrans: List<expTrans> = emptyList(),
     val amount: Double = 0.0,
     val dateTrans: String = convertMillisToDate(Calendar.getInstance().timeInMillis),
+    val accName: String = "",
+    val budName: String = "",
+    val tranType: String = "",
+    val note: String = "",
 )
 
 fun convertMillisToDate(millis: Long): String {

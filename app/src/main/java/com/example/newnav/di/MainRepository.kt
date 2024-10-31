@@ -2,6 +2,7 @@ package com.example.newnav.di
 
 
 import com.example.newnav.data.accounts
+import com.example.newnav.data.budgets
 import com.example.newnav.data.expTrans
 import kotlinx.coroutines.flow.Flow
 
@@ -13,6 +14,10 @@ interface MainRepository {
     fun getAllAccounts(): Flow<List<accounts>>
 
     suspend fun insertAccount(accounts: accounts)
+
+    fun getAllBudgets(): Flow<List<budgets>>
+
+    suspend fun insertBudget(budgets: budgets)
 
 
 }

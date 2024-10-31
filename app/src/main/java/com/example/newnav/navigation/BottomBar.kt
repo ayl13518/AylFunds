@@ -18,6 +18,7 @@ import com.example.newnav.ScreenHome
 import com.example.newnav.designsys.component.ThemePreviews
 import com.example.newnav.designsys.icons.NiaIcons
 import com.example.newnav.designsys.theme.NiaTheme
+import com.example.newnav.ui.theme.NewNavTheme
 
 
 /**
@@ -126,7 +127,6 @@ fun NavigationBottomBar(
         NiaIcons.ViewDay
     )
 
-    NiaTheme {
         NiaNavigationBar {
             items.forEachIndexed { index, item ->
                 NiaNavigationBarItem(
@@ -148,7 +148,6 @@ fun NavigationBottomBar(
                 )
             }
         }
-    }
 }
 
 @ThemePreviews

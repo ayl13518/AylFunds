@@ -27,26 +27,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.newnav.viewmodels.AccountViewModel
 
 
 @Composable
 fun DropdownList(
-    viewModel: AccountViewModel= hiltViewModel(),
+    //viewModel: AccountViewModel= hiltViewModel(),
+    onTypeChange: (String) -> Unit = {},
+    itemList: List<String> = emptyList(),
+    label: String = ""
     ) {
 
-    val state = viewModel.state.collectAsState()
+    //val state = viewModel.state.collectAsState()
     var showDropdown by rememberSaveable { mutableStateOf(false) }
     val scrollState = rememberScrollState()
-    val itemList = state.value.accTypeList
+    //val itemList = state.value.accTypeList
+    var selectedItem by rememberSaveable { mutableStateOf("") }
 
     // button
     OutlinedTextField(
-        label = { Text(text = "Type") },
-        value = state.value.accType,
+        label = { Text(text = label) },
+        readOnly = true,
+        value = selectedItem,
         modifier = Modifier.fillMaxWidth(),
-        onValueChange = { viewModel.onAccTypeChange(state.value.accType) },
+        onValueChange = { onTypeChange(it) },
         maxLines = 1,
         trailingIcon = {
             IconButton(onClick = { showDropdown= !showDropdown }) {
@@ -69,7 +72,8 @@ fun DropdownList(
                     excludeFromSystemGesture = true,
                 ),
                 // to dismiss on click outside
-                onDismissRequest = { showDropdown = false }
+                onDismissRequest = {
+                    showDropdown = false }
             ) {
 
                 Column(
@@ -89,13 +93,15 @@ fun DropdownList(
                                 .background(MaterialTheme.colorScheme.primaryContainer)
                                 .fillMaxWidth()
                                 .clickable {
-                                    viewModel.onAccTypeChange(item)
+                                    selectedItem = item
+                                    onTypeChange(item)
                                     showDropdown = false
                                 },
                             contentAlignment = Alignment.Center,
-
                         ) {
-                            Text(text = item)
+                            Text(text = item,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
                         }
                     }
 

@@ -9,18 +9,19 @@ import androidx.room.RoomDatabase
     entities = [
         expTrans::class,
         accounts::class,
+        budgets::class,
         ],
-    version = 3,
+    version = 4,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
-        AutoMigration(from = 2, to = 3)
+        AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4)
         //AutoMigration(from = 1, to = 2, spec = DatabaseMigrations.Schema1to2::class)
         ],
     exportSchema = true
 )
 abstract class BudgetDatabase: RoomDatabase() {
-
     abstract fun expDao(): expDAO
     abstract fun accDao(): accDAO
-
+    abstract fun budDao(): budDAO
 }

@@ -11,4 +11,6 @@ internal object  DatabaseMigrations {
         )
     )
     class Schema1to2 : AutoMigrationSpec
+
+
 }
