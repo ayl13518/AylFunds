@@ -1,9 +1,18 @@
 package com.example.newnav.models
 
 import com.example.newnav.data.expTrans
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 data class ExpTranState(
     val expTrans: List<expTrans> = emptyList(),
     val amount: Double = 0.0,
-    val dateTrans: String = "",
+    val dateTrans: String = convertMillisToDate(Calendar.getInstance().timeInMillis),
 )
+
+fun convertMillisToDate(millis: Long): String {
+    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    return formatter.format(Date(millis))
+}

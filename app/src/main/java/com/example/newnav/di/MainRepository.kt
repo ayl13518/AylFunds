@@ -11,4 +11,8 @@ interface MainRepository {
     suspend fun updateAccountBalance(expTrans: expTrans)
 
     fun getAllAccounts(): Flow<List<accounts>>
+
+    suspend fun insertAccount(accounts: accounts)
+
+
 }

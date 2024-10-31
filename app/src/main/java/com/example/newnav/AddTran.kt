@@ -41,6 +41,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.mutableStateOf
@@ -80,10 +81,11 @@ fun AddTranScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             val textFieldColors = OutlinedTextFieldDefaults.colors(
-//                focusedBorderColor = Color.Transparent,
+                focusedBorderColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedBorderColor = Color.Transparent,
-                //cursorColor = MaterialTheme.colorScheme.colors.secondary.copy(alpha = ContentAlpha.high)
-            )
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
 
            OutlinedTextField(
                 label = { Text(text = "Amount") },
@@ -110,6 +112,7 @@ fun AddTranScreen(
                 colors = textFieldColors
             )
             DateofTransaction(
+                textFieldColors,
                 viewModel
             )
 
@@ -117,7 +120,7 @@ fun AddTranScreen(
                 value = "notes",
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {  },
-                maxLines = 1,
+                maxLines = 3,
                 colors = textFieldColors
             )
         }
@@ -128,6 +131,7 @@ fun AddTranScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateofTransaction(
+    textFieldColors: TextFieldColors,
     viewModel: expTransViewModel = viewModel()
 ){
 
@@ -156,6 +160,7 @@ fun DateofTransaction(
                 )
             }
         },
+        colors = textFieldColors
         )
 
     if (showDatePicker) {
@@ -173,7 +178,7 @@ fun DateofTransaction(
                     .fillMaxWidth()
                     .offset(y = 64.dp)
                     .shadow(elevation = 4.dp)
-                    .background(MaterialTheme.colorScheme.surface)
+                    .background(MaterialTheme.colorScheme.outline)
                     .padding(16.dp)
             ) {
                 DatePicker(

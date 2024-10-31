@@ -64,7 +64,10 @@ class MainActivity : ComponentActivity() {
                 onDispose {}
             }
 
-            NewNavTheme {
+            NewNavTheme(
+                darkTheme = false,
+                dynamicColor = true
+            ) {
                 val state by viewModel.state.collectAsState()
 
                 val navController = rememberNavController()

@@ -8,4 +8,5 @@ data class AccState(
     val accType: String = "",
     val balance: Double = 0.00,
     val description: String = "",
+    val accTypeList: List<String> = listOf("Cash", "Bank", "Digital Bank","Loan","Investment")
 )

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface accDAO {
 
     @Insert
-    suspend fun insertAcc(accounts: accounts)
+    suspend fun insertAccount(accounts: accounts)
 
     @Query("SELECT * FROM accounts")
     fun getAllAccounts(): Flow<List<accounts>>

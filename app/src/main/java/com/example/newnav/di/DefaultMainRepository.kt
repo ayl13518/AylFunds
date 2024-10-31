@@ -22,4 +22,8 @@ class DefaultMainRepository @Inject constructor(
         return accDAO.getAllAccounts()
     }
 
+    override suspend fun insertAccount(accounts: accounts) {
+        accDAO.insertAccount(accounts)
+    }
+
 }
