@@ -18,7 +18,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,8 +27,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.newnav.ui.theme.NewNavTheme
 import kotlinx.serialization.Serializable
-import com.example.newnav.viewmodels.expTransViewModel
-import androidx.compose.runtime.getValue
 import com.example.newnav.accounts.AccListScreen
 import com.example.newnav.accounts.AccountTran
 import com.example.newnav.budgets.BudgetListScreen
@@ -37,13 +34,14 @@ import com.example.newnav.budgets.BudgetTran
 import com.example.newnav.navigation.NavigationBottomBar
 import com.example.newnav.transactions.AddTranScreen
 import com.example.newnav.transactions.ExpListScreen
+import com.example.newnav.viewmodels.ExpTransViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: expTransViewModel by viewModels()
+    private val viewModel: ExpTransViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +85,7 @@ class MainActivity : ComponentActivity() {
                     composable<ScreenExpenseList> {
                         ExpListScreen(
                             navController = navController,
-                            viewModel = viewModel
+                            //viewModel = viewModel
                         )
                     }
                     composable<ScreenAccountList> {

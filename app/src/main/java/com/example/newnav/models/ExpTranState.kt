@@ -14,6 +14,8 @@ data class ExpTranState(
     val budName: String = "",
     val tranType: String = "",
     val note: String = "",
+    val categoryList: List<String> = emptyList(),
+    val accountList: List<String> = emptyList()
 )
 
 fun convertMillisToDate(millis: Long): String {

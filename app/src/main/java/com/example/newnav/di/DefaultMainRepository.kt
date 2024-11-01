@@ -37,4 +37,12 @@ class DefaultMainRepository @Inject constructor(
         budDAO.insertBudget(budgets)
     }
 
+    override fun getAllCategory(): Flow<List<String>> {
+        return budDAO.getAllCategory()
+    }
+
+    override fun getAllAccountName(): Flow<List<String>> {
+        return accDAO.getAllAccountName()
+    }
+
 }

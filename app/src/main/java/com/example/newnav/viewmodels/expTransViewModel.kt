@@ -17,20 +17,30 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class expTransViewModel @Inject constructor(
+class ExpTransViewModel @Inject constructor(
     private val dao: expDAO,
     private val mainRepo: MainRepository
 ): ViewModel() {
 
-        private val _state = MutableStateFlow(ExpTranState())
-        private val _exptrn = dao.getAllExpTrans()
-        val state= combine(_state,_exptrn) { state, exptrn ->
-            state.copy(
+    private val _state = MutableStateFlow(ExpTranState())
+    private val _exptrn = dao.getAllExpTrans()
+    private val _categoryList = mainRepo.getAllCategory()
+    private val _accountList = mainRepo.getAllAccountName()
+
+    val state= combine(_state,_exptrn,_categoryList,_accountList
+        ) { state, exptrn, categoryList, accountList ->
+        state.copy(
                 expTrans = exptrn,
                 amount = state.amount,
                 dateTrans = state.dateTrans
-            )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExpTranState())
+                , accName = state.accName
+                , budName = state.budName
+                , tranType = state.tranType
+                , note = state.note
+                , categoryList = categoryList
+            , accountList = accountList
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExpTranState())
 
 
     fun onAmountUpdate(newAmount: String) {
@@ -46,11 +56,33 @@ class expTransViewModel @Inject constructor(
         ) }
     }
 
+    fun onBudgetUpdate(newBud: String) {
+        _state.update { it.copy(
+            budName = newBud
+        ) }
+    }
+
+    fun onAccUpdate(newAcc: String) {
+        _state.update { it.copy(
+            accName = newAcc
+        ) }
+    }
+
+    fun onTranTypeUpdate(newTranType: String) {
+        _state.update { it.copy(
+            tranType = newTranType
+        ) }
+    }
+
     fun onSaveExpense() {
         val newExp = expTrans(
             id = 0,
             amount = _state.value.amount
             , dateTrans = _state.value.dateTrans
+            , budName = _state.value.budName
+            , accName = _state.value.accName
+            , tranType = _state.value.tranType
+            , note = _state.value.note
         )
         viewModelScope.launch {
             mainRepo.updateAccountBalance(newExp)

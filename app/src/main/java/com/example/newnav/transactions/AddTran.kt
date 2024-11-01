@@ -30,11 +30,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.newnav.viewmodels.expTransViewModel
+import com.example.newnav.viewmodels.ExpTransViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.lifecycle.viewmodel.compose.viewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -52,6 +51,7 @@ import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.newnav.R
 import com.example.newnav.designsys.component.AylOutlinedTextField
+import com.example.newnav.designsys.component.DropdownList
 import com.example.newnav.navigation.AylTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,23 +59,16 @@ import com.example.newnav.navigation.AylTopBar
 fun AddTranScreen(
     onAmtChange: (String) -> Unit,
     navController: NavHostController = rememberNavController(),
-    viewModel: expTransViewModel = hiltViewModel()
+    viewModel: ExpTransViewModel = hiltViewModel()
 )
 {
     val state by viewModel.state.collectAsState()
+    var categoryList = state.categoryList
+    var accountList = state.accountList
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = {
-            AylTopBar(
-                titleRes = "Transaction",
-                navigationIcon = Icons.Rounded.ArrowBackIosNew,
-                navigationIconContentDescription = "Navigation icon",
-                onNavigationClick = {navController.popBackStack()},
-                actionIcon = Icons.Default.MoreVert,
-                actionIconContentDescription = "Action icon",
-            )
-        },
+
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -93,6 +86,14 @@ fun AddTranScreen(
                 .padding(all = dimensionResource(id = R.dimen.activity_horizontal_margin))
                 .verticalScroll(rememberScrollState())
         ) {
+            AylTopBar(
+                titleRes = "Transaction",
+                navigationIcon = Icons.Rounded.ArrowBackIosNew,
+                navigationIconContentDescription = "Navigation icon",
+                onNavigationClick = {navController.popBackStack()},
+                actionIcon = Icons.Default.MoreVert,
+                actionIconContentDescription = "Action icon",
+            )
             val textFieldColors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedBorderColor = Color.Transparent,
@@ -110,20 +111,18 @@ fun AddTranScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            AylOutlinedTextField(
+            DropdownList(
                 label = "Category",
-                value = "",
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = {  },
-                maxLines = 1,
+                itemList = categoryList,
+                onTypeChange = { viewModel.onBudgetUpdate(it) }
             )
-            AylOutlinedTextField(
+
+            DropdownList(
                 label = "Account",
-                value = "",
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = {  },
-                maxLines = 1,
+                itemList = accountList,
+                onTypeChange = { viewModel.onAccUpdate(it) }
             )
+
             DateofTransaction(
                 textFieldColors,
                 viewModel
@@ -144,7 +143,7 @@ fun AddTranScreen(
 @Composable
 fun DateofTransaction(
     textFieldColors: TextFieldColors,
-    viewModel: expTransViewModel = viewModel()
+    viewModel: ExpTransViewModel = hiltViewModel()
 ){
 
     val state by viewModel.state.collectAsState()

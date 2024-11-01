@@ -14,4 +14,7 @@ interface budDAO {
     @Insert
     suspend fun insertBudget(budgets: budgets)
 
+    @Query("SELECT name as category FROM budgets")
+    fun getAllCategory(): Flow<List<String>>
+
 }

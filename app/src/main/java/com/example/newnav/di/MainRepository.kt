@@ -19,5 +19,8 @@ interface MainRepository {
 
     suspend fun insertBudget(budgets: budgets)
 
+    fun getAllCategory(): Flow<List<String>>
+
+    fun getAllAccountName(): Flow<List<String>>
 
 }

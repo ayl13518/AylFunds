@@ -31,13 +31,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.newnav.ScreenTran
 import com.example.newnav.navigation.NavigationBottomBar
-import com.example.newnav.viewmodels.expTransViewModel
+import com.example.newnav.viewmodels.ExpTransViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExpListScreen(
     navController: NavHostController = rememberNavController(),
-    viewModel: expTransViewModel = hiltViewModel()
+    viewModel: ExpTransViewModel = hiltViewModel()
 ){
     val state by viewModel.state.collectAsState()
 

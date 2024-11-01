@@ -14,4 +14,7 @@ interface accDAO {
     @Query("SELECT * FROM accounts")
     fun getAllAccounts(): Flow<List<accounts>>
 
+    @Query("SELECT name FROM accounts")
+    fun getAllAccountName(): Flow<List<String>>
+
 }
