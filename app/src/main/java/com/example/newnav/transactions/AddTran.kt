@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Done
@@ -33,10 +32,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.newnav.viewmodels.ExpTransViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.input.KeyboardType
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
@@ -50,14 +45,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.newnav.R
+import com.example.newnav.designsys.component.AylOutlinedNumber
 import com.example.newnav.designsys.component.AylOutlinedTextField
 import com.example.newnav.designsys.component.DropdownList
 import com.example.newnav.navigation.AylTopBar
+import com.example.newnav.utils.convertMillisToDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTranScreen(
-    onAmtChange: (String) -> Unit,
+    //onAmtChange: (String) -> Unit,
     navController: NavHostController = rememberNavController(),
     viewModel: ExpTransViewModel = hiltViewModel()
 )
@@ -101,15 +98,22 @@ fun AddTranScreen(
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer
                 )
 
-           OutlinedTextField(
-                label = { Text(text = "Amount") },
-                value = if (state.amount == 0.0) "" else state.amount.toString(),
+            AylOutlinedNumber(
+                label = "Amount",
+                value = state.tmpAmount,
+                onValueChange = { viewModel.onAmountUpdate(it)  },
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = { onAmtChange(it) },
-                maxLines = 1,
-                colors = textFieldColors,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
+
+//           OutlinedTextField(
+//                label = { Text(text = "Amount") },
+//                value = if (state.amount == 0.0) "" else state.amount.toString(),
+//                modifier = Modifier.fillMaxWidth(),
+//                onValueChange = { onAmtChange(it) },
+//                maxLines = 1,
+//                colors = textFieldColors,
+//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+//            )
 
             DropdownList(
                 label = "Category",
@@ -127,6 +131,7 @@ fun AddTranScreen(
                 textFieldColors,
                 viewModel
             )
+
             AylOutlinedTextField(
                 label = "Notes",
                 value = "",
@@ -201,15 +206,11 @@ fun DateofTransaction(
     }
 }
 
-fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
-    return formatter.format(Date(millis))
-}
 
 @Preview
 @Composable
 fun AddEditExpPreview() {
     AddTranScreen(
-       onAmtChange = { }
+
     )
 }

@@ -39,15 +39,15 @@ class ExpTransViewModel @Inject constructor(
                 , note = state.note
                 , categoryList = categoryList
             , accountList = accountList
+            , tmpAmount = state.tmpAmount
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExpTranState())
 
-
     fun onAmountUpdate(newAmount: String) {
         _state.update { it.copy(
-            amount = newAmount.toDouble()
+            tmpAmount = newAmount,
+            amount = newAmount.toDoubleOrNull() ?: 0.0
         ) }
-
     }
 
     fun onDateUpdate(newDate: String) {

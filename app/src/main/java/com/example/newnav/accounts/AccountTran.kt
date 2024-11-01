@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.newnav.R
+import com.example.newnav.designsys.component.AylOutlinedNumber
 import com.example.newnav.designsys.component.DropdownList
 import com.example.newnav.navigation.AylTopBar
 import com.example.newnav.viewmodels.AccountViewModel
@@ -94,13 +95,20 @@ fun AccountTran(
                 itemList = accTypeList,
                 onTypeChange = { viewModel.onAccTypeChange(it) })
 
-            OutlinedTextField(
-                label = { Text(text = "Balance") },
-                value = state.value.balance.toString(),
-                modifier = Modifier.fillMaxWidth(),
+//            OutlinedTextField(
+//                label = { Text(text = "Balance") },
+//                value = state.value.balance.toString(),
+//                modifier = Modifier.fillMaxWidth(),
+//                onValueChange = { viewModel.onBalanceChange(it) },
+//                maxLines = 1,
+//                colors = textFieldColors,
+//            )
+
+            AylOutlinedNumber(
+                label = "Balance",
+                value = state.value.tmpBalance,
                 onValueChange = { viewModel.onBalanceChange(it) },
-                maxLines = 1,
-                colors = textFieldColors,
+                modifier = Modifier.fillMaxWidth(),
             )
 
         }

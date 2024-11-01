@@ -6,6 +6,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,13 +42,11 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: ExpTransViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val darkTheme = true
+            val darkTheme = isSystemInDarkTheme()
             DisposableEffect(darkTheme) {
                 enableEdgeToEdge(
                     statusBarStyle = SystemBarStyle.auto(
@@ -63,7 +62,7 @@ class MainActivity : ComponentActivity() {
             }
 
             NewNavTheme(
-                darkTheme = false,
+                darkTheme = darkTheme,
                 dynamicColor = true
             ) {
 
@@ -77,15 +76,12 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<ScreenTran> {
                         AddTranScreen(
-                            onAmtChange = { viewModel.onAmountUpdate(it) },
                             navController = navController,
-                            viewModel = viewModel
                         )
                     }
                     composable<ScreenExpenseList> {
                         ExpListScreen(
                             navController = navController,
-                            //viewModel = viewModel
                         )
                     }
                     composable<ScreenAccountList> {
@@ -169,6 +165,7 @@ fun Greeting(
     }
 
 }
+
 
 /**
  * The default light scrim, as defined by androidx and the platform:

@@ -11,5 +11,7 @@ data class BudgetState(
     val scope: String = "Month",
 
     val budTypeList: List<String> = listOf("Expense", "Income"),
-    val budScopeList: List<String> = listOf("Month", "Week", "Year")
+    val budScopeList: List<String> = listOf("Month", "Week", "Year"),
+
+    val tmpBalance: String = "0.00",
 )

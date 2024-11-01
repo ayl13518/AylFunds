@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.newnav.R
+import com.example.newnav.designsys.component.AylOutlinedNumber
 import com.example.newnav.designsys.component.AylOutlinedTextField
 import com.example.newnav.designsys.component.DropdownList
 import com.example.newnav.navigation.AylTopBar
@@ -95,12 +96,19 @@ fun BudgetTran(
                 onTypeChange = { viewModel.onTypeChange(it) })
 
 
-            AylOutlinedTextField(
-                label = "Planned amount",
-                value = state.value.balance.toString(),
-                modifier = Modifier.fillMaxWidth(),
+//            AylOutlinedTextField(
+//                label = "Planned amount",
+//                value = state.value.balance.toString(),
+//                modifier = Modifier.fillMaxWidth(),
+//                onValueChange = { viewModel.onBalanceChange(it) },
+//                maxLines = 1,
+//            )
+
+            AylOutlinedNumber(
+                label = "Planned Amount",
+                value = state.value.tmpBalance,
                 onValueChange = { viewModel.onBalanceChange(it) },
-                maxLines = 1,
+                modifier = Modifier.fillMaxWidth(),
             )
 
             DropdownList(

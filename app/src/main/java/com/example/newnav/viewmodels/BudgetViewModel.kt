@@ -33,6 +33,8 @@ class BudgetViewModel @Inject constructor(
             balance = state.balance,
             type = state.type,
             scope = state.scope,
+            tmpBalance = state.tmpBalance
+
             )
     }.stateIn(
         viewModelScope,
@@ -67,7 +69,8 @@ class BudgetViewModel @Inject constructor(
     fun onBalanceChange(newBalance: String) {
         _state.update {
             it.copy(
-                balance = newBalance.toDouble()
+                tmpBalance = newBalance,
+                balance = newBalance.toDoubleOrNull() ?: 0.0
             )
         }
     }

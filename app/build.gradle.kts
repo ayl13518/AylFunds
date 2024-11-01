@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "com.example.newnav"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.newnav"
-        minSdk = 33
-        targetSdk = 34
+        minSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -60,9 +60,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material.icons.extended)
-    //implementation(libs.androidx.lifecycle.runtime)
-    //implementation(libs.androidx.lifecycle.viewmodel.compose)
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -72,10 +69,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-
     implementation(libs.kotlinx.serialization.json)
 
-    //Architeccture
+    //Architecture
     ksp(libs.androidx.room.compiler)
     //implementation(libs.androidx.lifecycle.runtimeCompose)
     //implementation(libs.androidx.lifecycle.viewModelCompose)
