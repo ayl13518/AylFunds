@@ -1,6 +1,5 @@
 package com.example.newnav.designsys.component
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -8,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.example.newnav.ui.theme.NewNavTheme
 
 
 @Composable
@@ -37,4 +37,16 @@ fun AylOutlinedTextField(
         textStyle = MaterialTheme.typography.bodyMedium
     )
 
+}
+
+@ThemePreviews
+@Composable
+fun AylOutlinedTextFieldPreview() {
+    NewNavTheme {
+        AylOutlinedTextField(
+            label = "Ayl",
+            value = "val",
+            onValueChange = {}
+        )
+    }
 }

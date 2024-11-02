@@ -137,9 +137,9 @@ fun AddTranScreen(
 
             AylOutlinedTextField(
                 label = "Notes",
-                value = "",
+                value = state.note,
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = {  },
+                onValueChange = { viewModel.onNoteUpdate(it) },
                 maxLines = 3,
             )
         }
