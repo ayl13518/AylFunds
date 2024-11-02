@@ -47,6 +47,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.newnav.R
 import com.example.newnav.designsys.component.AylOutlinedNumber
 import com.example.newnav.designsys.component.AylOutlinedTextField
+import com.example.newnav.designsys.component.AylTab
+import com.example.newnav.designsys.component.AylTabRow
 import com.example.newnav.designsys.component.DropdownList
 import com.example.newnav.navigation.AylTopBar
 import com.example.newnav.utils.convertMillisToDate
@@ -62,6 +64,7 @@ fun AddTranScreen(
     val state by viewModel.state.collectAsState()
     var categoryList = state.categoryList
     var accountList = state.accountList
+    var typeList = state.typeList
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -98,22 +101,22 @@ fun AddTranScreen(
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer
                 )
 
+            AylTabRow(selectedTabIndex = state.selectedType) {
+                typeList.forEachIndexed { index, title ->
+                    AylTab(
+                        selected = index == 0,
+                        onClick = { viewModel.onTranTypeUpdate(title) },
+                        text = { Text(text = title) },
+                    )
+                }
+            }
+
             AylOutlinedNumber(
                 label = "Amount",
                 value = state.tmpAmount,
                 onValueChange = { viewModel.onAmountUpdate(it)  },
                 modifier = Modifier.fillMaxWidth(),
             )
-
-//           OutlinedTextField(
-//                label = { Text(text = "Amount") },
-//                value = if (state.amount == 0.0) "" else state.amount.toString(),
-//                modifier = Modifier.fillMaxWidth(),
-//                onValueChange = { onAmtChange(it) },
-//                maxLines = 1,
-//                colors = textFieldColors,
-//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-//            )
 
             DropdownList(
                 label = "Category",

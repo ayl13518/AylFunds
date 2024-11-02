@@ -219,6 +219,9 @@ val surfaceContainerDarkHighContrast = Color(0xFF1E201A)
 val surfaceContainerHighDarkHighContrast = Color(0xFF282B24)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF33362E)
 
+val incomeColor = Color(0xFF44D224)
+val expenseColor = Color(0xFFFF3611)
+val transferColor = Color(0xFF009FF7)
 
 
 

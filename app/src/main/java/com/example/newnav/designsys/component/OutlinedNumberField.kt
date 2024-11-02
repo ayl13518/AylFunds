@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
+import com.example.newnav.ui.theme.NewNavTheme
 import com.example.newnav.utils.DecimalFormatter
 import com.example.newnav.utils.DecimalInputVisualTransformation
 
@@ -44,6 +45,18 @@ fun AylOutlinedNumber(
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal),
             visualTransformation = DecimalInputVisualTransformation(decimalFormatter)
+        )
+    }
+}
+
+@ThemePreviews
+@Composable
+fun PreviewAylOutlinedNumber() {
+    NewNavTheme {
+        AylOutlinedNumber(
+            label = "Ayl",
+            value = "100",
+            onValueChange = {}
         )
     }
 }

@@ -26,6 +26,8 @@ class ExpTransViewModel @Inject constructor(
     private val _exptrn = dao.getAllExpTrans()
     private val _categoryList = mainRepo.getAllCategory()
     private val _accountList = mainRepo.getAllAccountName()
+    private val _typeList = _state.value.typeList
+
 
     val state= combine(_state,_exptrn,_categoryList,_accountList
         ) { state, exptrn, categoryList, accountList ->
@@ -40,6 +42,7 @@ class ExpTransViewModel @Inject constructor(
                 , categoryList = categoryList
             , accountList = accountList
             , tmpAmount = state.tmpAmount
+            , selectedType = state.selectedType
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ExpTranState())
 
@@ -70,9 +73,17 @@ class ExpTransViewModel @Inject constructor(
 
     fun onTranTypeUpdate(newTranType: String) {
         _state.update { it.copy(
-            tranType = newTranType
+            tranType = newTranType,
+            selectedType = _typeList.indexOf(newTranType)
         ) }
     }
+
+    fun onNoteUpdate(newNote: String) {
+        _state.update { it.copy(
+            note = newNote
+        ) }
+    }
+
 
     fun onSaveExpense() {
         val newExp = expTrans(
@@ -81,7 +92,7 @@ class ExpTransViewModel @Inject constructor(
             , dateTrans = _state.value.dateTrans
             , budName = _state.value.budName
             , accName = _state.value.accName
-            , tranType = _state.value.tranType
+            , tranType = if( _state.value.tranType == "") "Expense" else _state.value.tranType
             , note = _state.value.note
         )
         viewModelScope.launch {

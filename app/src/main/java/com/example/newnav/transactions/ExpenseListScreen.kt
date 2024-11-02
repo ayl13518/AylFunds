@@ -31,6 +31,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.newnav.ScreenTran
 import com.example.newnav.navigation.NavigationBottomBar
+import com.example.newnav.ui.theme.expenseColor
+import com.example.newnav.ui.theme.incomeColor
 import com.example.newnav.viewmodels.ExpTransViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -42,6 +44,9 @@ fun ExpListScreen(
     val state by viewModel.state.collectAsState()
 
     val transbyDate = state.expTrans.groupBy { it.dateTrans  }
+    val sumByDate = state.expTrans
+        .groupingBy { it.dateTrans  }
+        .fold(0.0) { acc, expTrans -> acc + expTrans.amount }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -69,21 +74,36 @@ fun ExpListScreen(
             transbyDate.forEach { (initialDate, expsByDate) ->
                 stickyHeader {
                     Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
-                    Text(text = initialDate,
-                        textAlign = TextAlign.Center,
-                        style = typography.titleMedium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.primaryContainer)
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        , horizontalArrangement = Arrangement.SpaceBetween
                     )
+                    {
+                        Text(
+                            text = initialDate,
+                            style = typography.titleLarge,
+                        )
+                        Text(text = sumByDate[initialDate].toString())
+                    }
                 }
                 items(expsByDate) { exp ->
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.secondaryContainer)
-                        , horizontalArrangement = Arrangement.SpaceBetween) {
-                        //Text(text = exp.)
-                        Text(text = exp.amount.toString())
+                        , horizontalArrangement = Arrangement.SpaceBetween)
+                    {
+                        Text(text = exp.note)
+                        Text(text = exp.tranType)
+                        if (exp.tranType == "Income")
+                            Text(text = exp.amount.toString(),
+                                color = incomeColor,
+                            )
+                        else
+                            Text(text = exp.amount.toString(),
+                                color = expenseColor,
+                            )
+
                     }
                 }
             }
