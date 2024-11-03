@@ -62,7 +62,7 @@ fun AddTranScreen(
 )
 {
     val state by viewModel.state.collectAsState()
-    var categoryList = state.categoryList
+    val categoryList by viewModel.categoryFiltered.collectAsState(emptyList())
     var accountList = state.accountList
     var typeList = state.typeList
 
@@ -121,13 +121,15 @@ fun AddTranScreen(
             DropdownList(
                 label = "Category",
                 itemList = categoryList,
-                onTypeChange = { viewModel.onBudgetUpdate(it) }
+                onTypeChange = { viewModel.onBudgetUpdate(it) },
+                modifier = Modifier.fillMaxWidth(),
             )
 
             DropdownList(
                 label = "Account",
                 itemList = accountList,
-                onTypeChange = { viewModel.onAccUpdate(it) }
+                onTypeChange = { viewModel.onAccUpdate(it) },
+                modifier = Modifier.fillMaxWidth(),
             )
 
             DateofTransaction(
@@ -207,13 +209,4 @@ fun DateofTransaction(
             }
         }
     }
-}
-
-
-@Preview
-@Composable
-fun AddEditExpPreview() {
-    AddTranScreen(
-
-    )
 }

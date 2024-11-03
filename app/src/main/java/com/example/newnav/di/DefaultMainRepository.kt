@@ -60,20 +60,10 @@ class DefaultMainRepository @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getExpByMonth(month: Int): Flow<List<expTrans>> {
         return expDao.getExpByMonth(month)
-//        val result = expDao.getExpByMonth(month)
+    }
 
-//        val resultFlow = result
-//            .mapLatest { it.toSet() }
-//            .distinctUntilChanged()
-//            .flatMapLatest {
-//                expDao.getExpByMonth(month)
-//            }
-//
-//        val toReturn = ResultTransactions(
-//                resultTransactions = resultFlow
-//        )
-//
-//        return toReturn
+    override fun getCategoryByType(type: String): Flow<List<String>> {
+        return budDAO.getCategoryByType(type)
     }
 
 }

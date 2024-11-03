@@ -26,4 +26,6 @@ interface MainRepository {
 
     fun getExpByMonth(month: Int): Flow<List<expTrans>>
 
+    fun getCategoryByType(type: String): Flow<List<String>>
+
 }

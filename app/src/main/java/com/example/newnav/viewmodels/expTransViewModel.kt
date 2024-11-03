@@ -11,14 +11,10 @@ import com.example.newnav.transactions.GetCurrentTransactions
 import com.example.newnav.utils.convertDateForDB
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.reduce
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -37,26 +33,27 @@ class ExpTransViewModel @Inject constructor(
 
     private val _exptrn = dao.getAllExpTrans()
     private val _categoryList = mainRepo.getAllCategory()
+    private val _budgetList = mainRepo.getAllBudgets()
     private val _accountList = mainRepo.getAllAccountName()
     private val _typeList = _state.value.typeList
 
+    val searchCategory = savedStateHandle.getStateFlow(key = SEARCH_Category, initialValue = "Expense")
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val categoryFiltered = searchCategory.flatMapLatest { query ->
+        mainRepo.getCategoryByType(query)
+    }.stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList())
+
     val searchQuery = savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = _state.value.selectedMonth)
 
-    //private val _exptrn  = mainRepo.getExpByMonth(_state.value.selectedMonth + 1)
-
-//    val transMonthList = mainRepo.getExpByMonth(_state.value.selectedMonth + 1)
-//            .stateIn(
-//                scope = viewModelScope,
-//                started = SharingStarted.WhileSubscribed(5_000),
-//                initialValue = _state.value.expTrans,
-//            )
-
-//    val transMonthList = getcurrentMonth(_state.value.selectedMonth + 1)
-
-        @OptIn(ExperimentalCoroutinesApi::class)
-        val transMonthList = searchQuery.flatMapLatest { query ->
-            getcurrentMonth(query + 1)
-        }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val transMonthList = searchQuery.flatMapLatest { query ->
+        getcurrentMonth(query + 1)
+    }.stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList())
 
 
     val state= combine(_state,_exptrn,_categoryList,_accountList
@@ -109,6 +106,7 @@ class ExpTransViewModel @Inject constructor(
             tranType = newTranType,
             selectedType = _typeList.indexOf(newTranType)
         ) }
+        savedStateHandle[SEARCH_Category] = newTranType
     }
 
     fun onNoteUpdate(newNote: String) {
@@ -125,11 +123,6 @@ class ExpTransViewModel @Inject constructor(
                 )
             }
             savedStateHandle[SEARCH_QUERY] = newMonth
-//            viewModelScope.launch {
-//                transMonthList.collect({  mainRepo.getExpByMonth(_state.value.selectedMonth + 1)})
-
-                //transMonthList.collectLatest {  {  mainRepo.getExpByMonth(_state.value.selectedMonth + 1)} }
-//                }
         }
     }
 
@@ -151,3 +144,4 @@ class ExpTransViewModel @Inject constructor(
 }
 
 private const val SEARCH_QUERY = "searchQuery"
+private const val SEARCH_Category = "Expense"

@@ -17,4 +17,8 @@ interface budDAO {
     @Query("SELECT name as category FROM budgets")
     fun getAllCategory(): Flow<List<String>>
 
+    @Query("SELECT name as category FROM budgets WHERE type = :type")
+    fun getCategoryByType(type: String): Flow<List<String>>
+
+
 }
