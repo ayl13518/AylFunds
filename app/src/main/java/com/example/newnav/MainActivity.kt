@@ -161,10 +161,17 @@ fun Greeting(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(text = "HomeScreen")
+
+            var month =0
+
+
         }
     }
 
 }
+
+
+
 
 
 /**

@@ -2,6 +2,7 @@ package com.example.newnav.transactions
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,8 @@ import com.example.newnav.ui.theme.incomeColor
 import com.example.newnav.ui.theme.transferColor
 import com.example.newnav.utils.DecimalFormatter
 import com.example.newnav.viewmodels.ExpTransViewModel
+import java.time.Month
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -48,30 +51,56 @@ fun ExpListScreen(
     navController: NavHostController = rememberNavController(),
     viewModel: ExpTransViewModel = hiltViewModel()
 ){
-    val state by viewModel.state.collectAsState()
 
-    val transbyDate = state.expTrans
+    val state by viewModel.state.collectAsState()
+    val transMonthList by viewModel.transMonthList.collectAsState(emptyList())
+    val currentMonth = state.selectedMonth
+
+    val transbyDate = transMonthList
         .groupBy { it.dateTrans }
         .mapValues { (_, value) -> value.sortedBy { it.dateTrans } }.toSortedMap()
 
-    val sumByDate = state.expTrans
+    val sumByDate = transMonthList
         .groupingBy { it.dateTrans }
         .fold(0.0) { acc, expTrans -> acc + expTrans.amount }
 
     val decimalFormatter = DecimalFormatter()
 
+    val monthName= Month.of(currentMonth+1).toString().take(3)
+
+
+
 
     Scaffold(
         modifier = Modifier
-            .padding(top=50.dp)
             .fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
                 Box(modifier = Modifier
+                        .padding(top=50.dp)
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .fillMaxWidth(),
                     contentAlignment = Alignment.BottomEnd) {
-                    Text(text = state.typeList[state.selectedType].toString())
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        , horizontalArrangement = Arrangement.Absolute.Right)
+                    {
+                        Box(modifier = Modifier
+                            .clickable(onClick = {
+                                //currentMonth--
+                                viewModel.onSwipe(currentMonth-1)
+                            })
+                            .background(MaterialTheme.colorScheme.primary),
+                            ){
+                            Text(text = " < ",color = MaterialTheme.colorScheme.onPrimary)     }
+                        Text(text = monthName)
+                        Box(modifier = Modifier
+                            .clickable(onClick = {viewModel.onSwipe(currentMonth+1)})
+                            .background(MaterialTheme.colorScheme.primary),
+                        ){
+                            Text(text = " > ",color = MaterialTheme.colorScheme.onPrimary)     }
+                    }
                 }
         },
         bottomBar = {
@@ -94,13 +123,13 @@ fun ExpListScreen(
             modifier = Modifier
                 .pointerInput(Unit) {
                     detectHorizontalDragGestures { change, dragAmount ->
-                        if (dragAmount > -200) {
+                        if (dragAmount < -300) {
                             change.consume()
-                            viewModel.onTranTypeUpdate("Transfer")
+                            viewModel.onSwipe(currentMonth+1)
                         }
-                        else if (dragAmount < 200) {
+                        else if (dragAmount > 300) {
                             change.consume()
-                            viewModel.onTranTypeUpdate("Expense")
+                            viewModel.onSwipe(currentMonth-1)
                         }
                     }
                 }

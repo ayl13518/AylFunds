@@ -19,3 +19,13 @@ data class expTrans(
     @ColumnInfo(defaultValue = " ")
     val note: String = "",
 )
+
+fun expTrans.asExternalModel()= expTrans(
+    id = id,
+    amount = amount,
+    dateTrans = dateTrans,
+    accName = accName,
+    budName = budName,
+    tranType = tranType,
+    note = note,
+)

@@ -8,7 +8,9 @@ import com.example.newnav.data.accounts
 import com.example.newnav.data.budDAO
 import com.example.newnav.data.budgets
 import com.example.newnav.data.expTrans
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+
 
 @Singleton
 class DefaultMainRepository @Inject constructor(
@@ -18,6 +20,16 @@ class DefaultMainRepository @Inject constructor(
 ): MainRepository  {
 
     override suspend fun updateAccountBalance(expTrans: expTrans) {
+        if (expTrans.accName != "") {
+            if(expTrans.tranType=="Expense")
+                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount*(-1))
+            else if(expTrans.tranType=="Transfer" ) {
+                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount * (-1))
+                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount)
+            }
+            else
+                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount)
+        }
         expDao.insertExpTran(expTrans)
     }
 
@@ -43,6 +55,25 @@ class DefaultMainRepository @Inject constructor(
 
     override fun getAllAccountName(): Flow<List<String>> {
         return accDAO.getAllAccountName()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun getExpByMonth(month: Int): Flow<List<expTrans>> {
+        return expDao.getExpByMonth(month)
+//        val result = expDao.getExpByMonth(month)
+
+//        val resultFlow = result
+//            .mapLatest { it.toSet() }
+//            .distinctUntilChanged()
+//            .flatMapLatest {
+//                expDao.getExpByMonth(month)
+//            }
+//
+//        val toReturn = ResultTransactions(
+//                resultTransactions = resultFlow
+//        )
+//
+//        return toReturn
     }
 
 }

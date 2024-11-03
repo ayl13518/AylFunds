@@ -4,6 +4,7 @@ package com.example.newnav.di
 import com.example.newnav.data.accounts
 import com.example.newnav.data.budgets
 import com.example.newnav.data.expTrans
+import com.example.newnav.models.ResultTransactions
 import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {
@@ -22,5 +23,7 @@ interface MainRepository {
     fun getAllCategory(): Flow<List<String>>
 
     fun getAllAccountName(): Flow<List<String>>
+
+    fun getExpByMonth(month: Int): Flow<List<expTrans>>
 
 }
