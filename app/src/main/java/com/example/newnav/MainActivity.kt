@@ -5,14 +5,20 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Help
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.Dehaze
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -32,10 +38,11 @@ import com.example.newnav.accounts.AccListScreen
 import com.example.newnav.accounts.AccountTran
 import com.example.newnav.budgets.BudgetListScreen
 import com.example.newnav.budgets.BudgetTran
+import com.example.newnav.navigation.AylTopBar
 import com.example.newnav.navigation.NavigationBottomBar
+import com.example.newnav.preference.SettingsScreen
 import com.example.newnav.transactions.AddTranScreen
 import com.example.newnav.transactions.ExpListScreen
-import com.example.newnav.viewmodels.ExpTransViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -104,6 +111,11 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                         )
                     }
+                    composable<ScreenSetting>{
+                        SettingsScreen(
+                            navController = navController,
+                        )
+                    }
                 }
 
             }
@@ -132,11 +144,25 @@ object ScreenAccount
 @Serializable
 object ScreenBudget
 
+@Serializable
+object ScreenSetting
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Greeting(
     navController: NavController
 ) {
     Scaffold (
+        topBar = {
+            AylTopBar(
+                titleRes = "Welcome",
+                navigationIcon = Icons.Rounded.Dehaze,
+                navigationIconContentDescription = "Navigation icon",
+                onNavigationClick = {navController.navigate(ScreenSetting)},
+                actionIcon = Icons.AutoMirrored.Default.Help,
+                actionIconContentDescription = "Action icon",
+            )
+        },
         bottomBar = {
             NavigationBottomBar(
                 navController= navController
@@ -161,8 +187,6 @@ fun Greeting(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(text = "HomeScreen")
-
-            var month =0
 
 
         }

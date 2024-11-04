@@ -3,10 +3,9 @@ package com.example.newnav.transactions
 import com.example.newnav.data.expTrans
 import com.example.newnav.di.MainRepository
 import com.example.newnav.models.CurrentTransactions
-import com.example.newnav.models.ExpTranState
 import com.example.newnav.models.ResultTransactions
 //import com.example.newnav.repository.UserRepository
-import com.example.newnav.viewmodels.UserData
+import com.example.newnav.models.UserData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject

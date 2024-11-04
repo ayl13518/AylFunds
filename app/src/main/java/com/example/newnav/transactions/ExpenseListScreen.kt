@@ -18,7 +18,10 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.rounded.Dehaze
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,8 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.newnav.ScreenSetting
 import com.example.newnav.ScreenTran
 import com.example.newnav.designsys.component.ThemePreviews
+import com.example.newnav.navigation.AylTopBar
 import com.example.newnav.navigation.NavigationBottomBar
 import com.example.newnav.ui.theme.NewNavTheme
 import com.example.newnav.ui.theme.expenseColor
@@ -47,11 +52,12 @@ import com.example.newnav.viewmodels.ExpTransViewModel
 import java.time.Month
 
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ExpListScreen(
     navController: NavHostController = rememberNavController(),
-    viewModel: ExpTransViewModel = hiltViewModel()
+    viewModel: ExpTransViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier,
 ){
 
     val state by viewModel.state.collectAsState()
@@ -72,12 +78,21 @@ fun ExpListScreen(
 
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = modifier
+            .fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
+                AylTopBar(
+                    titleRes = "",
+                    navigationIcon = Icons.Rounded.Dehaze,
+                    navigationIconContentDescription = "Navigation icon",
+                    onNavigationClick = {navController.navigate(ScreenSetting)},
+                    actionIcon = Icons.AutoMirrored.Default.Help,
+                    actionIconContentDescription = "Action icon",
+                )
+
                 Box(modifier = Modifier
-                        .padding(top=50.dp)
+                        .padding(top = 90.dp)
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .fillMaxWidth(),
                     contentAlignment = Alignment.BottomEnd) {

@@ -93,7 +93,9 @@ fun BudgetTran(
             DropdownList(
                 label = "Type",
                 itemList = typeList,
-                onTypeChange = { viewModel.onTypeChange(it) })
+                onTypeChange = { viewModel.onTypeChange(it) },
+                defaultSelectedItem = ""
+            )
 
 
 //            AylOutlinedTextField(
@@ -114,7 +116,9 @@ fun BudgetTran(
             DropdownList(
                 label = "Scope",
                 itemList = scopeList,
-                onTypeChange = { viewModel.onScopeChange(it) })
+                onTypeChange = { viewModel.onScopeChange(it) },
+                defaultSelectedItem = ""
+            )
 
         }
     }

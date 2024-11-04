@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,14 +42,15 @@ fun DropdownList(
     modifier: Modifier = Modifier,
     onTypeChange: (String) -> Unit = {},
     itemList: List<String> = emptyList(),
-    label: String = ""
+    label: String = "",
+    defaultSelectedItem: String ,
     ) {
 
     //val state = viewModel.state.collectAsState()
     var showDropdown by rememberSaveable { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     //val itemList = state.value.accTypeList
-    var selectedItem by rememberSaveable { mutableStateOf("") }
+    var selectedItem by rememberSaveable { mutableStateOf(defaultSelectedItem) }
 
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = MaterialTheme.colorScheme.onBackground,
@@ -116,7 +118,7 @@ fun DropdownList(
                                 .height(40.dp)
                                 .clickable {
                                     selectedItem = item
-                                    onTypeChange(item)
+                                    //onTypeChange(item)
                                     showDropdown = false
                                 },
                             contentAlignment = Alignment.CenterStart,

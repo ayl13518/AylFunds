@@ -1,5 +1,7 @@
 package com.example.newnav.di
 
+import com.example.newnav.data.PrefDAO
+import com.example.newnav.data.Preferences
 import javax.inject.Inject
 import javax.inject.Singleton
 import com.example.newnav.data.expDAO
@@ -8,6 +10,8 @@ import com.example.newnav.data.accounts
 import com.example.newnav.data.budDAO
 import com.example.newnav.data.budgets
 import com.example.newnav.data.expTrans
+import com.example.newnav.models.PreferenceConfig
+import com.example.newnav.models.TransactionType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
@@ -16,7 +20,8 @@ import kotlinx.coroutines.flow.Flow
 class DefaultMainRepository @Inject constructor(
     private val expDao: expDAO,
     private val accDAO: accDAO,
-    private val budDAO: budDAO
+    private val budDAO: budDAO,
+    private val prefDao: PrefDAO
 ): MainRepository  {
 
     override suspend fun updateAccountBalance(expTrans: expTrans) {
@@ -64,6 +69,31 @@ class DefaultMainRepository @Inject constructor(
 
     override fun getCategoryByType(type: String): Flow<List<String>> {
         return budDAO.getCategoryByType(type)
+    }
+
+    override fun getAllPreference(): Flow<List<Preferences>> {
+        return prefDao.getAll()
+    }
+
+    override fun getPrefName(keyValue: String): Flow<String>{
+        return prefDao.getPrefName(keyValue)
+    }
+
+    override suspend fun updatePref(expTrans: expTrans) {
+        var prefList = listOf(
+            if (expTrans.tranType == TransactionType.Expense.name) {
+                Preferences(key = PreferenceConfig.ExpenseCategory.keyValue, name = expTrans.budName)
+            }
+            else if (expTrans.tranType == TransactionType.Expense.name){
+                Preferences(key = PreferenceConfig.IncomeCategory.keyValue, name = expTrans.budName)
+            }
+            else {
+                Preferences(key = "trancat", name = expTrans.budName)
+            },
+            Preferences( key = PreferenceConfig.DefaultAccount.keyValue, name = expTrans.accName),
+            Preferences( key = PreferenceConfig.TransactionType.keyValue, name = expTrans.tranType),
+        )
+        prefDao.upsertAll(prefList)
     }
 
 }

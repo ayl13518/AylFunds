@@ -26,7 +26,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.newnav.viewmodels.ExpTransViewModel
@@ -65,6 +64,7 @@ fun AddTranScreen(
     val categoryList by viewModel.categoryFiltered.collectAsState(emptyList())
     var accountList = state.accountList
     var typeList = state.typeList
+    val defaultAccount by viewModel.defaultAccount.collectAsState("")
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -123,6 +123,8 @@ fun AddTranScreen(
                 itemList = categoryList,
                 onTypeChange = { viewModel.onBudgetUpdate(it) },
                 modifier = Modifier.fillMaxWidth(),
+                defaultSelectedItem = ""
+
             )
 
             DropdownList(
@@ -130,9 +132,10 @@ fun AddTranScreen(
                 itemList = accountList,
                 onTypeChange = { viewModel.onAccUpdate(it) },
                 modifier = Modifier.fillMaxWidth(),
+                defaultSelectedItem = defaultAccount.toString(),
             )
 
-            DateofTransaction(
+            DateTransaction(
                 textFieldColors,
                 viewModel
             )
@@ -151,7 +154,7 @@ fun AddTranScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateofTransaction(
+fun DateTransaction(
     textFieldColors: TextFieldColors,
     viewModel: ExpTransViewModel = hiltViewModel()
 ){

@@ -1,6 +1,7 @@
 package com.example.newnav.di
 
 
+import com.example.newnav.data.Preferences
 import com.example.newnav.data.accounts
 import com.example.newnav.data.budgets
 import com.example.newnav.data.expTrans
@@ -27,5 +28,11 @@ interface MainRepository {
     fun getExpByMonth(month: Int): Flow<List<expTrans>>
 
     fun getCategoryByType(type: String): Flow<List<String>>
+
+    fun getAllPreference(): Flow<List<Preferences>>
+
+    fun getPrefName(keyValue: String): Flow<String>
+
+    suspend fun updatePref(expTrans: expTrans)
 
 }

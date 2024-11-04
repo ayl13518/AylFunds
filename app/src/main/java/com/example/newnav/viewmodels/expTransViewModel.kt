@@ -3,10 +3,13 @@ package com.example.newnav.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.copy
 import com.example.newnav.models.ExpTranState
 import com.example.newnav.data.expDAO
 import com.example.newnav.data.expTrans
 import com.example.newnav.di.MainRepository
+import com.example.newnav.models.PreferenceConfig
+import com.example.newnav.models.TransactionType
 import com.example.newnav.transactions.GetCurrentTransactions
 import com.example.newnav.utils.convertDateForDB
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,11 +36,16 @@ class ExpTransViewModel @Inject constructor(
 
     private val _exptrn = dao.getAllExpTrans()
     private val _categoryList = mainRepo.getAllCategory()
-    private val _budgetList = mainRepo.getAllBudgets()
     private val _accountList = mainRepo.getAllAccountName()
     private val _typeList = _state.value.typeList
 
-    val searchCategory = savedStateHandle.getStateFlow(key = SEARCH_Category, initialValue = "Expense")
+    val defaultAccount = mainRepo.getPrefName(PreferenceConfig.DefaultAccount.keyValue)
+        .stateIn(viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            "")
+
+    val searchCategory = savedStateHandle.getStateFlow(key = SEARCH_Category
+        , initialValue = TransactionType.Expense.name)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val categoryFiltered = searchCategory.flatMapLatest { query ->
@@ -56,7 +64,7 @@ class ExpTransViewModel @Inject constructor(
         emptyList())
 
 
-    val state= combine(_state,_exptrn,_categoryList,_accountList
+    val state= combine(_state,_exptrn,_categoryList,_accountList,
         ) { state, exptrn, categoryList, accountList ->
         state.copy(
                 expTrans = exptrn,
@@ -139,6 +147,7 @@ class ExpTransViewModel @Inject constructor(
         )
         viewModelScope.launch {
             mainRepo.updateAccountBalance(newExp)
+            mainRepo.updatePref(newExp)
         }
     }
 }

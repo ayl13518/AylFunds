@@ -33,6 +33,9 @@ object RoomModule {
 
     @Provides
     fun provideBudDao(database: BudgetDatabase) = database.budDao()
+
+    @Provides
+    fun providePrefDao(database: BudgetDatabase) = database.prefDao()
 }
 
 @Module

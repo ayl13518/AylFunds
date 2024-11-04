@@ -93,7 +93,10 @@ fun AccountTran(
             DropdownList(
                 label = "Type",
                 itemList = accTypeList,
-                onTypeChange = { viewModel.onAccTypeChange(it) })
+                onTypeChange = { viewModel.onAccTypeChange(it) },
+                defaultSelectedItem = ""
+            )
+
 
 //            OutlinedTextField(
 //                label = { Text(text = "Balance") },

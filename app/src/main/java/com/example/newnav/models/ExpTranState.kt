@@ -19,7 +19,7 @@ data class ExpTranState(
     val note: String = "",
     val categoryList: List<String> = emptyList(),
     val accountList: List<String> = emptyList(),
-    val typeList: List<String> = listOf("Expense", "Income", "Transfer"),
+    val typeList: List<String> = TransactionType.entries.map { it.name },
     val tmpAmount: String = "0.00",
     val selectedType: Int = 0,
 
