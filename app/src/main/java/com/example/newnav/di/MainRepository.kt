@@ -35,4 +35,6 @@ interface MainRepository {
 
     suspend fun updatePref(expTrans: expTrans)
 
+    suspend fun updatePref(keyValue: String, name: String)
+
 }

@@ -43,14 +43,14 @@ fun DropdownList(
     onTypeChange: (String) -> Unit = {},
     itemList: List<String> = emptyList(),
     label: String = "",
-    defaultSelectedItem: String ,
+    defaultSelectedItem: String = "",
     ) {
 
     //val state = viewModel.state.collectAsState()
     var showDropdown by rememberSaveable { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     //val itemList = state.value.accTypeList
-    var selectedItem by rememberSaveable { mutableStateOf(defaultSelectedItem) }
+    var selectedItem by remember { mutableStateOf("") }
 
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = MaterialTheme.colorScheme.onBackground,
@@ -69,7 +69,7 @@ fun DropdownList(
         label = { Text(text = label) },
         readOnly = true,
         enabled = false,
-        value = selectedItem,
+        value = if(selectedItem =="") defaultSelectedItem else selectedItem,
         onValueChange = { onTypeChange(it) },
         maxLines = 1,
         trailingIcon = {
@@ -118,7 +118,7 @@ fun DropdownList(
                                 .height(40.dp)
                                 .clickable {
                                     selectedItem = item
-                                    //onTypeChange(item)
+                                    onTypeChange(item)
                                     showDropdown = false
                                 },
                             contentAlignment = Alignment.CenterStart,

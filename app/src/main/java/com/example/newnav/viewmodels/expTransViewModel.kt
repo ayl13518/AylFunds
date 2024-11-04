@@ -42,7 +42,11 @@ class ExpTransViewModel @Inject constructor(
     val defaultAccount = mainRepo.getPrefName(PreferenceConfig.DefaultAccount.keyValue)
         .stateIn(viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            "")
+           initialValue =  "")
+    val defaultCategory = mainRepo.getPrefName(PreferenceConfig.ExpenseCategory.keyValue)
+        .stateIn(viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            initialValue =  "")
 
     val searchCategory = savedStateHandle.getStateFlow(key = SEARCH_Category
         , initialValue = TransactionType.Expense.name)
@@ -136,6 +140,18 @@ class ExpTransViewModel @Inject constructor(
 
 
     fun onSaveExpense() {
+        if (_state.value.accName=="" && defaultAccount.value != "") {
+            _state.update { it.copy(
+                accName = defaultAccount.value
+            ) }
+        }
+
+        if (_state.value.budName=="" && defaultCategory.value != "") {
+            _state.update { it.copy(
+                budName = defaultCategory.value
+            ) }
+        }
+
         val newExp = expTrans(
             id = 0,
             amount = _state.value.amount

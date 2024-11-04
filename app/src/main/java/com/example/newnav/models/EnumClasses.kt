@@ -19,4 +19,5 @@ enum class PreferenceConfig (val keyValue: String, val description: String) {
     IncomeCategory("inccat", "Default Income Category"),
     DefaultAccount("defacc", "Default Account"),
     TransactionType("trantyp", "Default Transaction Type"),
+    UseDarkTheme("dark", "Use Dark Theme"),
 }

@@ -8,6 +8,7 @@ data class UserData(
     val defaultAccount: String? = null,
     val expenseCategory: String? = null,
     val incomeCategory: String? = null,
+    val useDarkTheme: String = "false",
 
 )
 

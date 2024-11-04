@@ -195,6 +195,21 @@ fun Greeting(
 }
 
 
+/**
+ * Returns `true` if dark theme should be used, as a function of the [uiState] and the
+ * current system context.
+ */
+//@Composable
+//private fun shouldUseDarkTheme(
+//    //uiState: MainActivityUiState,
+//): Boolean = when (uiState) {
+//    Loading -> isSystemInDarkTheme()
+//    is Success -> when (uiState.userData.darkThemeConfig) {
+//        DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
+//        DarkThemeConfig.LIGHT -> false
+//        DarkThemeConfig.DARK -> true
+//    }
+//}
 
 
 

@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,7 +30,7 @@ class SettingsViewModel @Inject constructor(
     private val _prefAll = mainRepo.getAllPreference()
     private val _accountList = mainRepo.getAllAccountName()
 
-    private val defaultAccount = mainRepo.getPrefName(PreferenceConfig.DefaultAccount.keyValue)
+    private val _defaultAccount = mainRepo.getPrefName(PreferenceConfig.DefaultAccount.keyValue)
 
 
     val searchCategory = savedStateHandle.getStateFlow(key = SEARCH_Category, initialValue = "Expense")
@@ -40,15 +42,25 @@ class SettingsViewModel @Inject constructor(
         SharingStarted.WhileSubscribed(5000),
         emptyList())
 
-    val state= combine(_state,_prefAll,_accountList,defaultAccount
+    val state= combine(_state,_prefAll,_accountList,_defaultAccount
     ) {  state, preference,accountList, defaultAccount ->
         state.copy(
               accountList = accountList,
               defaultAccount = defaultAccount,
+            useDarkTheme = preference.map { it.key==PreferenceConfig.UseDarkTheme.keyValue }.toString(),
         )
     }.stateIn(viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         UserData())
+
+    fun onUpdateDarkTheme(newTheme: String) {
+        _state.update { it.copy(
+            useDarkTheme = newTheme
+        ) }
+        viewModelScope.launch {
+            mainRepo.updatePref(keyValue = PreferenceConfig.UseDarkTheme.keyValue, name = newTheme)
+        }
+    }
 
 }
 

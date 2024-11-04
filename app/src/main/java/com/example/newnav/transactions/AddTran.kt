@@ -43,6 +43,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.newnav.R
 import com.example.newnav.designsys.component.AylOutlinedNumber
 import com.example.newnav.designsys.component.AylOutlinedTextField
@@ -64,7 +65,8 @@ fun AddTranScreen(
     val categoryList by viewModel.categoryFiltered.collectAsState(emptyList())
     var accountList = state.accountList
     var typeList = state.typeList
-    val defaultAccount by viewModel.defaultAccount.collectAsState("")
+    val defaultAccount by viewModel.defaultAccount.collectAsStateWithLifecycle()
+    val defaultCategory by viewModel.defaultCategory.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -123,7 +125,7 @@ fun AddTranScreen(
                 itemList = categoryList,
                 onTypeChange = { viewModel.onBudgetUpdate(it) },
                 modifier = Modifier.fillMaxWidth(),
-                defaultSelectedItem = ""
+                defaultSelectedItem = defaultCategory
 
             )
 
@@ -132,7 +134,7 @@ fun AddTranScreen(
                 itemList = accountList,
                 onTypeChange = { viewModel.onAccUpdate(it) },
                 modifier = Modifier.fillMaxWidth(),
-                defaultSelectedItem = defaultAccount.toString(),
+                defaultSelectedItem = defaultAccount,
             )
 
             DateTransaction(
