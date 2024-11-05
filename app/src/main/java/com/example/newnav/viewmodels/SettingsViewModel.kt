@@ -47,7 +47,7 @@ class SettingsViewModel @Inject constructor(
         state.copy(
               accountList = accountList,
               defaultAccount = defaultAccount,
-            useDarkTheme = preference.map { it.key==PreferenceConfig.UseDarkTheme.keyValue }.toString(),
+            useDarkTheme = preference.find { it.key==PreferenceConfig.UseDarkTheme.keyValue}?.name.toString(),
         )
     }.stateIn(viewModelScope,
         SharingStarted.WhileSubscribed(5000),
