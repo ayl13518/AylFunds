@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newnav.di.MainRepository
-import com.example.newnav.models.ExpTranState
 import com.example.newnav.models.PreferenceConfig
 import com.example.newnav.models.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +31,6 @@ class SettingsViewModel @Inject constructor(
 
     private val _defaultAccount = mainRepo.getPrefName(PreferenceConfig.DefaultAccount.keyValue)
 
-
     val searchCategory = savedStateHandle.getStateFlow(key = SEARCH_Category, initialValue = "Expense")
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -47,7 +45,12 @@ class SettingsViewModel @Inject constructor(
         state.copy(
               accountList = accountList,
               defaultAccount = defaultAccount,
-            useDarkTheme = preference.find { it.key==PreferenceConfig.UseDarkTheme.keyValue}?.name.toString(),
+//            useDarkTheme = preference
+//                .find { it.key==PreferenceConfig.UseDarkTheme.keyValue}
+//                ,
+            useDarkTheme = preference
+                .find { item -> item.key.toString()
+                    .takeIf { it==PreferenceConfig.UseDarkTheme.keyValue } != null }?.name.toString()
         )
     }.stateIn(viewModelScope,
         SharingStarted.WhileSubscribed(5000),
@@ -61,6 +64,18 @@ class SettingsViewModel @Inject constructor(
             mainRepo.updatePref(keyValue = PreferenceConfig.UseDarkTheme.keyValue, name = newTheme)
         }
     }
+
+    fun onUpdateDefaultAccount(newAccount: String) {
+        _state.update {
+            it.copy(
+                defaultAccount = newAccount
+            )
+        }
+        viewModelScope.launch {
+            mainRepo.updatePref(keyValue = PreferenceConfig.DefaultAccount.keyValue, name = newAccount)
+        }
+    }
+
 
 }
 

@@ -97,7 +97,7 @@ class DefaultMainRepository @Inject constructor(
     }
 
     override suspend fun updatePref(keyValue: String, name: String) {
-        prefDao.upsertPref(Preferences( key = PreferenceConfig.UseDarkTheme.keyValue, name = name))
+        prefDao.upsertPref(Preferences( key = keyValue, name = name))
     }
 
 
