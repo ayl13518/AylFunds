@@ -9,9 +9,7 @@ enum class AccountType {
 }
 
 enum class DarkThemeConfig {
-    FOLLOW_SYSTEM,
-    LIGHT,
-    DARK,
+    FOLLOW_SYSTEM,    LIGHT,    DARK,
 }
 
 enum class PreferenceConfig (val keyValue: String, val description: String) {
@@ -20,4 +18,12 @@ enum class PreferenceConfig (val keyValue: String, val description: String) {
     DefaultAccount("defacc", "Default Account"),
     TransactionType("trantyp", "Default Transaction Type"),
     UseDarkTheme("dark", "Use Dark Theme"),
+}
+
+enum class BudgetType {
+    Expense, Income,
+}
+
+enum class BudgetScope {
+    Month, Week, Year,
 }
