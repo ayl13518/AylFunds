@@ -39,11 +39,16 @@ import com.example.newnav.viewmodels.BudgetViewModel
 fun BudgetTran(
     navController: NavHostController = rememberNavController(),
     viewModel: BudgetViewModel = hiltViewModel(),
+    budgetId: Long=0
 )
 {
     val state = viewModel.state.collectAsState()
     var typeList = state.value.budTypeList
     var scopeList = state.value.budScopeList
+
+//    if (budgetId != 0L) {
+//        viewModel.onBudgetLoad(budgetId)
+//    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -97,14 +102,6 @@ fun BudgetTran(
                 defaultSelectedItem = ""
             )
 
-
-//            AylOutlinedTextField(
-//                label = "Planned amount",
-//                value = state.value.balance.toString(),
-//                modifier = Modifier.fillMaxWidth(),
-//                onValueChange = { viewModel.onBalanceChange(it) },
-//                maxLines = 1,
-//            )
 
             AylOutlinedNumber(
                 label = "Planned Amount",

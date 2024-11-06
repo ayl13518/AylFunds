@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.newnav.ScreenAccount
@@ -68,13 +70,13 @@ import kotlin.random.Random
 @Composable
 fun BudgetListScreen(
     navController: NavHostController = rememberNavController(),
-    viewModel: BudgetViewModel = hiltViewModel()
+    viewModel: BudgetViewModel = hiltViewModel(),
+    onClickList: (budgetId: Long) -> Unit
 ){
-    val state by viewModel.state.collectAsState()
-
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val accbyType = state.budgets.groupBy { it.type }
-
     var budgetTypes = BudgetType.entries.map { it.name }
+
 
     Scaffold(
         //modifier = Modifier.fillMaxSize(),
@@ -98,7 +100,9 @@ fun BudgetListScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(ScreenBudget)
+//                    navController.navigate(ScreenBudget)
+                     navController.navigate(ScreenBudget(0)
+                    )
                 },
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
@@ -185,7 +189,9 @@ fun BudgetListScreen(
                         Row(
                             modifier = Modifier
                                 .background(MaterialTheme.colorScheme.secondaryContainer)
-                                .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+                                .clickable { onClickList(item.budgetid) }
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
                                 text = item.name,

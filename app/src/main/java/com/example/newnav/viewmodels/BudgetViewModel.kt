@@ -17,9 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class BudgetViewModel @Inject constructor(
     private val repo: MainRepository
-
 ): ViewModel() {
-    //TODO: Add StateFlow(s)
+
 
     private val _state = MutableStateFlow(BudgetState())
     private val _accounts = repo.getAllBudgets()

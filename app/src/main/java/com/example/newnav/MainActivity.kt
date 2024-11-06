@@ -39,15 +39,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.newnav.ui.theme.NewNavTheme
 import kotlinx.serialization.Serializable
 import com.example.newnav.accounts.AccListScreen
 import com.example.newnav.accounts.AccountTran
 import com.example.newnav.budgets.BudgetListScreen
 import com.example.newnav.budgets.BudgetTran
+import com.example.newnav.models.CustomNavType
 import com.example.newnav.models.UserData
 import com.example.newnav.navigation.AylTopBar
 import com.example.newnav.navigation.NavigationBottomBar
@@ -56,7 +59,8 @@ import com.example.newnav.transactions.AddTranScreen
 import com.example.newnav.transactions.ExpListScreen
 import com.example.newnav.viewmodels.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+
+import kotlin.reflect.typeOf
 
 
 @AndroidEntryPoint
@@ -124,11 +128,22 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<ScreenBudgetList>{
                        BudgetListScreen(
-                            navController = navController,
+                           navController = navController,
+                           onClickList = { budgetId -> navController.navigate(
+                               ScreenBudget(budgetId)
+                           )
+                           }
                         )
                     }
-                    composable<ScreenBudget>{
+                    composable<ScreenBudget>(
+                        typeMap = mapOf(
+                        //typeOf<Long>() to CustomNavType.BudgetType,
+                            typeOf<Long>() to NavType.LongType
+                        )
+                    ){
+                        val arguments = it.toRoute<ScreenBudget>()
                         BudgetTran(
+                            budgetId = arguments.budgetID,
                             navController = navController,
                         )
                     }
@@ -162,8 +177,13 @@ object ScreenTran
 @Serializable
 object ScreenAccount
 
+//@Serializable
+//object ScreenBudget
+
 @Serializable
-object ScreenBudget
+data class ScreenBudget (
+    val budgetID: Long,
+)
 
 @Serializable
 object ScreenSetting
