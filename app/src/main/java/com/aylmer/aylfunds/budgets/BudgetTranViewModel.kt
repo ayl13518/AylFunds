@@ -24,9 +24,9 @@ class BudgetTranViewModel @Inject constructor(
     private val budgeId: Long? = savedStateHandle["budgetID"]
     var newBudget :Long = 0
 
-    private val _State = MutableStateFlow(BudgetState())
+    private val _state = MutableStateFlow(BudgetState())
 
-    val state = _State.asStateFlow()
+    val state = _state.asStateFlow()
 
     init {
         if (budgeId != null && budgeId != 0L) {
@@ -35,7 +35,7 @@ class BudgetTranViewModel @Inject constructor(
 
             viewModelScope.launch {
                 curBud.collectLatest { cur ->
-                    _State.update { st ->
+                    _state.update { st ->
                         st.copy(
                             name = cur.name,
                             balance = cur.balance,
@@ -50,7 +50,7 @@ class BudgetTranViewModel @Inject constructor(
     }
 
     fun onNameChange(newBudgetName: String) {
-        _State.update {
+        _state.update {
             it.copy(
                 name = newBudgetName
             )
@@ -58,7 +58,7 @@ class BudgetTranViewModel @Inject constructor(
     }
 
     fun onTypeChange(newType: String) {
-        _State.update {
+        _state.update {
             it.copy(
                 type = newType
             )
@@ -66,7 +66,7 @@ class BudgetTranViewModel @Inject constructor(
     }
 
     fun onScopeChange(newScope: String) {
-        _State.update {
+        _state.update {
             it.copy(
                 scope = newScope
             )
@@ -74,7 +74,7 @@ class BudgetTranViewModel @Inject constructor(
     }
 
     fun onBalanceChange(newBalance: String) {
-        _State.update {
+        _state.update {
             it.copy(
                 tmpBalance = newBalance,
                 balance = newBalance.toDoubleOrNull() ?: 0.0
@@ -84,10 +84,10 @@ class BudgetTranViewModel @Inject constructor(
 
     fun onBudgetAdd() {
         val newAccount = budgets (
-            name = _State.value.name,
-            type = _State.value.type,
-            balance = _State.value.balance,
-            scope = _State.value.scope,
+            name = _state.value.name,
+            type = _state.value.type,
+            balance = _state.value.balance,
+            scope = _state.value.scope,
             budgetid = newBudget
         )
         viewModelScope.launch {

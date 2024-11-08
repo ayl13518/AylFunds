@@ -2,6 +2,7 @@ package com.aylmer.aylfunds.accounts
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,7 +41,8 @@ import kotlin.collections.component2
 @Composable
 fun AccListScreen(
     navController: NavHostController = rememberNavController(),
-    viewModel: AccountViewModel = hiltViewModel()
+    viewModel: AccountViewModel = hiltViewModel(),
+    onClickList: (accountId: Long) -> Unit
 ){
     val state by viewModel.state.collectAsState()
 
@@ -58,7 +60,7 @@ fun AccListScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(ScreenAccount)
+                    navController.navigate(ScreenAccount(0))
                 },
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
@@ -83,6 +85,7 @@ fun AccListScreen(
                 items(expsByDate) { exp ->
                     Row(modifier = Modifier
                         .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .clickable { onClickList(exp.id) }
                         .fillMaxWidth()
                     , horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(text = exp.name,

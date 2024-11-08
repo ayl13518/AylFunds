@@ -95,7 +95,7 @@ fun BudgetTran(
                 label = "Type",
                 itemList = typeList,
                 onTypeChange = { viewModel.onTypeChange(it) },
-                defaultSelectedItem = ""
+                defaultSelectedItem = state.value.type
             )
 
 
@@ -110,7 +110,7 @@ fun BudgetTran(
                 label = "Scope",
                 itemList = scopeList,
                 onTypeChange = { viewModel.onScopeChange(it) },
-                defaultSelectedItem = ""
+                defaultSelectedItem = state.value.scope
             )
 
         }

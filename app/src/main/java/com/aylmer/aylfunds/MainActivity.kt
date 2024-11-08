@@ -24,9 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,7 +61,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var uiState: UserData by mutableStateOf(UserData())
+       // var uiState: UserData by mutableStateOf(UserData())
         val userData= viewModel.state
 
 
@@ -111,25 +109,32 @@ class MainActivity : ComponentActivity() {
                     composable<ScreenAccountList> {
                         AccListScreen(
                             navController = navController,
+                            onClickList = { accountId -> navController.navigate(
+                                ScreenAccount(accountId))
+                            }
                         )
                     }
-                    composable<ScreenAccount>{
+                    composable<ScreenAccount>(
+                        typeMap = mapOf(
+                            typeOf<Long>() to NavType.LongType
+                        )
+                    ){
+                        val arguments = it.toRoute<ScreenAccount>()
                         AccountTran(
                             navController = navController,
+                            accountId = arguments.accountId
                         )
                     }
                     composable<ScreenBudgetList>{
                        BudgetListScreen(
                            navController = navController,
                            onClickList = { budgetId -> navController.navigate(
-                               ScreenBudget(budgetId)
-                           )
+                               ScreenBudget(budgetId) )
                            }
                         )
                     }
                     composable<ScreenBudget>(
                         typeMap = mapOf(
-                        //typeOf<Long>() to CustomNavType.BudgetType,
                             typeOf<Long>() to NavType.LongType
                         )
                     ){
@@ -167,10 +172,9 @@ object ScreenBudgetList
 object ScreenTran
 
 @Serializable
-object ScreenAccount
-
-//@Serializable
-//object ScreenBudget
+data class ScreenAccount (
+    val accountId: Long,
+)
 
 @Serializable
 data class ScreenBudget (

@@ -42,8 +42,12 @@ class DefaultMainRepository @Inject constructor(
         return accDAO.getAllAccounts()
     }
 
-    override suspend fun insertAccount(accounts: accounts) {
-        accDAO.insertAccount(accounts)
+    override suspend fun upsertAccount(accounts: accounts) {
+        accDAO.upsertAccount(accounts)
+    }
+
+    override fun getAccountById(accountId: Long): Flow<accounts> {
+        return accDAO.getAccountById(accountId)
     }
 
     override fun getAllBudgets(): Flow<List<budgets>> {

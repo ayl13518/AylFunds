@@ -19,11 +19,12 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.R
@@ -36,10 +37,11 @@ import com.aylmer.aylfunds.navigation.AylTopBar
 @Composable
 fun AccountTran(
     navController: NavHostController = rememberNavController(),
-    viewModel: AccountViewModel = hiltViewModel(),
+    viewModel: AccountTranViewModel = hiltViewModel(),
+    accountId: Long =0
 )
 {
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsStateWithLifecycle()
     var accTypeList = state.value.accTypeList
 
     Scaffold(
@@ -92,18 +94,8 @@ fun AccountTran(
                 label = "Type",
                 itemList = accTypeList,
                 onTypeChange = { viewModel.onAccTypeChange(it) },
-                defaultSelectedItem = ""
+                defaultSelectedItem = state.value.accType,
             )
-
-
-//            OutlinedTextField(
-//                label = { Text(text = "Balance") },
-//                value = state.value.balance.toString(),
-//                modifier = Modifier.fillMaxWidth(),
-//                onValueChange = { viewModel.onBalanceChange(it) },
-//                maxLines = 1,
-//                colors = textFieldColors,
-//            )
 
             AylOutlinedNumber(
                 label = "Balance",

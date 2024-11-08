@@ -14,9 +14,11 @@ interface MainRepository {
 
     fun getAllAccounts(): Flow<List<accounts>>
 
-    suspend fun insertAccount(accounts: accounts)
+    suspend fun upsertAccount(accounts: accounts)
 
     fun getAllAccountName(): Flow<List<String>>
+
+    fun getAccountById(accountId: Long): Flow<accounts>
 
     //Budgets
     fun getAllBudgets(): Flow<List<budgets>>

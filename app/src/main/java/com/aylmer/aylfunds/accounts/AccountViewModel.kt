@@ -2,7 +2,7 @@ package com.aylmer.aylfunds.accounts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aylmer.aylfunds.data.accounts
+
 import com.aylmer.aylfunds.di.MainRepository
 import com.aylmer.aylfunds.models.AccState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,8 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,41 +40,5 @@ class AccountViewModel @Inject constructor(
         initialValue = AccState()
     )
     //TODO: Add Event(s)
-    fun onNameChange(newAccountName: String) {
-        _state.update {
-            it.copy(
-                name = newAccountName
-            )
-        }
-    }
 
-    fun onAccTypeChange(newAccType: String) {
-        _state.update {
-            it.copy(
-                accType = newAccType
-            )
-        }
-    }
-
-    fun onBalanceChange(newBalance: String) {
-        _state.update {
-            it.copy(
-                tmpBalance = newBalance,
-                balance = newBalance.toDoubleOrNull() ?: 0.0
-            )
-        }
-    }
-
-    fun onAccountAdd() {
-        val newAccount = accounts (
-            name = _state.value.name,
-            accType = _state.value.accType,
-            balance = _state.value.balance,
-            description = _state.value.description
-        )
-        viewModelScope.launch {
-            repo.insertAccount(newAccount)
-        }
-
-    }
 }
