@@ -50,8 +50,8 @@ class DefaultMainRepository @Inject constructor(
         return budDAO.getAllBudgets()
     }
 
-    override suspend fun insertBudget(budgets: budgets) {
-        budDAO.insertBudget(budgets)
+    override suspend fun upsertBudget(budgets: budgets) {
+        budDAO.upsertBudget(budgets)
     }
 
     override fun getAllCategory(): Flow<List<String>> {
@@ -98,6 +98,11 @@ class DefaultMainRepository @Inject constructor(
 
     override suspend fun updatePref(keyValue: String, name: String) {
         prefDao.upsertPref(Preferences( key = keyValue, name = name))
+    }
+
+    override fun getBudgetById(id: Long): Flow<budgets> {
+        return budDAO.getBudgetById(id)
+
     }
 
 

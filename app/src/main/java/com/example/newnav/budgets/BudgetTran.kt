@@ -19,36 +19,32 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.newnav.R
 import com.example.newnav.designsys.component.AylOutlinedNumber
-import com.example.newnav.designsys.component.AylOutlinedTextField
 import com.example.newnav.designsys.component.DropdownList
+import com.example.newnav.models.BudgetState
 import com.example.newnav.navigation.AylTopBar
-import com.example.newnav.viewmodels.BudgetViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BudgetTran(
     navController: NavHostController = rememberNavController(),
-    viewModel: BudgetViewModel = hiltViewModel(),
+    viewModel: BudgetTranViewModel = hiltViewModel(),
     budgetId: Long=0
 )
 {
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsStateWithLifecycle(BudgetState())
     var typeList = state.value.budTypeList
     var scopeList = state.value.budScopeList
 
-//    if (budgetId != 0L) {
-//        viewModel.onBudgetLoad(budgetId)
-//    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

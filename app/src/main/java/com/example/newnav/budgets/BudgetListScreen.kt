@@ -23,22 +23,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.rounded.Dehaze
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,7 +45,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.newnav.ScreenAccount
 import com.example.newnav.ScreenBudget
 import com.example.newnav.ScreenSetting
 import com.example.newnav.designsys.component.AylTab
@@ -59,8 +54,6 @@ import com.example.newnav.models.BudgetType
 import com.example.newnav.navigation.AylTopBar
 import com.example.newnav.navigation.NavigationBottomBar
 import com.example.newnav.ui.theme.NewNavTheme
-import com.example.newnav.viewmodels.AccountViewModel
-import com.example.newnav.viewmodels.BudgetViewModel
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.random.Random
@@ -79,7 +72,6 @@ fun BudgetListScreen(
 
 
     Scaffold(
-        //modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
             AylTopBar(
@@ -99,11 +91,7 @@ fun BudgetListScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-//                    navController.navigate(ScreenBudget)
-                     navController.navigate(ScreenBudget(0)
-                    )
-                },
+                onClick = { navController.navigate(ScreenBudget(0))},
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
@@ -118,7 +106,6 @@ fun BudgetListScreen(
                 contentAlignment = Alignment.BottomEnd) {
                 Row(modifier = Modifier
                     .fillMaxWidth()
-                    //.background(MaterialTheme.colorScheme.secondaryContainer)
                     , horizontalArrangement = Arrangement.Absolute.SpaceBetween
                     , verticalAlignment = Alignment.CenterVertically)
                 {
@@ -206,14 +193,38 @@ fun BudgetListScreen(
                             green = Random.nextFloat(),
                             blue = Random.nextFloat(),
                             alpha = 1f )
-                        CustomProgressBar( progress = .8f,
-                                modifier = Modifier.fillMaxWidth(),
-                                    //progressColor(randomColor)
+                        CustomProgressBar( progress = 8.0f,
+                                modifier = Modifier.fillMaxWidth(.95f).offset(x=10.dp),
+                                progressColor=randomColor,
                         )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun CustomProgressBar(
+    modifier: Modifier = Modifier,
+    progress: Float,
+    progressColor: Color =MaterialTheme.colorScheme.onSurface,
+    backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainer
+)
+{
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(backgroundColor)
+            .height(20.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .background(progressColor)
+                .fillMaxHeight()
+                .fillMaxWidth(progress)
+        )
     }
 }
 
@@ -248,31 +259,7 @@ fun BudgetProgressPreview() {
             alpha = 1f )
         CustomProgressBar( progress = .8f,
             modifier = Modifier.fillMaxWidth()
-            //, progressColor(randomColor)
-        )
-    }
-}
-
-@Composable
-fun CustomProgressBar(
-    modifier: Modifier = Modifier,
-    progress: Float,
-    progressColor: Color = MaterialTheme.colorScheme.onSurface,
-    backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainer
-)
-{
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(backgroundColor)
-            .height(20.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .background(progressColor)
-                .fillMaxHeight()
-                .fillMaxWidth(progress)
+            , progressColor =randomColor
         )
     }
 }

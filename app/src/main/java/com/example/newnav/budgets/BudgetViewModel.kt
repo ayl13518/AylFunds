@@ -1,4 +1,4 @@
-package com.example.newnav.viewmodels
+package com.example.newnav.budgets
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,9 +19,10 @@ class BudgetViewModel @Inject constructor(
     private val repo: MainRepository
 ): ViewModel() {
 
-
     private val _state = MutableStateFlow(BudgetState())
+
     private val _accounts = repo.getAllBudgets()
+
     val state =  combine(
         _state,
         _accounts
@@ -41,49 +42,6 @@ class BudgetViewModel @Inject constructor(
         initialValue = BudgetState()
     )
     //TODO: Add Event(s)
-    fun onNameChange(newBudgetName: String) {
-        _state.update {
-            it.copy(
-                name = newBudgetName
-            )
-        }
-    }
 
-    fun onTypeChange(newType: String) {
-        _state.update {
-            it.copy(
-                type = newType
-            )
-        }
-    }
 
-    fun onScopeChange(newScope: String) {
-        _state.update {
-            it.copy(
-                scope = newScope
-            )
-        }
-    }
-
-    fun onBalanceChange(newBalance: String) {
-        _state.update {
-            it.copy(
-                tmpBalance = newBalance,
-                balance = newBalance.toDoubleOrNull() ?: 0.0
-            )
-        }
-    }
-
-    fun onBudgetAdd() {
-        val newAccount = budgets (
-            name = _state.value.name,
-            type = _state.value.type,
-            balance = _state.value.balance,
-            scope = _state.value.scope,
-        )
-        viewModelScope.launch {
-            repo.insertBudget(newAccount)
-        }
-
-    }
 }
