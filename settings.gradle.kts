@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "NewNav"
+rootProject.name = "AylFunds"
 include(":app")
  

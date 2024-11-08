@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.newnav"
+    namespace = "com.aylmer.aylfunds"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.newnav"
+        applicationId = "com.aylmer.aylfunds"
         minSdk = 34
         targetSdk = 35
         versionCode = 1
