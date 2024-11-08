@@ -42,7 +42,7 @@ fun DropdownList(
     onTypeChange: (String) -> Unit = {},
     itemList: List<String> = emptyList(),
     label: String = "",
-    defaultSelectedItem: String = "",
+    defaultSelectedItem: String? = "",
     ) {
 
     //val state = viewModel.state.collectAsState()
@@ -63,12 +63,13 @@ fun DropdownList(
         disabledTrailingIconColor = MaterialTheme.colorScheme.onSecondaryContainer,
     )
 
-    // button
+    var defaultItem = if (defaultSelectedItem == null) "" else defaultSelectedItem
+
     OutlinedTextField(
         label = { Text(text = label) },
         readOnly = true,
         enabled = false,
-        value = if(selectedItem =="") defaultSelectedItem else selectedItem,
+        value = if(selectedItem =="") defaultItem else selectedItem,
         onValueChange = { onTypeChange(it) },
         maxLines = 1,
         trailingIcon = {
@@ -86,7 +87,11 @@ fun DropdownList(
 
 
     // dropdown list
-    Box(modifier = modifier) {
+    Box(modifier = modifier
+        //.clip(shape = RoundedCornerShape(20.dp))
+        //.background(MaterialTheme.colorScheme.surfaceContainer,RoundedCornerShape(20.dp))
+        //.border(width = 2.dp, color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(20.dp))
+    ) {
         if (showDropdown) {
             Popup(
                 alignment = Alignment.TopCenter,
@@ -103,7 +108,7 @@ fun DropdownList(
                         //.heightIn(max = 90.dp)
                         .clip(shape = RoundedCornerShape(20.dp))
                         .verticalScroll(state = scrollState)
-                        .border(width = 1.dp, color = MaterialTheme.colorScheme.primary),
+                        .border(width = 1.dp, color = MaterialTheme.colorScheme.primary,RoundedCornerShape(20.dp)),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     itemList.onEachIndexed { index, item ->
@@ -145,6 +150,9 @@ fun DropdownListPreview()
 
     NewNavTheme {
         Box(modifier = modifier
+            //.clip(shape = RoundedCornerShape(20.dp))
+            //.background(MaterialTheme.colorScheme.surfaceContainer,RoundedCornerShape(20.dp))
+            //.border(width = 2.dp, color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(20.dp))
 
         ) {
             Popup(
@@ -159,7 +167,7 @@ fun DropdownListPreview()
                 Column(
                     modifier = modifier
                         .clip(shape = RoundedCornerShape(20.dp))
-                        .border(width = 1.dp, color = MaterialTheme.colorScheme.primary),
+                        .border(width = 1.dp, color = MaterialTheme.colorScheme.primary,RoundedCornerShape(20.dp)),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     itemList.onEachIndexed { index, item ->

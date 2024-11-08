@@ -1,4 +1,4 @@
-package com.aylmer.aylfunds.viewmodels
+package com.aylmer.aylfunds.accounts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

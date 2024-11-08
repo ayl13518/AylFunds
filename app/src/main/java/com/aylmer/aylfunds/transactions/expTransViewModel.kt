@@ -1,4 +1,4 @@
-package com.aylmer.aylfunds.viewmodels
+package com.aylmer.aylfunds.transactions
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -9,7 +9,6 @@ import com.aylmer.aylfunds.data.expTrans
 import com.aylmer.aylfunds.di.MainRepository
 import com.aylmer.aylfunds.models.PreferenceConfig
 import com.aylmer.aylfunds.models.TransactionType
-import com.aylmer.aylfunds.transactions.GetCurrentTransactions
 import com.aylmer.aylfunds.utils.convertDateForDB
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExpTransViewModel @Inject constructor(
-    private val dao: expDAO,
+    //private val dao: expDAO,
     private val mainRepo: MainRepository,
     private val savedStateHandle: SavedStateHandle,
     getcurrentMonth: GetCurrentTransactions,
@@ -33,7 +32,7 @@ class ExpTransViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(ExpTranState())
 
-    private val _exptrn = dao.getAllExpTrans()
+   //private val _exptrn = dao.getAllExpTrans()
     private val _categoryList = mainRepo.getAllCategory()
     private val _accountList = mainRepo.getAllAccountName()
     private val _typeList = _state.value.typeList
@@ -68,10 +67,14 @@ class ExpTransViewModel @Inject constructor(
         emptyList())
 
 
-    val state= combine(_state,_exptrn,_categoryList,_accountList,
-        ) { state, exptrn, categoryList, accountList ->
+    val state= combine(_state,
+        //_exptrn,
+        _categoryList,_accountList,
+        ) { state,
+            //exptrn,
+            categoryList, accountList ->
         state.copy(
-                expTrans = exptrn,
+                //expTrans = exptrn,
                 amount = state.amount,
                 dateTrans = state.dateTrans
                 , accName = state.accName

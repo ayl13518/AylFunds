@@ -48,7 +48,6 @@ import com.aylmer.aylfunds.ui.theme.expenseColor
 import com.aylmer.aylfunds.ui.theme.incomeColor
 import com.aylmer.aylfunds.ui.theme.transferColor
 import com.aylmer.aylfunds.utils.DecimalFormatter
-import com.aylmer.aylfunds.viewmodels.ExpTransViewModel
 import java.time.Month
 
 

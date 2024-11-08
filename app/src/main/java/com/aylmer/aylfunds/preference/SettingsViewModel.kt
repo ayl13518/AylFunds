@@ -1,4 +1,4 @@
-package com.aylmer.aylfunds.viewmodels
+package com.aylmer.aylfunds.preference
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

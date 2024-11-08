@@ -49,7 +49,7 @@ import com.aylmer.aylfunds.navigation.NavigationBottomBar
 import com.aylmer.aylfunds.preference.SettingsScreen
 import com.aylmer.aylfunds.transactions.AddTranScreen
 import com.aylmer.aylfunds.transactions.ExpListScreen
-import com.aylmer.aylfunds.viewmodels.SettingsViewModel
+import com.aylmer.aylfunds.preference.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 import kotlin.reflect.typeOf

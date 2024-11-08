@@ -2,6 +2,7 @@ package com.aylmer.aylfunds.budgets
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,7 +60,7 @@ import kotlin.collections.component2
 import kotlin.random.Random
 
 
-data class rollingBalance(
+data class RollingBalance(
     val budgetName: String,
     val amount: Double,
     val balance: Double,
@@ -88,7 +89,7 @@ fun BudgetListScreen(
         .fold(0.0) { acc, expTrans -> acc + expTrans.amount  }
 
     val progress = allBudget.map { budget ->
-        rollingBalance(
+        RollingBalance(
             budgetName = budget.name,
             amount = sumByBudget[budget.name] ?: 0.0,
             balance = budget.balance
@@ -210,7 +211,7 @@ fun BudgetListScreen(
                                 modifier = Modifier.padding(start = 16.dp)
                             )
                             Text(
-                                text = progress.find( {it.budgetName==item.name} )?.textOut ?: "",
+                                text = progress.find { it.budgetName == item.name }?.textOut ?: "",
                                 modifier = Modifier.padding(end = 16.dp)
                             )
                         }
@@ -218,7 +219,7 @@ fun BudgetListScreen(
                             green = Random.nextFloat(),
                             blue = Random.nextFloat(),
                             alpha = 1f )
-                        CustomProgressBar( progress = progress.find( {it.budgetName==item.name} )?.progress ?: 0f,
+                        CustomProgressBar( progress = progress.find { it.budgetName == item.name }?.progress ?: 0f,
                                 modifier = Modifier
                                     .fillMaxWidth(.95f)
                                     .offset(x = 10.dp),
@@ -241,9 +242,11 @@ fun CustomProgressBar(
 {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(backgroundColor)
+            //.clip(RoundedCornerShape(16.dp))
+            .background(backgroundColor,RoundedCornerShape(16.dp))
             .height(20.dp)
+            .border(1.dp, MaterialTheme.colorScheme.onPrimaryContainer,RoundedCornerShape(16.dp))
+            //.padding(start = 1.dp)
     ) {
         Box(
             modifier = Modifier
@@ -251,6 +254,7 @@ fun CustomProgressBar(
                 .background(progressColor)
                 .fillMaxHeight()
                 .fillMaxWidth(progress)
+                //.offset(x = 10.dp)
         )
     }
 }

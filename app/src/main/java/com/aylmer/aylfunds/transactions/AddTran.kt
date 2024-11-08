@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.aylmer.aylfunds.viewmodels.ExpTransViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.material3.DatePicker
@@ -56,7 +55,6 @@ import com.aylmer.aylfunds.utils.convertMillisToDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTranScreen(
-    //onAmtChange: (String) -> Unit,
     navController: NavHostController = rememberNavController(),
     viewModel: ExpTransViewModel = hiltViewModel()
 )

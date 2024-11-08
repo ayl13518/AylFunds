@@ -32,7 +32,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.ScreenAccount
 import com.aylmer.aylfunds.navigation.NavigationBottomBar
-import com.aylmer.aylfunds.viewmodels.AccountViewModel
 import kotlin.collections.component1
 import kotlin.collections.component2
 

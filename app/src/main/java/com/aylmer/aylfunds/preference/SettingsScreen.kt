@@ -29,7 +29,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.designsys.component.DropdownList
 import com.aylmer.aylfunds.navigation.AylTopBar
-import com.aylmer.aylfunds.viewmodels.SettingsViewModel
 import androidx.compose.runtime.setValue
 
 @OptIn(ExperimentalMaterial3Api::class)
