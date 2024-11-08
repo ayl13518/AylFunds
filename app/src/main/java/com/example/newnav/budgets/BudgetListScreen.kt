@@ -34,7 +34,9 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,9 +56,19 @@ import com.example.newnav.models.BudgetType
 import com.example.newnav.navigation.AylTopBar
 import com.example.newnav.navigation.NavigationBottomBar
 import com.example.newnav.ui.theme.NewNavTheme
+import kotlinx.coroutines.flow.combine
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.random.Random
+
+
+data class rollingBalance(
+    val budgetName: String,
+    val amount: Double,
+    val balance: Double,
+    val progress: Float = (amount/balance).toFloat(),
+    val textOut: String = "$amount of $balance"
+)
 
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -67,8 +79,24 @@ fun BudgetListScreen(
     onClickList: (budgetId: Long) -> Unit
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val accbyType = state.budgets.groupBy { it.type }
+    val transMonthList by viewModel.transMonthList.collectAsStateWithLifecycle()
     var budgetTypes = BudgetType.entries.map { it.name }
+
+    val accbyType = state.budgets.groupBy { it.type }
+
+    val allBudget = state.budgets
+
+    val sumByBudget = transMonthList
+        .groupingBy { it.budName }
+        .fold(0.0) { acc, expTrans -> acc + expTrans.amount  }
+
+    val progress = allBudget.map { budget ->
+        rollingBalance(
+            budgetName = budget.name,
+            amount = sumByBudget[budget.name] ?: 0.0,
+            balance = budget.balance
+        )
+    }
 
 
     Scaffold(
@@ -102,7 +130,7 @@ fun BudgetListScreen(
             Box(modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 .fillMaxWidth()
-                .offset(y=paddingValues.calculateTopPadding()),
+                .offset(y = paddingValues.calculateTopPadding()),
                 contentAlignment = Alignment.BottomEnd) {
                 Row(modifier = Modifier
                     .fillMaxWidth()
@@ -185,7 +213,7 @@ fun BudgetListScreen(
                                 modifier = Modifier.padding(start = 16.dp)
                             )
                             Text(
-                                text = item.balance.toString(),
+                                text = progress.find( {it.budgetName==item.name} )?.textOut ?: "",
                                 modifier = Modifier.padding(end = 16.dp)
                             )
                         }
@@ -193,8 +221,10 @@ fun BudgetListScreen(
                             green = Random.nextFloat(),
                             blue = Random.nextFloat(),
                             alpha = 1f )
-                        CustomProgressBar( progress = 8.0f,
-                                modifier = Modifier.fillMaxWidth(.95f).offset(x=10.dp),
+                        CustomProgressBar( progress = progress.find( {it.budgetName==item.name} )?.progress ?: 0f,
+                                modifier = Modifier
+                                    .fillMaxWidth(.95f)
+                                    .offset(x = 10.dp),
                                 progressColor=randomColor,
                         )
                     }
@@ -227,6 +257,8 @@ fun CustomProgressBar(
         )
     }
 }
+
+
 
 @ThemePreviews
 @Composable

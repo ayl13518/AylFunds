@@ -43,6 +43,7 @@ class ExpTransViewModel @Inject constructor(
         .stateIn(viewModelScope,
             SharingStarted.WhileSubscribed(5000),
            initialValue =  "")
+
     val defaultCategory = mainRepo.getPrefName(PreferenceConfig.ExpenseCategory.keyValue)
         .stateIn(viewModelScope,
             SharingStarted.WhileSubscribed(5000),
