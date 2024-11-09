@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,7 +45,9 @@ class BudgetViewModel @Inject constructor(
         initialValue = BudgetState()
     )
 
-    val searchQuery = savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = 10)
+    val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH)
+
+    val searchQuery = savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = selectedMonth)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val transMonthList = searchQuery.flatMapLatest { query ->

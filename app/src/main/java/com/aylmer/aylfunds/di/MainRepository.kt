@@ -33,6 +33,8 @@ interface MainRepository {
     //Transactions
     fun getExpByMonth(month: Int): Flow<List<expTrans>>
 
+    fun getTransactionById(tranId: Long): Flow<expTrans>
+
     fun getCategoryByType(type: String): Flow<List<String>>
 
 

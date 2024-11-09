@@ -24,18 +24,20 @@ class DefaultMainRepository @Inject constructor(
     private val prefDao: PrefDAO
 ): MainRepository  {
 
+
+    //Accounts
     override suspend fun updateAccountBalance(expTrans: expTrans) {
         if (expTrans.accName != "") {
             if(expTrans.tranType=="Expense")
                 accDAO.updateAccountBalance(expTrans.accName, expTrans.amount*(-1))
-            else if(expTrans.tranType=="Transfer" ) {
-                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount * (-1))
-                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount)
-            }
-            else
+//            else if(expTrans.tranType=="Transfer" ) {
+//                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount * (-1))
+//                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount)
+//            }
+//            else
                 accDAO.updateAccountBalance(expTrans.accName, expTrans.amount)
         }
-        expDao.insertExpTran(expTrans)
+        expDao.upsertExpTran(expTrans)
     }
 
     override fun getAllAccounts(): Flow<List<accounts>> {
@@ -50,6 +52,12 @@ class DefaultMainRepository @Inject constructor(
         return accDAO.getAccountById(accountId)
     }
 
+    override fun getAllAccountName(): Flow<List<String>> {
+        return accDAO.getAllAccountName()
+    }
+
+
+    //Budgets
     override fun getAllBudgets(): Flow<List<budgets>> {
         return budDAO.getAllBudgets()
     }
@@ -62,19 +70,28 @@ class DefaultMainRepository @Inject constructor(
         return budDAO.getAllCategory()
     }
 
-    override fun getAllAccountName(): Flow<List<String>> {
-        return accDAO.getAllAccountName()
+    override fun getCategoryByType(type: String): Flow<List<String>> {
+        return budDAO.getCategoryByType(type)
     }
 
+    override fun getBudgetById(id: Long): Flow<budgets> {
+        return budDAO.getBudgetById(id)
+
+    }
+
+
+    //Transactions
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getExpByMonth(month: Int): Flow<List<expTrans>> {
         return expDao.getExpByMonth(month)
     }
 
-    override fun getCategoryByType(type: String): Flow<List<String>> {
-        return budDAO.getCategoryByType(type)
+    override fun getTransactionById(tranId: Long): Flow<expTrans> {
+        return expDao.getTransactionById(tranId)
     }
 
+
+    //Preferences
     override fun getAllPreference(): Flow<List<Preferences>> {
         return prefDao.getAll()
     }
@@ -104,10 +121,7 @@ class DefaultMainRepository @Inject constructor(
         prefDao.upsertPref(Preferences( key = keyValue, name = name))
     }
 
-    override fun getBudgetById(id: Long): Flow<budgets> {
-        return budDAO.getBudgetById(id)
 
-    }
 
 
 }

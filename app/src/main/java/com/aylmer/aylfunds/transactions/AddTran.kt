@@ -56,10 +56,11 @@ import com.aylmer.aylfunds.utils.convertMillisToDate
 @Composable
 fun AddTranScreen(
     navController: NavHostController = rememberNavController(),
-    viewModel: ExpTransViewModel = hiltViewModel()
+    viewModel: AddTranViewModel = hiltViewModel(),
+    tranId: Long = 0
 )
 {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val categoryList by viewModel.categoryFiltered.collectAsState(emptyList())
     var accountList = state.accountList
     var typeList = state.typeList
@@ -118,14 +119,15 @@ fun AddTranScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            DropdownList(
-                label = "Category",
-                itemList = categoryList,
-                onTypeChange = { viewModel.onBudgetUpdate(it) },
-                modifier = Modifier.fillMaxWidth(),
-                defaultSelectedItem = defaultCategory
-
-            )
+            if (state.selectedType != 2) {
+                DropdownList(
+                    label = "Category",
+                    itemList = categoryList,
+                    onTypeChange = { viewModel.onBudgetUpdate(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    defaultSelectedItem = defaultCategory
+                )
+            }
 
             DropdownList(
                 label = "Account",
@@ -134,6 +136,16 @@ fun AddTranScreen(
                 modifier = Modifier.fillMaxWidth(),
                 defaultSelectedItem = defaultAccount,
             )
+
+            if (state.selectedType == 2) {
+                DropdownList(
+                    label = "Transfer To",
+                    itemList = accountList,
+                    onTypeChange = { viewModel.onAccUpdateTo(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    defaultSelectedItem = defaultAccount,
+                )
+            }
 
             DateTransaction(
                 textFieldColors,
@@ -156,7 +168,7 @@ fun AddTranScreen(
 @Composable
 fun DateTransaction(
     textFieldColors: TextFieldColors,
-    viewModel: ExpTransViewModel = hiltViewModel()
+    viewModel: AddTranViewModel = hiltViewModel()
 ){
 
     val state by viewModel.state.collectAsState()

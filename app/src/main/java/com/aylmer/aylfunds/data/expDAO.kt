@@ -1,15 +1,15 @@
 package com.aylmer.aylfunds.data
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface expDAO {
 
-    @Insert
-    suspend fun insertExpTran(expTrans: expTrans)
+    @Upsert
+    suspend fun upsertExpTran(expTrans: expTrans)
 
     @Query("SELECT * FROM expTrans")
     fun getAllExpTrans(): Flow<List<expTrans>>
@@ -20,6 +20,7 @@ interface expDAO {
     @Query(  "SELECT * FROM expTrans WHERE cast(STRFTIME('%m', dateTrans) as integer) = :id")
     fun getExpByMonth(id: Int): Flow<List<expTrans>>
 
-
+    @Query("SELECT * FROM expTrans WHERE `id` = :tranId")
+    fun getTransactionById(tranId: Long): Flow<expTrans>
 
 }

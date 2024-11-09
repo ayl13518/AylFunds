@@ -96,14 +96,23 @@ class MainActivity : ComponentActivity() {
                     composable<ScreenHome> {
                         Greeting(navController)
                     }
-                    composable<ScreenTran> {
+                    composable<ScreenAddTran> (
+                        typeMap = mapOf(
+                            typeOf<Long>() to NavType.LongType
+                            )
+                    ){
+                        val arguments = it.toRoute<ScreenAddTran>()
                         AddTranScreen(
                             navController = navController,
+                            tranId = arguments.tranId
                         )
                     }
                     composable<ScreenExpenseList> {
                         ExpListScreen(
                             navController = navController,
+                            onClickList = { tranId -> navController.navigate(
+                                ScreenAddTran(tranId))
+                            }
                         )
                     }
                     composable<ScreenAccountList> {
@@ -169,7 +178,9 @@ object ScreenAccountList
 object ScreenBudgetList
 
 @Serializable
-object ScreenTran
+data class ScreenAddTran (
+    val tranId: Long,
+)
 
 @Serializable
 data class ScreenAccount (
@@ -209,7 +220,7 @@ fun Greeting(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(ScreenTran)
+                    navController.navigate(ScreenAddTran(0))
                 }
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")

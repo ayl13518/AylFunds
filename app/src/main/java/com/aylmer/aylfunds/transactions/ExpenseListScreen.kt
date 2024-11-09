@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsTopHeight
@@ -34,12 +35,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.aylmer.aylfunds.ScreenAddTran
 import com.aylmer.aylfunds.ScreenSetting
-import com.aylmer.aylfunds.ScreenTran
+import com.aylmer.aylfunds.data.expTrans
 import com.aylmer.aylfunds.designsys.component.ThemePreviews
 import com.aylmer.aylfunds.navigation.AylTopBar
 import com.aylmer.aylfunds.navigation.NavigationBottomBar
@@ -56,6 +59,7 @@ import java.time.Month
 fun ExpListScreen(
     navController: NavHostController = rememberNavController(),
     viewModel: ExpTransViewModel = hiltViewModel(),
+    onClickList: (tranId: Long) -> Unit,
     modifier: Modifier = Modifier,
 ){
 
@@ -65,11 +69,13 @@ fun ExpListScreen(
 
     val transbyDate = transMonthList
         .groupBy { it.dateTrans }
-        .mapValues { (_, value) -> value.sortedBy { it.dateTrans } }.toSortedMap(reverseOrder())
+        .mapValues { (_, value) -> value.sortedBy { it.dateTrans }.reversed() }.toSortedMap(reverseOrder())
 
     val sumByDate = transMonthList
         .groupingBy { it.dateTrans }
         .fold(0.0) { acc, expTrans -> acc + expTrans.amount }
+
+    val rollTransList=rollList(transMonthList)
 
     val decimalFormatter = DecimalFormatter()
 
@@ -91,9 +97,9 @@ fun ExpListScreen(
                 )
 
                 Box(modifier = Modifier
-                        .padding(top = 90.dp)
-                        .background(MaterialTheme.colorScheme.primaryContainer)
-                        .fillMaxWidth(),
+                    .padding(top = 90.dp)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .fillMaxWidth(),
                     contentAlignment = Alignment.BottomEnd) {
                     Row(modifier = Modifier
                         .fillMaxWidth()
@@ -103,14 +109,14 @@ fun ExpListScreen(
                         Box(modifier = Modifier
                             .clickable(onClick = {
                                 //currentMonth--
-                                viewModel.onSwipe(currentMonth-1)
+                                viewModel.onSwipe(currentMonth - 1)
                             })
                             .background(MaterialTheme.colorScheme.primary),
                             ){
                             Text(text = " < ",color = MaterialTheme.colorScheme.onPrimary)     }
                         Text(text = monthName)
                         Box(modifier = Modifier
-                            .clickable(onClick = {viewModel.onSwipe(currentMonth+1)})
+                            .clickable(onClick = { viewModel.onSwipe(currentMonth + 1) })
                             .background(MaterialTheme.colorScheme.primary),
                         ){
                             Text(text = " > ",color = MaterialTheme.colorScheme.onPrimary)     }
@@ -126,7 +132,7 @@ fun ExpListScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(ScreenTran)
+                    navController.navigate(ScreenAddTran(0))
                 },
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
@@ -139,11 +145,10 @@ fun ExpListScreen(
                     detectHorizontalDragGestures { change, dragAmount ->
                         if (dragAmount < -300) {
                             change.consume()
-                            viewModel.onSwipe(currentMonth+1)
-                        }
-                        else if (dragAmount > 300) {
+                            viewModel.onSwipe(currentMonth + 1)
+                        } else if (dragAmount > 300) {
                             change.consume()
-                            viewModel.onSwipe(currentMonth-1)
+                            viewModel.onSwipe(currentMonth - 1)
                         }
                     }
                 }
@@ -171,6 +176,7 @@ fun ExpListScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .clickable { onClickList(exp.id) }
                                 .background(MaterialTheme.colorScheme.secondaryContainer),
                             horizontalArrangement = Arrangement.SpaceBetween
                         )
@@ -203,20 +209,83 @@ fun ExpListScreen(
                         {
                             Text(text = exp.budName,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                style = typography.bodyMedium, )
+                                style = typography.bodyMedium,
+                                modifier = Modifier.weight(.5f),)
                             Text(text = exp.accName,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                style = typography.bodyMedium, )
+                                style = typography.bodyMedium,
+                                modifier = Modifier.weight(.2f),
+                                )
                             Text(
-                                text = decimalFormatter.formatForVisual(exp.amount.toString()),
+                                text = decimalFormatter.formatForVisual(
+                                    rollTransList.find { it.id == exp.id }!!.balance.toString()
+                                ),
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                style = typography.bodyMedium, )
+                                style = typography.bodyMedium,
+                                modifier = Modifier.weight(.2f),
+                                textAlign = TextAlign.End
+                            )
                         }
+                        Spacer(Modifier
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .height(5.dp))
                     }
                 }
             }
         }
     }
+}
+
+data class rollingList(
+    val accName: String,
+    val amount: Double,
+    val balance: Double,
+    val dateTrans: String,
+    val id: Long,
+)
+
+data class balsList(
+    val accName: String,
+    val balance: Double,
+)
+
+fun rollList(expList: List<expTrans>) : List<rollingList> {
+    val rollList = mutableListOf<rollingList>()
+
+    var curbal: Double=0.0
+    var tmpbal: Double=0.0
+    var accbals = mutableListOf<balsList>()
+
+    expList.sortedBy { it.dateTrans }
+        .reversed()
+        .forEach { exp ->
+
+        if (accbals.any { it.accName == exp.accName }) {
+            tmpbal = accbals.find { it.accName == exp.accName }!!.balance
+            accbals.removeIf {it.accName == exp.accName}
+            if (exp.tranType == "Income")
+                accbals.add(balsList(exp.accName, tmpbal + exp.amount))
+            else
+                accbals.add(balsList(exp.accName, tmpbal - exp.amount))
+            curbal = accbals.find { it.accName == exp.accName }!!.balance
+        }
+        else {
+            accbals.add(balsList(exp.accName, exp.amount))
+            curbal=exp.amount
+        }
+
+        var roll = rollingList(
+            accName = exp.accName,
+            amount = exp.amount,
+            balance = curbal,
+            dateTrans = exp.dateTrans,
+            id = exp.id,
+        )
+
+        rollList.add(roll)
+    }
+
+    return rollList
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -273,7 +342,7 @@ fun ExpListScreenPreview(){
                         Text(text = "1,000.00")
                     }
                 }
-                item {
+                items(3) {
                     Column{
                         Row(
                             modifier = Modifier
@@ -298,17 +367,25 @@ fun ExpListScreenPreview(){
                         {
                             Text(text = "exp.budName",
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                style = typography.bodyMedium, )
+                                style = typography.bodyMedium,
+                                modifier = Modifier.weight(.3f))
                             Text(text = "exp.accName",
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                style = typography.bodyMedium, )
+                                style = typography.bodyMedium,
+                                modifier = Modifier.weight(.3f),
+                                )
                             Text(
                                 text = "1,000.00",
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 style = typography.bodyMedium,
+                                modifier = Modifier.weight(.2f),
+                                textAlign = TextAlign.End
                             )
                         }
                     }
+                    Spacer(Modifier
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .height(10.dp))
                 }
             }
         }

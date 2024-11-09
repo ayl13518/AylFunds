@@ -1,0 +1,216 @@
+package com.aylmer.aylfunds.transactions
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.aylmer.aylfunds.data.expTrans
+import com.aylmer.aylfunds.di.MainRepository
+import com.aylmer.aylfunds.models.BudgetState
+import com.aylmer.aylfunds.models.ExpTranState
+import com.aylmer.aylfunds.models.PreferenceConfig
+import com.aylmer.aylfunds.models.TransactionType
+import com.aylmer.aylfunds.utils.convertDateForDB
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+
+@HiltViewModel
+class AddTranViewModel @Inject constructor(
+    private val mainRepo: MainRepository,
+    private val savedStateHandle: SavedStateHandle,
+): ViewModel() {
+
+    private val tranId: Long? = savedStateHandle["tranId"]
+    var newTran :Long = 0
+
+    private val _state = MutableStateFlow(ExpTranState())
+    private val _categoryList = mainRepo.getAllCategory()
+    private val _accountList = mainRepo.getAllAccountName()
+    private val _typeList = _state.value.typeList
+
+    val defaultAccount = mainRepo.getPrefName(PreferenceConfig.DefaultAccount.keyValue)
+        .stateIn(viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            initialValue =  "")
+
+    val defaultCategory = mainRepo.getPrefName(PreferenceConfig.ExpenseCategory.keyValue)
+        .stateIn(viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            initialValue =  "")
+
+    val searchCategory = savedStateHandle.getStateFlow(key = SEARCH_Category
+        , initialValue = TransactionType.Expense.name)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val categoryFiltered = searchCategory.flatMapLatest { query ->
+        mainRepo.getCategoryByType(query)
+    }.stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList())
+
+
+    //val state = _state.asStateFlow()
+    val state= combine(
+        _state,
+        _categoryList,
+        _accountList,
+    ) { state,
+        categoryList,
+        accountList ->
+        state.copy(
+            amount = state.amount,
+            dateTrans = state.dateTrans
+            , accName = state.accName
+            , budName = state.budName
+            , tranType = state.tranType
+            , note = state.note
+            , categoryList = categoryList
+            , accountList = accountList
+            , tmpAmount = state.tmpAmount
+            , selectedType = state.selectedType
+            ,selectedMonth = state.selectedMonth
+            ,tranId = state.tranId
+        )
+    }.stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        ExpTranState())
+
+    init {
+        if (tranId != null && tranId != 0L) {
+            newTran = tranId
+            val curTran = mainRepo.getTransactionById(newTran)
+
+            viewModelScope.launch {
+                curTran.collectLatest { cur ->
+                    _state.update { st ->
+                        st.copy(
+                            amount = cur.amount,
+                            dateTrans = cur.dateTrans
+                            , accName = cur.accName
+                            , budName = cur.budName
+                            , tranType = cur.tranType
+                            , note = cur.note
+                            , tmpAmount = cur.amount.toString()
+                            ,tranId = cur.id
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun onAmountUpdate(newAmount: String) {
+        _state.update { it.copy(
+            tmpAmount = newAmount,
+            amount = newAmount.toDoubleOrNull() ?: 0.0
+        ) }
+    }
+
+    fun onBudgetUpdate(newBud: String) {
+        _state.update { it.copy(
+            budName = newBud
+        ) }
+    }
+
+    fun onAccUpdate(newAcc: String) {
+        _state.update { it.copy(
+            accName = newAcc
+        ) }
+    }
+
+    fun onAccUpdateTo(newAcc: String) {
+        _state.update { it.copy(
+            accNameTo = newAcc
+        ) }
+    }
+
+    fun onTranTypeUpdate(newTranType: String) {
+        _state.update { it.copy(
+            tranType = newTranType,
+            selectedType = _typeList.indexOf(newTranType)
+        ) }
+        savedStateHandle[SEARCH_Category] = newTranType
+    }
+
+    fun onNoteUpdate(newNote: String) {
+        _state.update { it.copy(
+            note = newNote
+        ) }
+    }
+
+    fun onDateUpdate(newDate: String) {
+        _state.update { it.copy(
+            dateTrans = newDate
+        ) }
+    }
+
+    fun onSaveExpense() {
+        if (_state.value.accName=="" && defaultAccount.value != "") {
+            _state.update { it.copy(
+                accName = defaultAccount.value
+            ) }
+        }
+
+        if (_state.value.budName=="" && defaultCategory.value != "") {
+            _state.update { it.copy(
+                budName = defaultCategory.value
+            ) }
+        }
+
+        if (_state.value.tranType == "Transfer" && _state.value.tranId==0L ) {
+            val newExp = expTrans(
+                id = _state.value.tranId,
+                amount = _state.value.amount*(-1)
+                , dateTrans = convertDateForDB(_state.value.dateTrans)
+                , budName = _state.value.budName
+                , accName = _state.value.accName
+                , tranType = _state.value.tranType
+                , note = _state.value.note
+            )
+
+            val newExp2 = expTrans(
+                id = _state.value.tranId,
+                amount = _state.value.amount
+                , dateTrans = convertDateForDB(_state.value.dateTrans)
+                , budName = _state.value.budName
+                , accName = if(_state.value.accNameTo=="") defaultAccount.value else _state.value.accNameTo
+                , tranType = _state.value.tranType
+                , note = _state.value.note
+            )
+
+            viewModelScope.launch {
+                mainRepo.updateAccountBalance(newExp)
+                mainRepo.updateAccountBalance(newExp2)
+            }
+        }
+        else {
+            val newExp = expTrans(
+                id = _state.value.tranId,
+                amount = _state.value.amount,
+                dateTrans = convertDateForDB(_state.value.dateTrans),
+                budName = _state.value.budName,
+                accName = _state.value.accName,
+                tranType = if (_state.value.tranType == "") "Expense" else _state.value.tranType,
+                note = _state.value.note
+            )
+            viewModelScope.launch {
+                mainRepo.updateAccountBalance(newExp)
+                mainRepo.updatePref(newExp)
+            }
+        }
+    }
+
+}
+
+private const val SEARCH_QUERY = "searchQuery"
+private const val SEARCH_Category = "Expense"

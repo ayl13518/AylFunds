@@ -9,7 +9,6 @@ data class ExpTranState(
     val expTrans: List<expTrans> = emptyList(),
     val amount: Double = 0.0,
     val dateTrans: String = convertMillisToDate(Calendar.getInstance().timeInMillis),
-    //val dateTrans: String = getCurrentDate(),
     val accName: String = "",
     val budName: String = "",
     val tranType: String = "",
@@ -19,9 +18,10 @@ data class ExpTranState(
     val typeList: List<String> = TransactionType.entries.map { it.name },
     val tmpAmount: String = "0.00",
     val selectedType: Int = 0,
+    val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH),
 
-    //val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH)
-    val selectedMonth: Int = 10
+    val tranId: Long=0,
+    val accNameTo: String = "",
 )
 
 data class CurrentTransactions(
