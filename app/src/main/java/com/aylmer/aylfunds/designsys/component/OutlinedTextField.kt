@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 
 
 @Composable
@@ -17,6 +19,7 @@ fun AylOutlinedTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     maxLines: Int = 1,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
 
     val textFieldColors = OutlinedTextFieldDefaults.colors(
@@ -34,7 +37,8 @@ fun AylOutlinedTextField(
         maxLines = maxLines,
         colors = textFieldColors,
         singleLine = true,
-        textStyle = MaterialTheme.typography.bodyMedium
+        textStyle = MaterialTheme.typography.bodyMedium,
+        keyboardOptions = keyboardOptions
     )
 
 }

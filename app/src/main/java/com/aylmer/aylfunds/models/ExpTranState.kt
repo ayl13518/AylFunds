@@ -1,12 +1,12 @@
 package com.aylmer.aylfunds.models
 
-import com.aylmer.aylfunds.data.expTrans
+import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.utils.convertMillisToDate
 import java.util.Calendar
 
 
 data class ExpTranState(
-    val expTrans: List<expTrans> = emptyList(),
+    val expTrans: List<ExpTrans> = emptyList(),
     val amount: Double = 0.0,
     val dateTrans: String = convertMillisToDate(Calendar.getInstance().timeInMillis),
     val accName: String = "",
@@ -25,9 +25,9 @@ data class ExpTranState(
 )
 
 data class CurrentTransactions(
-    val currentTransactions: List<expTrans> = emptyList(),
+    val currentTransactions: List<ExpTrans> = emptyList(),
 )
 
 data class ResultTransactions(
-    val resultTransactions: List<expTrans> = emptyList(),
+    val resultTransactions: List<ExpTrans> = emptyList(),
 )

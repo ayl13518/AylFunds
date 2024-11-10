@@ -9,7 +9,7 @@ import com.aylmer.aylfunds.data.accDAO
 import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.budDAO
 import com.aylmer.aylfunds.data.budgets
-import com.aylmer.aylfunds.data.expTrans
+import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.models.PreferenceConfig
 import com.aylmer.aylfunds.models.TransactionType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,15 +26,11 @@ class DefaultMainRepository @Inject constructor(
 
 
     //Accounts
-    override suspend fun updateAccountBalance(expTrans: expTrans) {
+    override suspend fun updateAccountBalance(expTrans: ExpTrans) {
         if (expTrans.accName != "") {
             if(expTrans.tranType=="Expense")
                 accDAO.updateAccountBalance(expTrans.accName, expTrans.amount*(-1))
-//            else if(expTrans.tranType=="Transfer" ) {
-//                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount * (-1))
-//                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount)
-//            }
-//            else
+            else
                 accDAO.updateAccountBalance(expTrans.accName, expTrans.amount)
         }
         expDao.upsertExpTran(expTrans)
@@ -82,12 +78,16 @@ class DefaultMainRepository @Inject constructor(
 
     //Transactions
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getExpByMonth(month: Int): Flow<List<expTrans>> {
+    override fun getExpByMonth(month: Int): Flow<List<ExpTrans>> {
         return expDao.getExpByMonth(month)
     }
 
-    override fun getTransactionById(tranId: Long): Flow<expTrans> {
+    override fun getTransactionById(tranId: Long): Flow<ExpTrans> {
         return expDao.getTransactionById(tranId)
+    }
+
+    override suspend fun deleteTransaction(id: Long) {
+        expDao.deleteTransaction(id)
     }
 
 
@@ -100,7 +100,7 @@ class DefaultMainRepository @Inject constructor(
         return prefDao.getPrefName(keyValue)
     }
 
-    override suspend fun updatePref(expTrans: expTrans) {
+    override suspend fun updatePref(expTrans: ExpTrans) {
         var prefList = listOf(
             if (expTrans.tranType == TransactionType.Expense.name) {
                 Preferences(key = PreferenceConfig.ExpenseCategory.keyValue, name = expTrans.budName)

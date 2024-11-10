@@ -33,6 +33,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.ScreenAccount
 import com.aylmer.aylfunds.navigation.NavigationBottomBar
+import com.aylmer.aylfunds.utils.DecimalFormatter
 import kotlin.collections.component1
 import kotlin.collections.component2
 
@@ -47,6 +48,8 @@ fun AccListScreen(
     val state by viewModel.state.collectAsState()
 
     val accbyType = state.accounts.groupBy { it.accType }
+
+    val decimalFormatter = DecimalFormatter()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -90,7 +93,9 @@ fun AccListScreen(
                     , horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(text = exp.name,
                             modifier = Modifier.padding(start =16.dp))
-                        Text(text = exp.balance.toString(),
+                        Text(text = decimalFormatter.formatForVisual(
+                            exp.balance.toString()
+                        ),
                             modifier = Modifier.padding(end =16.dp))
                     }
                 }

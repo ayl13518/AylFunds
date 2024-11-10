@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -31,6 +31,9 @@ import com.aylmer.aylfunds.R
 import com.aylmer.aylfunds.designsys.component.AylOutlinedNumber
 import com.aylmer.aylfunds.designsys.component.DropdownList
 import com.aylmer.aylfunds.navigation.AylTopBar
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,10 +71,10 @@ fun AccountTran(
             AylTopBar(
                 titleRes = "Account",
                 navigationIcon = Icons.Rounded.ArrowBackIosNew,
-                navigationIconContentDescription = "Navigation icon",
+                navigationIconContentDescription = "Navigate Back",
                 onNavigationClick = {navController.popBackStack()},
-                actionIcon = Icons.Default.MoreVert,
-                actionIconContentDescription = "Action icon",
+                actionIcon = Icons.Default.DeleteForever,
+                actionIconContentDescription = "Delete Forever",
             )
 
             val textFieldColors = OutlinedTextFieldDefaults.colors(
@@ -88,6 +91,7 @@ fun AccountTran(
                 onValueChange = { viewModel.onNameChange(it) },
                 maxLines = 1,
                 colors = textFieldColors,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
             )
 
             DropdownList(

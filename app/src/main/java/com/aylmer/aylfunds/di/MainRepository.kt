@@ -4,13 +4,13 @@ package com.aylmer.aylfunds.di
 import com.aylmer.aylfunds.data.Preferences
 import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.budgets
-import com.aylmer.aylfunds.data.expTrans
+import com.aylmer.aylfunds.data.ExpTrans
 import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {
 
     //Accounts
-    suspend fun updateAccountBalance(expTrans: expTrans)
+    suspend fun updateAccountBalance(expTrans: ExpTrans)
 
     fun getAllAccounts(): Flow<List<accounts>>
 
@@ -31,11 +31,13 @@ interface MainRepository {
 
 
     //Transactions
-    fun getExpByMonth(month: Int): Flow<List<expTrans>>
+    fun getExpByMonth(month: Int): Flow<List<ExpTrans>>
 
-    fun getTransactionById(tranId: Long): Flow<expTrans>
+    fun getTransactionById(tranId: Long): Flow<ExpTrans>
 
     fun getCategoryByType(type: String): Flow<List<String>>
+
+    suspend fun deleteTransaction(id: Long)
 
 
     //preference
@@ -43,7 +45,7 @@ interface MainRepository {
 
     fun getPrefName(keyValue: String): Flow<String>
 
-    suspend fun updatePref(expTrans: expTrans)
+    suspend fun updatePref(expTrans: ExpTrans)
 
     suspend fun updatePref(keyValue: String, name: String)
 

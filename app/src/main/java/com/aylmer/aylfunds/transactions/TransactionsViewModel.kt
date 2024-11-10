@@ -24,21 +24,24 @@ import javax.inject.Inject
 class ExpTransViewModel @Inject constructor(
     private val mainRepo: MainRepository,
     private val savedStateHandle: SavedStateHandle,
-    getcurrentMonth: GetCurrentTransactions,
+    getCurrentMonth: GetCurrentTransactions,
     ): ViewModel() {
 
     private val _state = MutableStateFlow(ExpTranState())
     private val _categoryList = mainRepo.getAllCategory()
     private val _accountList = mainRepo.getAllAccountName()
-
-    val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH)
-
-    val searchQuery = savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = selectedMonth)
+    private val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH)
+    private val searchQuery = savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = selectedMonth)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val transMonthList = searchQuery.flatMapLatest { query ->
-        getcurrentMonth(query + 1)
+        getCurrentMonth(query + 1)
     }.stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList())
+
+    val accountBalance = mainRepo.getAllAccounts()
+        .stateIn(viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList())
 

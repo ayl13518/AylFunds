@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Add
@@ -38,11 +40,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.ScreenAddTran
 import com.aylmer.aylfunds.ScreenSetting
-import com.aylmer.aylfunds.data.expTrans
+import com.aylmer.aylfunds.data.accounts
+import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.designsys.component.ThemePreviews
 import com.aylmer.aylfunds.navigation.AylTopBar
 import com.aylmer.aylfunds.navigation.NavigationBottomBar
@@ -51,6 +55,7 @@ import com.aylmer.aylfunds.ui.theme.expenseColor
 import com.aylmer.aylfunds.ui.theme.incomeColor
 import com.aylmer.aylfunds.ui.theme.transferColor
 import com.aylmer.aylfunds.utils.DecimalFormatter
+import com.aylmer.aylfunds.utils.getDayofWeek
 import java.time.Month
 
 
@@ -65,6 +70,7 @@ fun ExpListScreen(
 
     val state by viewModel.state.collectAsState()
     val transMonthList by viewModel.transMonthList.collectAsState(emptyList())
+    val accountBalance by viewModel.accountBalance.collectAsStateWithLifecycle()
     val currentMonth = state.selectedMonth
 
     val transbyDate = transMonthList
@@ -75,7 +81,7 @@ fun ExpListScreen(
         .groupingBy { it.dateTrans }
         .fold(0.0) { acc, expTrans -> acc + expTrans.amount }
 
-    val rollTransList=rollList(transMonthList)
+    val rollTransList=rollList(transMonthList,accountBalance)
 
     val decimalFormatter = DecimalFormatter()
 
@@ -152,91 +158,116 @@ fun ExpListScreen(
                         }
                     }
                 }
-                .fillMaxWidth(),
+                .fillMaxWidth(1f),
             contentPadding = paddingValues,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             transbyDate.forEach { (initialDate, expsByDate) ->
                 stickyHeader {
                     Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.primaryContainer)
-                        , horizontalArrangement = Arrangement.SpaceBetween
-                    )
-                    {
-                        Text(
-                            text = initialDate,
-                            style = typography.titleLarge,
-                        )
-                        Text(text = decimalFormatter.formatForVisual( sumByDate[initialDate].toString()))
-                    }
-                }
-                items(expsByDate) { exp ->
-                    Column{
-                        Row(
+                    Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onClickList(exp.id) }
-                                .background(MaterialTheme.colorScheme.secondaryContainer),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .fillMaxWidth(.95f)
+                                .background(
+                                    MaterialTheme.colorScheme.primaryContainer,
+                                    RoundedCornerShape(16.dp)
+                                ), horizontalArrangement = Arrangement.SpaceBetween
                         )
                         {
-                            Text(text = exp.note)
-                            //Text(text = exp.tranType)
-                            if (exp.tranType == "Income")
-                                Text(
-                                    text = decimalFormatter.formatForVisual(exp.amount.toString()),
-                                    color = incomeColor,
-                                )
-                            else if (exp.tranType == "Transfer")
-                                Text(
-                                    text = decimalFormatter.formatForVisual(exp.amount.toString()),
-                                    color = transferColor,
-                                )
-                            else
-                                Text(
-                                    text = decimalFormatter.formatForVisual(exp.amount.toString()),
-                                    color = expenseColor,
-                                )
-
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.secondaryContainer),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        )
-                        {
-                            Text(text = exp.budName,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                style = typography.bodyMedium,
-                                modifier = Modifier.weight(.5f),)
-                            Text(text = exp.accName,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                style = typography.bodyMedium,
-                                modifier = Modifier.weight(.2f),
-                                )
                             Text(
-                                text = decimalFormatter.formatForVisual(
-                                    rollTransList.find { it.id == exp.id }!!.balance.toString()
-                                ),
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                style = typography.bodyMedium,
-                                modifier = Modifier.weight(.2f),
-                                textAlign = TextAlign.End
+                                text = getDayofWeek(initialDate) + " " + initialDate,
+                                modifier = Modifier.padding(start = 10.dp),
+                                style = typography.titleLarge,
+                            )
+                            Text(
+                                text = decimalFormatter.formatForVisual(sumByDate[initialDate].toString()),
+                                modifier = Modifier.padding(end = 10.dp),
+                                style = typography.titleLarge,
                             )
                         }
-                        Spacer(Modifier
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
-                            .height(5.dp))
+                    }
+                items(expsByDate) { exp ->
+                        Column {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onClickList(exp.id) }
+                                    .background(MaterialTheme.colorScheme.secondaryContainer),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            )
+                            {
+                                Text(
+                                    text = exp.note,
+                                    modifier = Modifier.padding(start = 10.dp),
+                                )
+
+                                if (exp.tranType == "Income")
+                                    Text(
+                                        text = decimalFormatter.formatForVisual(exp.amount.toString()),
+                                        modifier = Modifier.padding(end = 10.dp),
+                                        color = incomeColor,
+                                    )
+                                else if (exp.tranType == "Transfer")
+                                    Text(
+                                        text = decimalFormatter.formatForVisual(exp.amount.toString()),
+                                        modifier = Modifier.padding(end = 10.dp),
+                                        color = transferColor,
+                                    )
+                                else
+                                    Text(
+                                        text = decimalFormatter.formatForVisual(exp.amount.toString()),
+                                        modifier = Modifier.padding(end = 10.dp),
+                                        color = expenseColor,
+                                    )
+
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.secondaryContainer),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            )
+                            {
+                                Text(
+                                    text = exp.budName,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    style = typography.bodyMedium,
+                                    modifier = Modifier
+                                        .padding(start = 10.dp)
+                                        .weight(.5f),
+                                )
+                                Text(
+                                    text = exp.accName,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    style = typography.bodyMedium,
+                                    modifier = Modifier.weight(.2f),
+                                )
+                                Text(
+                                    text = decimalFormatter.formatForVisual(
+                                        rollTransList.find { it.id == exp.id }!!.balance.toString()
+                                    ),
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    style = typography.bodyMedium,
+                                    modifier = Modifier
+                                        .padding(end = 10.dp)
+                                        .weight(.2f),
+                                    textAlign = TextAlign.End
+                                )
+                            }
+                            Spacer(
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                                    .height(5.dp)
+                            )
+                        }
                     }
                 }
             }
-        }
+
     }
 }
 
-data class rollingList(
+data class RollingList(
     val accName: String,
     val amount: Double,
     val balance: Double,
@@ -244,40 +275,44 @@ data class rollingList(
     val id: Long,
 )
 
-data class balsList(
+data class BalanceList(
     val accName: String,
     val balance: Double,
 )
 
-fun rollList(expList: List<expTrans>) : List<rollingList> {
-    val rollList = mutableListOf<rollingList>()
+fun rollList(expList: List<ExpTrans>, accountList: List<accounts>) : List<RollingList> {
+    val rollList = mutableListOf<RollingList>()
 
-    var curbal: Double=0.0
-    var tmpbal: Double=0.0
-    var accbals = mutableListOf<balsList>()
+    var currentBalance: Double = 0.0
+    var tmpbal: Double = 0.0
+    var balanceList = mutableListOf<BalanceList>()
+
+    accountList.forEach { exp ->
+        balanceList.add(BalanceList(exp.name, exp.balance))
+    }
 
     expList.sortedBy { it.dateTrans }
         .reversed()
         .forEach { exp ->
 
-        if (accbals.any { it.accName == exp.accName }) {
-            tmpbal = accbals.find { it.accName == exp.accName }!!.balance
-            accbals.removeIf {it.accName == exp.accName}
+        if (balanceList.any { it.accName == exp.accName }) {
+            tmpbal = balanceList.find { it.accName == exp.accName }!!.balance
+            balanceList.removeIf { it.accName == exp.accName }
             if (exp.tranType == "Income")
-                accbals.add(balsList(exp.accName, tmpbal + exp.amount))
+                balanceList.add(BalanceList(exp.accName, tmpbal + exp.amount))
             else
-                accbals.add(balsList(exp.accName, tmpbal - exp.amount))
-            curbal = accbals.find { it.accName == exp.accName }!!.balance
+                balanceList.add(BalanceList(exp.accName, tmpbal - exp.amount))
+            currentBalance = balanceList.find { it.accName == exp.accName }!!.balance
         }
         else {
-            accbals.add(balsList(exp.accName, exp.amount))
-            curbal=exp.amount
+            balanceList.add(BalanceList(exp.accName, exp.amount))
+            currentBalance=exp.amount
         }
 
-        var roll = rollingList(
+        var roll = RollingList(
             accName = exp.accName,
             amount = exp.amount,
-            balance = curbal,
+            balance = currentBalance,
             dateTrans = exp.dateTrans,
             id = exp.id,
         )
@@ -299,7 +334,7 @@ fun ExpListScreenPreview(){
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             topBar = {
                 Box(modifier = Modifier
-                    .padding(top=50.dp)
+                    .padding(top = 50.dp)
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .fillMaxWidth(),
                     contentAlignment = Alignment.BottomEnd) {
@@ -325,25 +360,34 @@ fun ExpListScreenPreview(){
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
                 contentPadding = paddingValues,
             ){
                 stickyHeader {
                     Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
                     Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .fillMaxWidth(.95f)
+                        .background(
+                            MaterialTheme.colorScheme.primaryContainer,
+                            RoundedCornerShape(16.dp)
+                        )
                         ,horizontalArrangement = Arrangement.SpaceBetween
                     )
                     {
                         Text(
-                            text = "2024-01-10",
+                            text = getDayofWeek("2024-11-10") + " " + "2024-01-10",
+                            modifier = Modifier.padding(start = 10.dp),
                             style = typography.titleLarge,
                         )
-                        Text(text = "1,000.00")
+                        Text(text = "1,000.00"
+                            , modifier = Modifier.padding(end = 10.dp),
+                            )
                     }
                 }
                 items(3) {
-                    Column{
+                    Column(modifier = Modifier
+                        .fillMaxWidth(.95f)
+                    ){
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -351,7 +395,7 @@ fun ExpListScreenPreview(){
                             horizontalArrangement = Arrangement.SpaceBetween
                         )
                         {
-                            Text(text = "exp.note")
+                            Text(text = "exp.note", Modifier.offset(10.dp))
                             //Text(text = exp.tranType)
                             Text(
                                 text = "1,000.00",
@@ -383,9 +427,10 @@ fun ExpListScreenPreview(){
                             )
                         }
                     }
-                    Spacer(Modifier
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .height(10.dp))
+                    Spacer(
+                        Modifier
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .height(10.dp))
                 }
             }
         }

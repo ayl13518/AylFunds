@@ -3,9 +3,8 @@ package com.aylmer.aylfunds.transactions
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aylmer.aylfunds.data.expTrans
+import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.di.MainRepository
-import com.aylmer.aylfunds.models.BudgetState
 import com.aylmer.aylfunds.models.ExpTranState
 import com.aylmer.aylfunds.models.PreferenceConfig
 import com.aylmer.aylfunds.models.TransactionType
@@ -14,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -86,15 +84,21 @@ class AddTranViewModel @Inject constructor(
         ExpTranState())
 
     init {
+        refresh()
+    }
+
+    fun refresh() {
         if (tranId != null && tranId != 0L) {
             newTran = tranId
             val curTran = mainRepo.getTransactionById(newTran)
 
             viewModelScope.launch {
                 curTran.collectLatest { cur ->
+                    if (cur == null) return@collectLatest
+
                     _state.update { st ->
                         st.copy(
-                            amount = cur.amount,
+                            amount =  cur.amount,
                             dateTrans = cur.dateTrans
                             , accName = cur.accName
                             , budName = cur.budName
@@ -154,6 +158,14 @@ class AddTranViewModel @Inject constructor(
         ) }
     }
 
+    fun onDeleteTransaction() {
+        if (newTran !=0L) {
+            viewModelScope.launch {
+                mainRepo.deleteTransaction(newTran)
+            }
+        }
+    }
+
     fun onSaveExpense() {
         if (_state.value.accName=="" && defaultAccount.value != "") {
             _state.update { it.copy(
@@ -168,7 +180,7 @@ class AddTranViewModel @Inject constructor(
         }
 
         if (_state.value.tranType == "Transfer" && _state.value.tranId==0L ) {
-            val newExp = expTrans(
+            val newExp = ExpTrans(
                 id = _state.value.tranId,
                 amount = _state.value.amount*(-1)
                 , dateTrans = convertDateForDB(_state.value.dateTrans)
@@ -178,7 +190,7 @@ class AddTranViewModel @Inject constructor(
                 , note = _state.value.note
             )
 
-            val newExp2 = expTrans(
+            val newExp2 = ExpTrans(
                 id = _state.value.tranId,
                 amount = _state.value.amount
                 , dateTrans = convertDateForDB(_state.value.dateTrans)
@@ -194,7 +206,7 @@ class AddTranViewModel @Inject constructor(
             }
         }
         else {
-            val newExp = expTrans(
+            val newExp = ExpTrans(
                 id = _state.value.tranId,
                 amount = _state.value.amount,
                 dateTrans = convertDateForDB(_state.value.dateTrans),
@@ -212,5 +224,4 @@ class AddTranViewModel @Inject constructor(
 
 }
 
-private const val SEARCH_QUERY = "searchQuery"
 private const val SEARCH_Category = "Expense"

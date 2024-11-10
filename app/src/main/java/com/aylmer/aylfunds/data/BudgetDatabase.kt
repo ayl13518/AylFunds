@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [
-        expTrans::class,
+        ExpTrans::class,
         accounts::class,
         budgets::class,
         Preferences::class,

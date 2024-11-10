@@ -55,6 +55,7 @@ import com.aylmer.aylfunds.models.BudgetType
 import com.aylmer.aylfunds.navigation.AylTopBar
 import com.aylmer.aylfunds.navigation.NavigationBottomBar
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
+import com.aylmer.aylfunds.utils.DecimalFormatter
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.random.Random
@@ -65,7 +66,7 @@ data class RollingBalance(
     val amount: Double,
     val balance: Double,
     val progress: Float = (amount/balance).toFloat(),
-    val textOut: String = "$amount of $balance"
+    val textOut: String = ""
 )
 
 
@@ -76,6 +77,8 @@ fun BudgetListScreen(
     viewModel: BudgetViewModel = hiltViewModel(),
     onClickList: (budgetId: Long) -> Unit
 ){
+    val decimalFormatter = DecimalFormatter()
+
     val state by viewModel.state.collectAsStateWithLifecycle()
     val transMonthList by viewModel.transMonthList.collectAsStateWithLifecycle()
     var budgetTypes = BudgetType.entries.map { it.name }
@@ -86,15 +89,18 @@ fun BudgetListScreen(
 
     val sumByBudget = transMonthList
         .groupingBy { it.budName }
-        .fold(0.0) { acc, expTrans -> acc + expTrans.amount  }
+        .fold(0.0) { acc, ExpTrans -> acc + ExpTrans.amount  }
 
     val progress = allBudget.map { budget ->
         RollingBalance(
             budgetName = budget.name,
             amount = sumByBudget[budget.name] ?: 0.0,
-            balance = budget.balance
+            balance = budget.balance,
+            textOut = decimalFormatter.formatForVisual( (sumByBudget[budget.name] ?: 0.0).toString() )
+                    + " of " + decimalFormatter.formatForVisual( budget.balance.toString())
         )
     }
+
 
 
     Scaffold(

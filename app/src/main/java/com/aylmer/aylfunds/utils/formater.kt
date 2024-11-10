@@ -6,6 +6,8 @@ import java.util.Date
 import java.util.Locale
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.DayOfWeek
+import java.time.format.TextStyle
 
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -24,4 +26,13 @@ fun getCurrentDate(): String {
 fun convertDateForDB(dbDate: String): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     return dbDate.format(formatter)
+}
+
+fun getDayofWeek(dbDate: String): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val  dDay = formatter.parse(dbDate)
+    val firstThreeLetters = DayOfWeek.from(dDay).getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+
+    return firstThreeLetters
+
 }

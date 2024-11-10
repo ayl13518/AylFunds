@@ -9,18 +9,23 @@ import kotlinx.coroutines.flow.Flow
 interface expDAO {
 
     @Upsert
-    suspend fun upsertExpTran(expTrans: expTrans)
+    suspend fun upsertExpTran(expTrans: ExpTrans)
 
     @Query("SELECT * FROM expTrans")
-    fun getAllExpTrans(): Flow<List<expTrans>>
+    fun getAllExpTrans(): Flow<List<ExpTrans>>
 
     @Query("DELETE FROM expTrans WHERE id = :id")
     suspend fun deleteExpTrans(id: Int)
 
     @Query(  "SELECT * FROM expTrans WHERE cast(STRFTIME('%m', dateTrans) as integer) = :id")
-    fun getExpByMonth(id: Int): Flow<List<expTrans>>
+    fun getExpByMonth(id: Int): Flow<List<ExpTrans>>
 
     @Query("SELECT * FROM expTrans WHERE `id` = :tranId")
-    fun getTransactionById(tranId: Long): Flow<expTrans>
+    fun getTransactionById(tranId: Long): Flow<ExpTrans>
+
+//    @Delete
+//    suspend fun deleteTransaction(transaction: ExpTrans)
+    @Query("DELETE FROM expTrans WHERE id = :id")
+    suspend fun deleteTransaction(id: Long)
 
 }

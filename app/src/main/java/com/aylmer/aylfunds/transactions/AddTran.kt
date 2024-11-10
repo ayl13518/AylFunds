@@ -11,8 +11,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -92,8 +92,12 @@ fun AddTranScreen(
                 navigationIcon = Icons.Rounded.ArrowBackIosNew,
                 navigationIconContentDescription = "Navigation icon",
                 onNavigationClick = {navController.popBackStack()},
-                actionIcon = Icons.Default.MoreVert,
-                actionIconContentDescription = "Action icon",
+                actionIcon = Icons.Default.DeleteForever,
+                actionIconContentDescription = "Delete Forever",
+                onActionClick = {
+                    viewModel.onDeleteTransaction()
+                    navController.popBackStack()
+                }
             )
             val textFieldColors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.onBackground,

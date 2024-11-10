@@ -1,24 +1,21 @@
 package com.aylmer.aylfunds.transactions
 
-import com.aylmer.aylfunds.data.expTrans
+import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.di.MainRepository
 import com.aylmer.aylfunds.models.CurrentTransactions
 import com.aylmer.aylfunds.models.ResultTransactions
-//import com.example.newnav.repository.UserRepository
 import com.aylmer.aylfunds.models.UserData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class GetCurrentTransactions @Inject constructor(
-
     private val mainRepo: MainRepository,
-    //private val userRepository: UserRepository
 ) {
 
     operator fun invoke(
         searchQuery: Int,
-    ): Flow<List<expTrans>> =
+    ): Flow<List<ExpTrans>> =
         mainRepo.getExpByMonth(searchQuery)
 //            .mapToCurrentTransactions( userRepository.userData)
 
@@ -28,7 +25,7 @@ private fun Flow<ResultTransactions>.mapToCurrentTransactions(userDataStream: Fl
     combine(userDataStream) { searchResult, userData ->
         CurrentTransactions(
             currentTransactions = searchResult.resultTransactions.map { transaction ->
-                expTrans(
+                ExpTrans(
                     id = transaction.id,
                     amount = transaction.amount,
                     dateTrans = transaction.dateTrans,
