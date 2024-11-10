@@ -47,6 +47,7 @@ import com.aylmer.aylfunds.ScreenAddTran
 import com.aylmer.aylfunds.ScreenSetting
 import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.ExpTrans
+import com.aylmer.aylfunds.data.TransferTransactions
 import com.aylmer.aylfunds.designsys.component.ThemePreviews
 import com.aylmer.aylfunds.navigation.AylTopBar
 import com.aylmer.aylfunds.navigation.NavigationBottomBar
@@ -70,18 +71,29 @@ fun ExpListScreen(
 
     val state by viewModel.state.collectAsState()
     val transMonthList by viewModel.transMonthList.collectAsState(emptyList())
+    val transferMonthList by viewModel.transferMonthList.collectAsStateWithLifecycle()
     val accountBalance by viewModel.accountBalance.collectAsStateWithLifecycle()
     val currentMonth = state.selectedMonth
 
-    val transbyDate = transMonthList
-        .groupBy { it.dateTrans }
-        .mapValues { (_, value) -> value.sortedBy { it.dateTrans }.reversed() }.toSortedMap(reverseOrder())
+//    val transbyDate = transMonthList
+//        .groupBy { it.dateTrans }
+//        .mapValues { (_, value) -> value.sortedBy { it.dateTrans }.reversed() }.toSortedMap(reverseOrder())
+//
+//    val sumByDate = transMonthList
+//        .groupingBy { it.dateTrans }
+//        .fold(0.0) { acc, expTrans -> acc + expTrans.amount }
+//
+//    val rollTransList=rollList(transMonthList,accountBalance)
 
-    val sumByDate = transMonthList
+    val rollTransList=roll2(transMonthList,transferMonthList,accountBalance)
+
+    val sumByDate = rollTransList
         .groupingBy { it.dateTrans }
         .fold(0.0) { acc, expTrans -> acc + expTrans.amount }
 
-    val rollTransList=rollList(transMonthList,accountBalance)
+    val transByDate = rollTransList
+        .groupBy { it.dateTrans }
+        .mapValues { (_, value) -> value.sortedBy { it.dateTrans }.reversed() }.toSortedMap(reverseOrder())
 
     val decimalFormatter = DecimalFormatter()
 
@@ -162,7 +174,7 @@ fun ExpListScreen(
             contentPadding = paddingValues,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            transbyDate.forEach { (initialDate, expsByDate) ->
+            transByDate.forEach { (initialDate, expsByDate) ->
                 stickyHeader {
                     Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
                     Row(
@@ -273,22 +285,77 @@ data class RollingList(
     val balance: Double,
     val dateTrans: String,
     val id: Long,
+
+    val tranType: String="",
+    val budName: String="",
+    val note: String="",
 )
 
 data class BalanceList(
     val accName: String,
     val balance: Double,
+    val rolling: Double,
 )
 
-fun rollList(expList: List<ExpTrans>, accountList: List<accounts>) : List<RollingList> {
+fun roll2(expList: List<ExpTrans>,
+          transferList: List<TransferTransactions>,
+          accountList: List<accounts>) : List<RollingList> {
+    var rollList = mutableListOf<RollingList>()
+
+    expList.forEach { exp ->
+        var roll = RollingList(
+            accName = exp.accName,
+            amount = exp.amount,
+            balance = 0.0,
+            dateTrans = exp.dateTrans,
+            id = exp.id,
+            tranType = exp.tranType,
+            budName = exp.budName,
+            note = exp.note,
+        )
+        rollList.add(roll)
+    }
+
+    transferList.forEach { tran ->
+        var roll = RollingList(
+            accName = tran.accName,
+            amount = tran.amount,
+            balance = 0.0,
+            dateTrans = tran.dateTrans,
+            id = tran.id,
+            tranType = tran.tranType,
+            budName = "",
+            note = tran.note,
+        )
+        var roll2 = RollingList(
+            accName = tran.accNameTo,
+            amount = tran.amount,
+            balance = 0.0,
+            dateTrans = tran.dateTrans,
+            id = tran.id,
+            tranType = tran.tranType,
+            budName = "",
+            note = tran.note,
+        )
+
+        rollList.add(roll)
+        rollList.add(roll2)
+    }
+
+    return rollList
+}
+
+fun rollList(expList: List<ExpTrans>,
+             accountList: List<accounts>) : List<RollingList> {
     val rollList = mutableListOf<RollingList>()
 
     var currentBalance: Double = 0.0
     var tmpbal: Double = 0.0
+    var tmpRoll: Double = 0.0
     var balanceList = mutableListOf<BalanceList>()
 
     accountList.forEach { exp ->
-        balanceList.add(BalanceList(exp.name, exp.balance))
+        balanceList.add(BalanceList(exp.name, exp.balance,0.0))
     }
 
     expList.sortedBy { it.dateTrans }
@@ -296,16 +363,20 @@ fun rollList(expList: List<ExpTrans>, accountList: List<accounts>) : List<Rollin
         .forEach { exp ->
 
         if (balanceList.any { it.accName == exp.accName }) {
+
             tmpbal = balanceList.find { it.accName == exp.accName }!!.balance
+            tmpRoll = balanceList.find { it.accName == exp.accName }!!.rolling
             balanceList.removeIf { it.accName == exp.accName }
+
             if (exp.tranType == "Income")
-                balanceList.add(BalanceList(exp.accName, tmpbal + exp.amount))
+                balanceList.add(BalanceList(exp.accName, tmpbal + tmpRoll, + exp.amount))
             else
-                balanceList.add(BalanceList(exp.accName, tmpbal - exp.amount))
+                balanceList.add(BalanceList(exp.accName, tmpbal + tmpRoll, - exp.amount))
+
             currentBalance = balanceList.find { it.accName == exp.accName }!!.balance
         }
         else {
-            balanceList.add(BalanceList(exp.accName, exp.amount))
+            balanceList.add(BalanceList(exp.accName, exp.amount,0.00))
             currentBalance=exp.amount
         }
 

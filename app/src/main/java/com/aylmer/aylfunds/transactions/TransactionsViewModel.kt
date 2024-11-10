@@ -40,6 +40,13 @@ class ExpTransViewModel @Inject constructor(
         SharingStarted.WhileSubscribed(5000),
         emptyList())
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val transferMonthList = searchQuery.flatMapLatest { query ->
+       mainRepo.getTransferByMonth(query + 1)
+    }.stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList())
+
     val accountBalance = mainRepo.getAllAccounts()
         .stateIn(viewModelScope,
         SharingStarted.WhileSubscribed(5000),

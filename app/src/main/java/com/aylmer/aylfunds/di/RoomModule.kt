@@ -36,6 +36,9 @@ object RoomModule {
 
     @Provides
     fun providePrefDao(database: BudgetDatabase) = database.prefDao()
+
+    @Provides
+    fun provideTransferDao(database: BudgetDatabase) = database.transferDao()
 }
 
 @Module

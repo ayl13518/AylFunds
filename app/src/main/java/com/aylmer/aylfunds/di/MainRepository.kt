@@ -5,6 +5,7 @@ import com.aylmer.aylfunds.data.Preferences
 import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.budgets
 import com.aylmer.aylfunds.data.ExpTrans
+import com.aylmer.aylfunds.data.TransferTransactions
 import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {
@@ -50,5 +51,13 @@ interface MainRepository {
     suspend fun updatePref(keyValue: String, name: String)
 
 
+    //Transfers
+    fun getTransferByMonth(id: Int): Flow<List<TransferTransactions>>
+
+    suspend fun upsertTransferTransaction(transferTransaction: TransferTransactions)
+
+    fun getTransferTransactionById(id: Int): Flow<TransferTransactions>
+
+    suspend fun deleteTransferTransaction(id: Long)
 
 }

@@ -1,5 +1,7 @@
 package com.aylmer.aylfunds.di
 
+import androidx.room.Query
+import androidx.room.Upsert
 import com.aylmer.aylfunds.data.PrefDAO
 import com.aylmer.aylfunds.data.Preferences
 import javax.inject.Inject
@@ -10,6 +12,8 @@ import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.budDAO
 import com.aylmer.aylfunds.data.budgets
 import com.aylmer.aylfunds.data.ExpTrans
+import com.aylmer.aylfunds.data.TransferDAO
+import com.aylmer.aylfunds.data.TransferTransactions
 import com.aylmer.aylfunds.models.PreferenceConfig
 import com.aylmer.aylfunds.models.TransactionType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,15 +25,16 @@ class DefaultMainRepository @Inject constructor(
     private val expDao: expDAO,
     private val accDAO: accDAO,
     private val budDAO: budDAO,
-    private val prefDao: PrefDAO
-): MainRepository  {
+    private val prefDao: PrefDAO,
+    private val transferDAO: TransferDAO
+): MainRepository {
 
 
     //Accounts
     override suspend fun updateAccountBalance(expTrans: ExpTrans) {
         if (expTrans.accName != "") {
-            if(expTrans.tranType=="Expense")
-                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount*(-1))
+            if (expTrans.tranType == "Expense")
+                accDAO.updateAccountBalance(expTrans.accName, expTrans.amount * (-1))
             else
                 accDAO.updateAccountBalance(expTrans.accName, expTrans.amount)
         }
@@ -96,32 +101,49 @@ class DefaultMainRepository @Inject constructor(
         return prefDao.getAll()
     }
 
-    override fun getPrefName(keyValue: String): Flow<String>{
+    override fun getPrefName(keyValue: String): Flow<String> {
         return prefDao.getPrefName(keyValue)
     }
 
     override suspend fun updatePref(expTrans: ExpTrans) {
         var prefList = listOf(
             if (expTrans.tranType == TransactionType.Expense.name) {
-                Preferences(key = PreferenceConfig.ExpenseCategory.keyValue, name = expTrans.budName)
-            }
-            else if (expTrans.tranType == TransactionType.Expense.name){
+                Preferences(
+                    key = PreferenceConfig.ExpenseCategory.keyValue,
+                    name = expTrans.budName
+                )
+            } else if (expTrans.tranType == TransactionType.Expense.name) {
                 Preferences(key = PreferenceConfig.IncomeCategory.keyValue, name = expTrans.budName)
-            }
-            else {
+            } else {
                 Preferences(key = "trancat", name = expTrans.budName)
             },
-            Preferences( key = PreferenceConfig.DefaultAccount.keyValue, name = expTrans.accName),
-            Preferences( key = PreferenceConfig.TransactionType.keyValue, name = expTrans.tranType),
+            Preferences(key = PreferenceConfig.DefaultAccount.keyValue, name = expTrans.accName),
+            Preferences(key = PreferenceConfig.TransactionType.keyValue, name = expTrans.tranType),
         )
         prefDao.upsertAll(prefList)
     }
 
     override suspend fun updatePref(keyValue: String, name: String) {
-        prefDao.upsertPref(Preferences( key = keyValue, name = name))
+        prefDao.upsertPref(Preferences(key = keyValue, name = name))
     }
 
 
+    //Transfers
 
+    override fun getTransferByMonth(id: Int): Flow<List<TransferTransactions>> {
+        return transferDAO.getTransferByMonth(id)
+    }
+
+    override suspend fun upsertTransferTransaction(transferTransaction: TransferTransactions) {
+        transferDAO.upsertTransferTransaction(transferTransaction)
+    }
+
+    override fun getTransferTransactionById(id: Int): Flow<TransferTransactions> {
+        return transferDAO.getTransferTransactionById(id)
+    }
+
+    override suspend fun deleteTransferTransaction(id: Long){
+        transferDAO.deleteTransferTransaction(id)
+    }
 
 }

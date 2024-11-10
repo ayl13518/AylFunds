@@ -23,9 +23,8 @@ interface expDAO {
     @Query("SELECT * FROM expTrans WHERE `id` = :tranId")
     fun getTransactionById(tranId: Long): Flow<ExpTrans>
 
-//    @Delete
-//    suspend fun deleteTransaction(transaction: ExpTrans)
     @Query("DELETE FROM expTrans WHERE id = :id")
     suspend fun deleteTransaction(id: Long)
+
 
 }
