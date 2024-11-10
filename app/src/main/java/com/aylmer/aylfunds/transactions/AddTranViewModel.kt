@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aylmer.aylfunds.data.ExpTrans
+import com.aylmer.aylfunds.data.TransferTransactions
 import com.aylmer.aylfunds.di.MainRepository
 import com.aylmer.aylfunds.models.ExpTranState
 import com.aylmer.aylfunds.models.PreferenceConfig
@@ -29,6 +30,7 @@ class AddTranViewModel @Inject constructor(
 ): ViewModel() {
 
     private val tranId: Long? = savedStateHandle["tranId"]
+    private val tranType: String? = savedStateHandle["tranType"]
     var newTran :Long = 0
 
     private val _state = MutableStateFlow(ExpTranState())
@@ -84,7 +86,38 @@ class AddTranViewModel @Inject constructor(
         ExpTranState())
 
     init {
-        refresh()
+        if (tranType != null && tranType == TransactionType.Transfer.name)
+             refreshTransfer()
+        else
+            refresh()
+    }
+
+    fun refreshTransfer() {
+        if (tranId != null && tranId != 0L) {
+            newTran = tranId
+            val curTran = mainRepo.getTransferTransactionById(newTran)
+
+            viewModelScope.launch {
+                curTran.collectLatest { cur ->
+                    if (cur == null) return@collectLatest
+
+                    _state.update { st ->
+                        st.copy(
+                            amount =  cur.amount,
+                            dateTrans = cur.dateTrans
+                            , accName = cur.accName
+                            , budName = ""
+                            , tranType = cur.tranType
+                            , note = cur.note
+                            , tmpAmount = cur.amount.toString()
+                            ,tranId = cur.id
+                            , accNameTo = cur.accNameTo
+                            ,selectedType = _typeList.indexOf(cur.tranType)
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun refresh() {
@@ -106,6 +139,7 @@ class AddTranViewModel @Inject constructor(
                             , note = cur.note
                             , tmpAmount = cur.amount.toString()
                             ,tranId = cur.id
+                            ,selectedType = _typeList.indexOf(cur.tranType)
                         )
                     }
                 }
@@ -179,31 +213,8 @@ class AddTranViewModel @Inject constructor(
             ) }
         }
 
-        if (_state.value.tranType == "Transfer" && _state.value.tranId==0L ) {
-            val newExp = ExpTrans(
-                id = _state.value.tranId,
-                amount = _state.value.amount*(-1)
-                , dateTrans = convertDateForDB(_state.value.dateTrans)
-                , budName = _state.value.budName
-                , accName = _state.value.accName
-                , tranType = _state.value.tranType
-                , note = _state.value.note
-            )
-
-            val newExp2 = ExpTrans(
-                id = _state.value.tranId,
-                amount = _state.value.amount
-                , dateTrans = convertDateForDB(_state.value.dateTrans)
-                , budName = _state.value.budName
-                , accName = if(_state.value.accNameTo=="") defaultAccount.value else _state.value.accNameTo
-                , tranType = _state.value.tranType
-                , note = _state.value.note
-            )
-
-            viewModelScope.launch {
-                mainRepo.updateAccountBalance(newExp)
-                mainRepo.updateAccountBalance(newExp2)
-            }
+        if (_state.value.tranType == "Transfer" ) {
+            onSaveTransfer()
         }
         else {
             val newExp = ExpTrans(
@@ -219,6 +230,23 @@ class AddTranViewModel @Inject constructor(
                 mainRepo.updateAccountBalance(newExp)
                 mainRepo.updatePref(newExp)
             }
+        }
+    }
+
+    fun onSaveTransfer() {
+        val newExp = TransferTransactions(
+            id = _state.value.tranId,
+            amount = _state.value.amount
+            , dateTrans = convertDateForDB(_state.value.dateTrans)
+            , accName = _state.value.accName
+            , accNameTo = _state.value.accNameTo
+            , tranType = _state.value.tranType
+            , note = _state.value.note
+        )
+
+        viewModelScope.launch {
+            mainRepo.updateAccountBalance(newExp)
+
         }
     }
 

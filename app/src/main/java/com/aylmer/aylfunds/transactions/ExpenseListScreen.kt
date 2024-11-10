@@ -49,6 +49,7 @@ import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.data.TransferTransactions
 import com.aylmer.aylfunds.designsys.component.ThemePreviews
+import com.aylmer.aylfunds.models.TransactionType
 import com.aylmer.aylfunds.navigation.AylTopBar
 import com.aylmer.aylfunds.navigation.NavigationBottomBar
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
@@ -65,7 +66,7 @@ import java.time.Month
 fun ExpListScreen(
     navController: NavHostController = rememberNavController(),
     viewModel: ExpTransViewModel = hiltViewModel(),
-    onClickList: (tranId: Long) -> Unit,
+    onClickList: (tranId: Long, tranType: String) -> Unit,
     modifier: Modifier = Modifier,
 ){
 
@@ -93,7 +94,7 @@ fun ExpListScreen(
 
     val transByDate = rollTransList
         .groupBy { it.dateTrans }
-        .mapValues { (_, value) -> value.sortedBy { it.dateTrans }.reversed() }.toSortedMap(reverseOrder())
+        .mapValues { (_, value) -> value.sortedBy { it.dateTrans } }.toSortedMap(reverseOrder())
 
     val decimalFormatter = DecimalFormatter()
 
@@ -203,7 +204,7 @@ fun ExpListScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable { onClickList(exp.id) }
+                                    .clickable { onClickList(exp.id,exp.tranType) }
                                     .background(MaterialTheme.colorScheme.secondaryContainer),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             )
@@ -219,12 +220,18 @@ fun ExpListScreen(
                                         modifier = Modifier.padding(end = 10.dp),
                                         color = incomeColor,
                                     )
-                                else if (exp.tranType == "Transfer")
+                                else if (exp.tranType == "Transfer" && exp.accNameTo != "")
                                     Text(
                                         text = decimalFormatter.formatForVisual(exp.amount.toString()),
                                         modifier = Modifier.padding(end = 10.dp),
                                         color = transferColor,
                                     )
+//                                else if (exp.tranType == "Transfer")
+//                                    Text(
+//                                        text = decimalFormatter.formatForVisual(exp.amount.toString()),
+//                                        modifier = Modifier.padding(end = 10.dp),
+//                                        color = transferColor,
+//                                    )
                                 else
                                     Text(
                                         text = decimalFormatter.formatForVisual(exp.amount.toString()),
@@ -256,7 +263,8 @@ fun ExpListScreen(
                                 )
                                 Text(
                                     text = decimalFormatter.formatForVisual(
-                                        rollTransList.find { it.id == exp.id }!!.balance.toString()
+                                        //rollTransList.find { it.id == exp.id }!!.balance.toString()
+                                        exp.balance.toString()
                                     ),
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                                     style = typography.bodyMedium,
@@ -289,6 +297,7 @@ data class RollingList(
     val tranType: String="",
     val budName: String="",
     val note: String="",
+    val accNameTo: String="",
 )
 
 data class BalanceList(
@@ -300,7 +309,9 @@ data class BalanceList(
 fun roll2(expList: List<ExpTrans>,
           transferList: List<TransferTransactions>,
           accountList: List<accounts>) : List<RollingList> {
+
     var rollList = mutableListOf<RollingList>()
+    var balanceList = mutableListOf<BalanceList>()
 
     expList.forEach { exp ->
         var roll = RollingList(
@@ -336,13 +347,70 @@ fun roll2(expList: List<ExpTrans>,
             tranType = tran.tranType,
             budName = "",
             note = tran.note,
+            accNameTo = tran.accNameTo,
         )
 
         rollList.add(roll)
         rollList.add(roll2)
     }
 
-    return rollList
+    accountList.forEach { exp ->
+        balanceList.add(BalanceList(exp.name, exp.balance,0.0))
+    }
+
+    var currentBalance: Double = 0.0
+    var tmpbal: Double = 0.0
+    var tmpRoll: Double = 0.0
+    var rollList2 = mutableListOf<RollingList>()
+
+    rollList.sortedBy { it.dateTrans }
+        .reversed()
+        .forEach{ tran ->
+
+            if ( tran.accNameTo=="" && balanceList.any { it.accName == tran.accName }) {
+
+                tmpbal = balanceList.find { it.accName == tran.accName }!!.balance
+                tmpRoll = balanceList.find { it.accName == tran.accName }!!.rolling
+                balanceList.removeIf { it.accName == tran.accName }
+
+                if (tran.tranType == TransactionType.Income.name)
+                    balanceList.add(BalanceList(tran.accName, tmpbal + tmpRoll,  -tran.amount))
+                else
+                    balanceList.add(BalanceList(tran.accName, tmpbal + tmpRoll,  tran.amount))
+
+                currentBalance = balanceList.find { it.accName == tran.accName }!!.balance
+            }
+            else if (tran.tranType == TransactionType.Transfer.name && balanceList.any { it.accName == tran.accNameTo }) {
+                tmpbal = balanceList.find { it.accName == tran.accNameTo }!!.balance
+                tmpRoll = balanceList.find { it.accName == tran.accNameTo }!!.rolling
+                balanceList.removeIf { it.accName == tran.accNameTo }
+                balanceList.add(BalanceList(tran.accNameTo, tmpbal + tmpRoll, + tran.amount))
+
+                currentBalance = balanceList.find { it.accName == tran.accNameTo }!!.balance
+            }
+            else {
+                balanceList.add(BalanceList(tran.accName, tran.amount,0.00))
+                currentBalance=tran.amount
+            }
+
+            var roll = RollingList(
+                accName = tran.accName,
+                amount = tran.amount,
+                balance = currentBalance,
+                dateTrans = tran.dateTrans,
+                id = tran.id,
+
+                tranType = tran.tranType,
+                budName = tran.budName,
+                note = tran.note,
+                accNameTo = tran.accNameTo,
+            )
+
+            rollList2.add(roll)
+
+        }
+
+    return rollList2
 }
 
 fun rollList(expList: List<ExpTrans>,

@@ -83,7 +83,7 @@ class DecimalFormatter(
             .joinToString(separator = thousandsSeparator.toString())
             .reversed()
 
-        val fractionPart = split.getOrNull(1)
+        val fractionPart = split.getOrNull(1)?.take(2)
 
         return if (fractionPart == null) intPart else intPart + decimalSeparator + fractionPart
     }

@@ -15,7 +15,7 @@ interface TransferDAO {
     suspend fun upsertTransferTransaction(transferTransaction: TransferTransactions)
 
     @Query("SELECT * FROM transfer_transactions WHERE id = :id")
-    fun getTransferTransactionById(id: Int): Flow<TransferTransactions>
+    fun getTransferTransactionById(id: Long): Flow<TransferTransactions>
 
     @Query("DELETE FROM transfer_transactions WHERE id = :id")
     suspend fun deleteTransferTransaction(id: Long)

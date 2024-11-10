@@ -49,6 +49,7 @@ import com.aylmer.aylfunds.designsys.component.AylOutlinedTextField
 import com.aylmer.aylfunds.designsys.component.AylTab
 import com.aylmer.aylfunds.designsys.component.AylTabRow
 import com.aylmer.aylfunds.designsys.component.DropdownList
+import com.aylmer.aylfunds.models.TransactionType
 import com.aylmer.aylfunds.navigation.AylTopBar
 import com.aylmer.aylfunds.utils.convertMillisToDate
 
@@ -57,7 +58,8 @@ import com.aylmer.aylfunds.utils.convertMillisToDate
 fun AddTranScreen(
     navController: NavHostController = rememberNavController(),
     viewModel: AddTranViewModel = hiltViewModel(),
-    tranId: Long = 0
+    tranId: Long = 0,
+    tranType: String = TransactionType.Expense.name
 )
 {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -138,7 +140,7 @@ fun AddTranScreen(
                 itemList = accountList,
                 onTypeChange = { viewModel.onAccUpdate(it) },
                 modifier = Modifier.fillMaxWidth(),
-                defaultSelectedItem = defaultAccount,
+                defaultSelectedItem = if(state.accName == "") defaultAccount else state.accName,
             )
 
             if (state.selectedType == 2) {
@@ -147,7 +149,7 @@ fun AddTranScreen(
                     itemList = accountList,
                     onTypeChange = { viewModel.onAccUpdateTo(it) },
                     modifier = Modifier.fillMaxWidth(),
-                    defaultSelectedItem = defaultAccount,
+                    defaultSelectedItem = if(state.accNameTo == "") defaultAccount else state.accNameTo,
                 )
             }
 

@@ -41,6 +41,13 @@ class DefaultMainRepository @Inject constructor(
         expDao.upsertExpTran(expTrans)
     }
 
+    override suspend fun updateAccountBalance(transaction: TransferTransactions)
+    {
+        accDAO.updateAccountBalance(transaction.accName, transaction.amount * (-1))
+        accDAO.updateAccountBalance(transaction.accNameTo, transaction.amount)
+        transferDAO.upsertTransferTransaction(transaction)
+    }
+
     override fun getAllAccounts(): Flow<List<accounts>> {
         return accDAO.getAllAccounts()
     }
@@ -138,7 +145,7 @@ class DefaultMainRepository @Inject constructor(
         transferDAO.upsertTransferTransaction(transferTransaction)
     }
 
-    override fun getTransferTransactionById(id: Int): Flow<TransferTransactions> {
+    override fun getTransferTransactionById(id: Long): Flow<TransferTransactions> {
         return transferDAO.getTransferTransactionById(id)
     }
 

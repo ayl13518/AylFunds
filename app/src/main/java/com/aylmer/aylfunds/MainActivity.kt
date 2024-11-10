@@ -40,6 +40,7 @@ import com.aylmer.aylfunds.accounts.AccListScreen
 import com.aylmer.aylfunds.accounts.AccountTran
 import com.aylmer.aylfunds.budgets.BudgetListScreen
 import com.aylmer.aylfunds.budgets.BudgetTran
+import com.aylmer.aylfunds.models.TransactionType
 
 import com.aylmer.aylfunds.models.UserData
 import com.aylmer.aylfunds.navigation.AylTopBar
@@ -98,20 +99,22 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<ScreenAddTran> (
                         typeMap = mapOf(
-                            typeOf<Long>() to NavType.LongType
+                            typeOf<Long>() to NavType.LongType,
+                            typeOf<String>() to NavType.StringType
                             )
                     ){
                         val arguments = it.toRoute<ScreenAddTran>()
                         AddTranScreen(
                             navController = navController,
-                            tranId = arguments.tranId
+                            tranId = arguments.tranId,
+                            tranType = arguments.tranType
                         )
                     }
                     composable<ScreenExpenseList> {
                         ExpListScreen(
                             navController = navController,
-                            onClickList = { tranId -> navController.navigate(
-                                ScreenAddTran(tranId))
+                            onClickList = { tranId, tranType -> navController.navigate(
+                                ScreenAddTran(tranId, tranType))
                             }
                         )
                     }
@@ -180,6 +183,7 @@ object ScreenBudgetList
 @Serializable
 data class ScreenAddTran (
     val tranId: Long,
+    val tranType: String = TransactionType.Expense.name
 )
 
 @Serializable

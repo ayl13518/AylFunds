@@ -13,6 +13,8 @@ interface MainRepository {
     //Accounts
     suspend fun updateAccountBalance(expTrans: ExpTrans)
 
+    suspend fun updateAccountBalance(transaction: TransferTransactions)
+
     fun getAllAccounts(): Flow<List<accounts>>
 
     suspend fun upsertAccount(accounts: accounts)
@@ -56,7 +58,7 @@ interface MainRepository {
 
     suspend fun upsertTransferTransaction(transferTransaction: TransferTransactions)
 
-    fun getTransferTransactionById(id: Int): Flow<TransferTransactions>
+    fun getTransferTransactionById(id: Long): Flow<TransferTransactions>
 
     suspend fun deleteTransferTransaction(id: Long)
 
