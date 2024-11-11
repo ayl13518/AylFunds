@@ -27,3 +27,8 @@ enum class BudgetType {
 enum class BudgetScope {
     Month, Week, Year,
 }
+
+enum class PeriodType {
+    Daily, Weekly, SemiMonthly, Monthly , Annually,
+
+}

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Help
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
 
 import androidx.compose.material.icons.rounded.Dehaze
@@ -49,6 +50,8 @@ import com.aylmer.aylfunds.preference.SettingsScreen
 import com.aylmer.aylfunds.transactions.AddTranScreen
 import com.aylmer.aylfunds.transactions.ExpListScreen
 import com.aylmer.aylfunds.preference.SettingsViewModel
+import com.aylmer.aylfunds.scheduling.AddSchedule
+import com.aylmer.aylfunds.scheduling.ScheduleScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 import kotlin.reflect.typeOf
@@ -161,6 +164,22 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                         )
                     }
+                    composable<ScreenSchedule>{
+                        ScheduleScreen(
+                            navController = navController,
+                        )
+                    }
+                    composable<ScreenAddSchedule>(
+                        typeMap = mapOf(
+                            typeOf<Long>() to NavType.LongType
+                        )
+                    ){
+                        val arguments = it.toRoute<ScreenAddSchedule>()
+                        AddSchedule(
+                            id = arguments.id,
+                            navController = navController,
+                        )
+                    }
                 }
 
             }
@@ -199,52 +218,15 @@ data class ScreenBudget (
 @Serializable
 object ScreenSetting
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Greeting(
-    navController: NavController
-) {
-    Scaffold (
-        topBar = {
-            AylTopBar(
-                titleRes = "Welcome",
-                navigationIcon = Icons.Rounded.Dehaze,
-                navigationIconContentDescription = "Navigation icon",
-                onNavigationClick = {navController.navigate(ScreenSetting)},
-                actionIcon = Icons.AutoMirrored.Default.Help,
-                actionIconContentDescription = "Action icon",
-            )
-        },
-        bottomBar = {
-            NavigationBottomBar(
-                navController= navController
-                , selected = 0
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate(ScreenAddTran(0))
-                }
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
-            }
-        }
-    ){ innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(text = "HomeScreen")
+@Serializable
+object ScreenSchedule
+
+@Serializable
+data class ScreenAddSchedule (
+    val id: Long,
+)
 
 
-        }
-    }
-
-}
 
 
 /**
@@ -258,8 +240,8 @@ private fun shouldUseDarkTheme(
 {
     var useDarkTheme = false
 
-    if(uiState.useDarkTheme=="true") useDarkTheme=true
-    else useDarkTheme=false
+    useDarkTheme = if(uiState.useDarkTheme=="true") true else false
+
     return useDarkTheme
 }
 
@@ -278,11 +260,3 @@ private val lightScrim = android.graphics.Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
  */
 private val darkScrim = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    NewNavTheme {
-        Greeting( navController =  rememberNavController()
-        )
-    }
-}

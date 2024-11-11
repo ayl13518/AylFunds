@@ -1,7 +1,5 @@
 package com.aylmer.aylfunds.di
 
-import androidx.room.Query
-import androidx.room.Upsert
 import com.aylmer.aylfunds.data.PrefDAO
 import com.aylmer.aylfunds.data.Preferences
 import javax.inject.Inject
@@ -12,6 +10,8 @@ import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.budDAO
 import com.aylmer.aylfunds.data.budgets
 import com.aylmer.aylfunds.data.ExpTrans
+import com.aylmer.aylfunds.data.Schedule
+import com.aylmer.aylfunds.data.ScheduleDAO
 import com.aylmer.aylfunds.data.TransferDAO
 import com.aylmer.aylfunds.data.TransferTransactions
 import com.aylmer.aylfunds.models.PreferenceConfig
@@ -26,7 +26,9 @@ class DefaultMainRepository @Inject constructor(
     private val accDAO: accDAO,
     private val budDAO: budDAO,
     private val prefDao: PrefDAO,
-    private val transferDAO: TransferDAO
+    private val transferDAO: TransferDAO,
+    private val scheduleDAO: ScheduleDAO
+
 ): MainRepository {
 
 
@@ -151,6 +153,11 @@ class DefaultMainRepository @Inject constructor(
 
     override suspend fun deleteTransferTransaction(id: Long){
         transferDAO.deleteTransferTransaction(id)
+    }
+
+    //Schedule
+    override fun getAllSchedule(): Flow<List<Schedule>> {
+        return scheduleDAO.getAll()
     }
 
 }

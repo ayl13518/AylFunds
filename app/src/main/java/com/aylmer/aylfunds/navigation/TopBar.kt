@@ -1,6 +1,7 @@
 package com.aylmer.aylfunds.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.Icon
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import com.aylmer.aylfunds.designsys.component.ThemePreviews
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
 
 
@@ -27,10 +29,13 @@ fun AylTopBar(
     navigationIconContentDescription: String,
     actionIcon: ImageVector,
     actionIconContentDescription: String,
+    actionIcon2: ImageVector = Icons.Default.MoreVert,
+    actionIconContentDescription2: String="",
     modifier: Modifier = Modifier,
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
     onNavigationClick: () -> Unit = {},
     onActionClick: () -> Unit = {},
+    onActionClick2: () -> Unit = {},
 ){
     CenterAlignedTopAppBar(
         title = { Text(text =  titleRes) },
@@ -44,6 +49,15 @@ fun AylTopBar(
             }
         },
         actions = {
+            if (actionIconContentDescription2.isNotEmpty()) {
+                IconButton(onClick = onActionClick2) {
+                    Icon(
+                        imageVector = actionIcon2,
+                        contentDescription = actionIconContentDescription2,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+            }
             IconButton(onClick = onActionClick) {
                 Icon(
                     imageVector = actionIcon,
@@ -51,6 +65,7 @@ fun AylTopBar(
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
+
         },
         colors = colors,
         modifier = modifier.testTag("aylTopAppBar"),
@@ -58,7 +73,7 @@ fun AylTopBar(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview("Top App Bar")
+@ThemePreviews
 @Composable
 private fun NiaTopAppBarPreview() {
     NewNavTheme {
@@ -68,6 +83,8 @@ private fun NiaTopAppBarPreview() {
             navigationIconContentDescription = "Navigation icon",
             actionIcon = Icons.Default.MoreVert,
             actionIconContentDescription = "Action icon",
+            actionIcon2 = Icons.Default.AccessTime,
+            actionIconContentDescription2 = "Schedule",
         )
     }
 }

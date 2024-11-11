@@ -5,6 +5,7 @@ import com.aylmer.aylfunds.data.Preferences
 import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.budgets
 import com.aylmer.aylfunds.data.ExpTrans
+import com.aylmer.aylfunds.data.Schedule
 import com.aylmer.aylfunds.data.TransferTransactions
 import kotlinx.coroutines.flow.Flow
 
@@ -61,5 +62,8 @@ interface MainRepository {
     fun getTransferTransactionById(id: Long): Flow<TransferTransactions>
 
     suspend fun deleteTransferTransaction(id: Long)
+
+    //Schedule
+    fun getAllSchedule(): Flow<List<Schedule>>
 
 }
