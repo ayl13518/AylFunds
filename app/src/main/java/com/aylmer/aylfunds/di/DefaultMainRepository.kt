@@ -1,5 +1,7 @@
 package com.aylmer.aylfunds.di
 
+import androidx.room.Query
+import androidx.room.Upsert
 import com.aylmer.aylfunds.data.PrefDAO
 import com.aylmer.aylfunds.data.Preferences
 import javax.inject.Inject
@@ -158,6 +160,22 @@ class DefaultMainRepository @Inject constructor(
     //Schedule
     override fun getAllSchedule(): Flow<List<Schedule>> {
         return scheduleDAO.getAll()
+    }
+
+
+    override suspend fun upsertSchedule(schedule: Schedule){
+        return scheduleDAO.upsertSchedule(schedule)
+    }
+
+
+    override fun getScheduleById(id: Long): Flow<Schedule>{
+        return scheduleDAO.getScheduleById(id)
+    }
+
+
+    override suspend fun deleteSchedule(id: Long)
+    {
+        return scheduleDAO.deleteSchedule(id)
     }
 
 }

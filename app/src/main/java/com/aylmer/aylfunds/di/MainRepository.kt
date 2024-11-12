@@ -66,4 +66,11 @@ interface MainRepository {
     //Schedule
     fun getAllSchedule(): Flow<List<Schedule>>
 
+    suspend fun upsertSchedule(schedule: Schedule)
+
+    fun getScheduleById(id: Long): Flow<Schedule>
+
+    suspend fun deleteSchedule(id: Long)
+
+
 }

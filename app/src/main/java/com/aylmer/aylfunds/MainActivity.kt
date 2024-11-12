@@ -7,29 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Help
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.Add
-
-import androidx.compose.material.icons.rounded.Dehaze
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
+
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -44,8 +26,6 @@ import com.aylmer.aylfunds.budgets.BudgetTran
 import com.aylmer.aylfunds.models.TransactionType
 
 import com.aylmer.aylfunds.models.UserData
-import com.aylmer.aylfunds.navigation.AylTopBar
-import com.aylmer.aylfunds.navigation.NavigationBottomBar
 import com.aylmer.aylfunds.preference.SettingsScreen
 import com.aylmer.aylfunds.transactions.AddTranScreen
 import com.aylmer.aylfunds.transactions.ExpListScreen
@@ -53,7 +33,6 @@ import com.aylmer.aylfunds.preference.SettingsViewModel
 import com.aylmer.aylfunds.scheduling.AddSchedule
 import com.aylmer.aylfunds.scheduling.ScheduleScreen
 import dagger.hilt.android.AndroidEntryPoint
-
 import kotlin.reflect.typeOf
 
 
@@ -167,16 +146,21 @@ class MainActivity : ComponentActivity() {
                     composable<ScreenSchedule>{
                         ScheduleScreen(
                             navController = navController,
+                            onClickList = { id, tranType -> navController.navigate(
+                                ScreenAddTran(id, tranType))
+                            }
                         )
                     }
                     composable<ScreenAddSchedule>(
                         typeMap = mapOf(
-                            typeOf<Long>() to NavType.LongType
+                            typeOf<Long>() to NavType.LongType,
+                            typeOf<String>() to NavType.StringType
                         )
                     ){
                         val arguments = it.toRoute<ScreenAddSchedule>()
                         AddSchedule(
                             id = arguments.id,
+                            tranType = arguments.tranType,
                             navController = navController,
                         )
                     }
@@ -224,8 +208,8 @@ object ScreenSchedule
 @Serializable
 data class ScreenAddSchedule (
     val id: Long,
+    val tranType: String = TransactionType.Expense.name
 )
-
 
 
 
@@ -244,8 +228,6 @@ private fun shouldUseDarkTheme(
 
     return useDarkTheme
 }
-
-
 
 
 /**

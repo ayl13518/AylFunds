@@ -198,7 +198,7 @@ fun ExpListScreen(
                                 style = typography.titleLarge,
                             )
                         }
-                    }
+                }
                 items(expsByDate) { exp ->
                         Column {
                             Row(

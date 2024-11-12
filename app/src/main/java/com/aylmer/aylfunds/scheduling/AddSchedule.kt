@@ -9,7 +9,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -26,34 +25,39 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.R
-import com.aylmer.aylfunds.budgets.BudgetTranViewModel
 import com.aylmer.aylfunds.designsys.component.AylOutlinedNumber
 import com.aylmer.aylfunds.designsys.component.AylOutlinedTextField
 import com.aylmer.aylfunds.designsys.component.AylTab
 import com.aylmer.aylfunds.designsys.component.AylTabRow
 import com.aylmer.aylfunds.designsys.component.DropdownList
+import com.aylmer.aylfunds.designsys.component.OutlinedDatesField
+import com.aylmer.aylfunds.models.PeriodType
 import com.aylmer.aylfunds.models.TransactionType
 import com.aylmer.aylfunds.navigation.AylTopBar
-import com.aylmer.aylfunds.transactions.DateTransaction
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddSchedule(
     navController: NavHostController = rememberNavController(),
     viewModel: AddSchedViewModel = hiltViewModel(),
-    id: Long=0
+    id: Long=0,
+    tranType: String = TransactionType.Expense.name
 )
 {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-    //val categoryList by viewModel.categoryFiltered.collectAsState(emptyList())
+    val categoryList by viewModel.categoryFiltered.collectAsState(emptyList())
     var accountList = state.accountList
+
+    val defaultAccount by viewModel.defaultAccount.collectAsStateWithLifecycle()
+    val defaultCategory by viewModel.defaultCategory.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
+                    viewModel.onSaveExpense()
                     navController.popBackStack()
                 },
             ) {
@@ -86,7 +90,7 @@ fun AddSchedule(
                     //var index : Int
                     AylTab(
                         selected =  false,
-                        onClick = { //viewModel.onTranTypeUpdate(title)
+                        onClick = { viewModel.onTranTypeUpdate(title.name)
                                   },
                         text = { Text(text = title.name) },
                     )
@@ -100,38 +104,43 @@ fun AddSchedule(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-//            if (state.selectedType != 2) {
-//                DropdownList(
-//                    label = "Category",
-//                    itemList = categoryList,
-//                    onTypeChange = { viewModel.onBudgetUpdate(it) },
-//                    modifier = Modifier.fillMaxWidth(),
-//                    defaultSelectedItem = defaultCategory
-//                )
-//            }
-//
-//            DropdownList(
-//                label = "Account",
-//                itemList = accountList,
-//                onTypeChange = { viewModel.onAccUpdate(it) },
-//                modifier = Modifier.fillMaxWidth(),
-//                defaultSelectedItem = if(state.accName == "") defaultAccount else state.accName,
-//            )
-//
-//            if (state.selectedType == 2) {
-//                DropdownList(
-//                    label = "Transfer To",
-//                    itemList = accountList,
-//                    onTypeChange = { viewModel.onAccUpdateTo(it) },
-//                    modifier = Modifier.fillMaxWidth(),
-//                    defaultSelectedItem = if(state.accNameTo == "") defaultAccount else state.accNameTo,
-//                )
-//            }
+            if (state.selectedType != 2) {
+                DropdownList(
+                    label = "Category",
+                    itemList = categoryList,
+                    onTypeChange = { viewModel.onBudgetUpdate(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    defaultSelectedItem = defaultCategory
+                )
+            }
+
+            DropdownList(
+                label = "Account",
+                itemList = accountList,
+                onTypeChange = { viewModel.onAccUpdate(it) },
+                modifier = Modifier.fillMaxWidth(),
+                defaultSelectedItem = if(state.accName == "") defaultAccount else state.accName,
+            )
+
+            if (state.selectedType == 2) {
+                DropdownList(
+                    label = "Transfer To",
+                    itemList = accountList,
+                    onTypeChange = { viewModel.onAccUpdateTo(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    defaultSelectedItem = if(state.accNameTo == "") defaultAccount else state.accNameTo,
+                )
+            }
 
 //            DateTransaction(
 //                textFieldColors,
 //                viewModel
 //            )
+
+            OutlinedDatesField(
+                onValueChange = { viewModel.onDateUpdate(it) } ,
+                defaultDate = state.dateTrans
+            )
 
             AylOutlinedTextField(
                 label = "Notes",
@@ -139,6 +148,14 @@ fun AddSchedule(
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { viewModel.onNoteUpdate(it) },
                 maxLines = 3,
+            )
+
+            DropdownList(
+                label = "Schedule",
+                itemList = PeriodType.entries.map { it.name },
+                onTypeChange = {viewModel.onPeriodUpdate(it)  },
+                modifier = Modifier.fillMaxWidth(),
+                defaultSelectedItem = if(state.period == "") defaultAccount else state.period,
             )
 
         }
