@@ -20,4 +20,7 @@ interface ScheduleDAO {
     @Query("DELETE FROM schedule WHERE id = :id")
     suspend fun deleteSchedule(id: Long)
 
+    @Query( "SELECT * FROM schedule WHERE dateTrans = :day")
+    fun getScheduleDay(day: String): List<Schedule>
+
 }

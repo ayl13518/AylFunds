@@ -72,5 +72,6 @@ interface MainRepository {
 
     suspend fun deleteSchedule(id: Long)
 
+    fun getScheduleDay(day: String): List<Schedule>
 
 }

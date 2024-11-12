@@ -155,7 +155,7 @@ fun AddSchedule(
                 itemList = PeriodType.entries.map { it.name },
                 onTypeChange = {viewModel.onPeriodUpdate(it)  },
                 modifier = Modifier.fillMaxWidth(),
-                defaultSelectedItem = if(state.period == "") defaultAccount else state.period,
+                defaultSelectedItem = state.period,
             )
 
         }

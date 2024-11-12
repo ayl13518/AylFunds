@@ -29,6 +29,9 @@ import com.aylmer.aylfunds.ui.theme.NewNavTheme
 fun Greeting(
     navController: NavController
 ) {
+
+
+
     Scaffold (
         topBar = {
             AylTopBar(

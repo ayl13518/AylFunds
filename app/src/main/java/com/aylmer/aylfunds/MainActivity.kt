@@ -17,6 +17,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
 import kotlinx.serialization.Serializable
 import com.aylmer.aylfunds.accounts.AccListScreen
@@ -32,7 +36,12 @@ import com.aylmer.aylfunds.transactions.ExpListScreen
 import com.aylmer.aylfunds.preference.SettingsViewModel
 import com.aylmer.aylfunds.scheduling.AddSchedule
 import com.aylmer.aylfunds.scheduling.ScheduleScreen
+import com.aylmer.aylfunds.workers.DailyInterest
+
+
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.concurrent.TimeUnit
 import kotlin.reflect.typeOf
 
 
@@ -41,8 +50,19 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: SettingsViewModel by viewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+//        val interestWorker = PeriodicWorkRequestBuilder<DailyInterest>(
+//            //1, TimeUnit.DAYS,
+//            15, TimeUnit.MINUTES,
+//            15, TimeUnit.MINUTES
+//        ).build()
+//
+//        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork("interest2",ExistingPeriodicWorkPolicy.UPDATE,interestWorker)
+        val interestWorker = OneTimeWorkRequestBuilder<DailyInterest>().build()
+        WorkManager.getInstance(applicationContext).enqueue(interestWorker)
 
        // var uiState: UserData by mutableStateOf(UserData())
         val userData= viewModel.state

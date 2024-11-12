@@ -18,6 +18,7 @@ materialIconsExtended = "1.7.5"
 hiltNavigationCompose = "1.2.0"
 preferenceKtx = "1.2.1"
 workRuntimeKtx = "2.10.0"
+hiltWork = "1.2.0"
 
 
 [libraries]
@@ -47,6 +48,7 @@ androidx-material-icons-extended = { group = "androidx.compose.material", name =
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
+androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWork" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -33,7 +33,6 @@ class DefaultMainRepository @Inject constructor(
 
 ): MainRepository {
 
-
     //Accounts
     override suspend fun updateAccountBalance(expTrans: ExpTrans) {
         if (expTrans.accName != "") {
@@ -162,20 +161,21 @@ class DefaultMainRepository @Inject constructor(
         return scheduleDAO.getAll()
     }
 
-
     override suspend fun upsertSchedule(schedule: Schedule){
         return scheduleDAO.upsertSchedule(schedule)
     }
-
 
     override fun getScheduleById(id: Long): Flow<Schedule>{
         return scheduleDAO.getScheduleById(id)
     }
 
-
     override suspend fun deleteSchedule(id: Long)
     {
         return scheduleDAO.deleteSchedule(id)
+    }
+
+    override fun getScheduleDay(day: String): List<Schedule> {
+        return scheduleDAO.getScheduleDay(day)
     }
 
 }
