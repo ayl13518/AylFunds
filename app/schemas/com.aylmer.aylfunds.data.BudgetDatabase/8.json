@@ -1,0 +1,341 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 8,
+    "identityHash": "95da839722f80f44eabf90087963ddc1",
+    "entities": [
+      {
+        "tableName": "expTrans",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `amount` REAL NOT NULL, `dateTrans` TEXT NOT NULL, `accName` TEXT NOT NULL DEFAULT 'Cash', `budName` TEXT NOT NULL DEFAULT 'Others', `tranType` TEXT NOT NULL DEFAULT 'Expense', `note` TEXT NOT NULL DEFAULT ' ')",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateTrans",
+            "columnName": "dateTrans",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accName",
+            "columnName": "accName",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Cash'"
+          },
+          {
+            "fieldPath": "budName",
+            "columnName": "budName",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Others'"
+          },
+          {
+            "fieldPath": "tranType",
+            "columnName": "tranType",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Expense'"
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "' '"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "accounts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `accType` TEXT NOT NULL, `balance` REAL NOT NULL, `description` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accType",
+            "columnName": "accType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "balance",
+            "columnName": "balance",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "budgets",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`budgetid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `balance` REAL NOT NULL, `type` TEXT NOT NULL, `scope` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "budgetid",
+            "columnName": "budgetid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "balance",
+            "columnName": "balance",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scope",
+            "columnName": "scope",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "budgetid"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "preferences",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`key` TEXT NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`key`))",
+        "fields": [
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "key"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "transfer_transactions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `amount` REAL NOT NULL, `dateTrans` TEXT NOT NULL, `accName` TEXT NOT NULL DEFAULT 'Cash', `accNameTo` TEXT NOT NULL DEFAULT 'Cash', `tranType` TEXT NOT NULL DEFAULT 'Transfer', `note` TEXT NOT NULL DEFAULT 'Transfer')",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateTrans",
+            "columnName": "dateTrans",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accName",
+            "columnName": "accName",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Cash'"
+          },
+          {
+            "fieldPath": "accNameTo",
+            "columnName": "accNameTo",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Cash'"
+          },
+          {
+            "fieldPath": "tranType",
+            "columnName": "tranType",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Transfer'"
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Transfer'"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "schedule",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `amount` REAL NOT NULL, `dateTrans` TEXT NOT NULL, `accName` TEXT NOT NULL DEFAULT 'Cash', `budName` TEXT NOT NULL DEFAULT 'Others', `tranType` TEXT NOT NULL DEFAULT 'Expense', `note` TEXT NOT NULL DEFAULT ' ', `period` TEXT NOT NULL, `dateNext` TEXT NOT NULL, `computeType` TEXT NOT NULL DEFAULT 'Fixed_Amount', `computePercent` REAL NOT NULL DEFAULT 0, `taxPercent` REAL NOT NULL DEFAULT 0)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateTrans",
+            "columnName": "dateTrans",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accName",
+            "columnName": "accName",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Cash'"
+          },
+          {
+            "fieldPath": "budName",
+            "columnName": "budName",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Others'"
+          },
+          {
+            "fieldPath": "tranType",
+            "columnName": "tranType",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Expense'"
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "' '"
+          },
+          {
+            "fieldPath": "period",
+            "columnName": "period",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateNext",
+            "columnName": "dateNext",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "computeType",
+            "columnName": "computeType",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'Fixed_Amount'"
+          },
+          {
+            "fieldPath": "computePercent",
+            "columnName": "computePercent",
+            "affinity": "REAL",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "taxPercent",
+            "columnName": "taxPercent",
+            "affinity": "REAL",
+            "notNull": true,
+            "defaultValue": "0"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '95da839722f80f44eabf90087963ddc1')"
+    ]
+  }
+}

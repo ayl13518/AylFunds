@@ -162,9 +162,7 @@ fun AddSchedule(
             DropdownList(
                 label = "Compute Type",
                 itemList = ComputeType.entries.map { it.name },
-                onTypeChange = {
-                    //viewModel.onPeriodUpdate(it)
-                               },
+                onTypeChange = { viewModel.onComputeUpdate(it)  },
                 modifier = Modifier.fillMaxWidth(),
                 defaultSelectedItem = state.computeType,
             )
@@ -172,8 +170,15 @@ fun AddSchedule(
             if (state.computeType != ComputeType.Fixed_Amount.name) {
                 AylOutlinedNumber(
                     label = "Percentage",
-                    value = state.computePercent.toString(),
-                    onValueChange = {viewModel.onAmountUpdate(it)},
+                    value = state.tmpPercent.toString(),
+                    onValueChange = {viewModel.onPercentUpdate(it)},
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                AylOutlinedNumber(
+                    label = "Tax Percentage",
+                    value = state.tmpTaxPercent.toString(),
+                    onValueChange = {viewModel.onTaxUpdate(it)},
                     modifier = Modifier.fillMaxWidth(),
                 )
             }

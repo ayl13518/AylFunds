@@ -4,16 +4,22 @@ package com.aylmer.aylfunds.preference
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -30,6 +36,8 @@ import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.designsys.component.DropdownList
 import com.aylmer.aylfunds.navigation.AylTopBar
 import androidx.compose.runtime.setValue
+import com.aylmer.aylfunds.workers.BackupButton
+import com.aylmer.aylfunds.workers.WorkManagerRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +54,8 @@ fun SettingsScreen(
 
     if(state.useDarkTheme == "true") checked = true
     else checked = false
+
+
 
     Scaffold (
         topBar = {
@@ -118,6 +128,26 @@ fun SettingsScreen(
             )
 
 
+            Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
+            BackupButton()
+//            Button(
+//                onClick = {
+//                    viewModel.onBackup()
+//                },
+//
+//            ) {
+//                Text(text = "Backup Database")
+//            }
+
+            Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
+            Button(
+                onClick = {
+                    //viewModel.onBackup()
+                },
+
+                ) {
+                Text(text = "Restore Database")
+            }
 
         }
     }

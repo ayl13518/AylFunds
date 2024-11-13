@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.data.Schedule
 import com.aylmer.aylfunds.di.MainRepository
+import com.aylmer.aylfunds.models.ComputeType
+import com.aylmer.aylfunds.models.PeriodType
 import com.aylmer.aylfunds.models.PreferenceConfig
 import com.aylmer.aylfunds.models.ScheduleState
 import com.aylmer.aylfunds.models.TransactionType
@@ -17,11 +19,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+import kotlin.text.toDoubleOrNull
 
 
 @HiltViewModel
@@ -37,6 +40,11 @@ class AddSchedViewModel @Inject constructor(
     private val _state = MutableStateFlow(ScheduleState())
     private val _categoryList = mainRepo.getAllCategory()
     private val _accountList = mainRepo.getAllAccountName()
+
+    private val accountBalance = mainRepo.getAllAccounts()
+        .stateIn(viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList())
 
     val defaultAccount = mainRepo.getPrefName(PreferenceConfig.DefaultAccount.keyValue)
         .stateIn(viewModelScope,
@@ -80,6 +88,11 @@ class AddSchedViewModel @Inject constructor(
             ,id = state.id
             ,schedule = state.schedule
             , period = state.period
+            , computeType = state.computeType
+            , computePercent = state.computePercent
+            , tmpPercent = state.tmpPercent
+            , taxPercent = state.taxPercent
+            ,tmpTaxPercent = state.taxPercent.toString()
         )
     }.stateIn(viewModelScope,
         SharingStarted.WhileSubscribed(5000),
@@ -113,6 +126,12 @@ class AddSchedViewModel @Inject constructor(
                             ,id = cur.id
                             ,selectedType = TransactionType.valueOf(cur.tranType).ordinal
                              ,period = cur.period
+                            , computeType = cur.computeType
+                            , computePercent = cur.computePercent
+                            ,tmpPercent = cur.computePercent.toString()
+
+                            , taxPercent = cur.taxPercent
+                            ,tmpTaxPercent = cur.taxPercent.toString()
                         )
                     }
                 }
@@ -126,6 +145,8 @@ class AddSchedViewModel @Inject constructor(
             amount = newAmount.toDoubleOrNull() ?: 0.0
         ) }
     }
+
+
 
     fun onBudgetUpdate(newBud: String) {
         _state.update { it.copy(
@@ -149,7 +170,6 @@ class AddSchedViewModel @Inject constructor(
         _state.update { it.copy(
             tranType = newTranType,
             selectedType =  TransactionType.valueOf(newTranType).ordinal ,
-
         ) }
         savedStateHandle[SEARCH_Category] = newTranType
     }
@@ -170,6 +190,54 @@ class AddSchedViewModel @Inject constructor(
         _state.update { it.copy(
             period = newPeriod
         ) }
+    }
+
+    fun onPercentUpdate(newPercent: String) {
+        _state.update { it.copy(
+            tmpPercent = newPercent,
+            computePercent = newPercent.toDoubleOrNull() ?: 0.0
+        ) }
+        computeAmount()
+    }
+
+    fun onComputeUpdate(newCompute: String) {
+        _state.update { it.copy(
+            computeType = newCompute
+        ) }
+        computeAmount()
+    }
+
+    fun onTaxUpdate(newTax:String){
+        _state.update { it.copy(
+            tmpTaxPercent = newTax,
+            taxPercent = newTax.toDoubleOrNull() ?: 0.0
+        ) }
+        computeAmount()
+    }
+
+    fun computeAmount()
+    {
+        var newAmount = _state.value.amount
+
+        if(_state.value.computeType == ComputeType.Per_Annum.name){
+
+//            var balance : Double = accountBalance.collect { it ->
+//                it.find { it.name == _state.value.accName }?.balance
+//            }
+            var balance= accountBalance.value.find { it.name == _state.value.accName }?.balance
+
+            if(_state.value.period == PeriodType.Daily.name && balance != null) {
+
+                newAmount = (balance * (_state.value.computePercent / 100))/365
+                newAmount = newAmount - (newAmount * (_state.value.taxPercent / 100))
+
+                _state.update { it.copy(
+                    tmpAmount = newAmount.toString(),
+                    amount = newAmount
+                ) }
+            }
+
+        }
     }
 
     fun onSaveExpense() {
@@ -197,7 +265,10 @@ class AddSchedViewModel @Inject constructor(
                 accName = _state.value.accName,
                 tranType = if (_state.value.tranType == "") "Expense" else _state.value.tranType,
                 note = _state.value.note,
-                period = _state.value.period
+                period = _state.value.period,
+                computeType = _state.value.computeType,
+                computePercent = _state.value.computePercent,
+                taxPercent = _state.value.taxPercent
             )
             viewModelScope.launch {
                 mainRepo.upsertSchedule(newExp)

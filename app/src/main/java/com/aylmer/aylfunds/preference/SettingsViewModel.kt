@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.aylmer.aylfunds.di.MainRepository
 import com.aylmer.aylfunds.models.PreferenceConfig
 import com.aylmer.aylfunds.models.UserData
+import com.aylmer.aylfunds.workers.WorkManagerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val mainRepo: MainRepository,
     private val savedStateHandle: SavedStateHandle,
-
+    //private val worker: WorkManagerRepository,
 ) : ViewModel() {
 
 
@@ -76,6 +77,10 @@ class SettingsViewModel @Inject constructor(
             mainRepo.updatePref(keyValue = PreferenceConfig.DefaultAccount.keyValue, name = newAccount)
         }
     }
+
+//    fun onBackup() {
+//        worker.backupDatabase()
+//    }
 
 
 }

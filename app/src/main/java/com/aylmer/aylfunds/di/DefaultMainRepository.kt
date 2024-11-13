@@ -67,6 +67,10 @@ class DefaultMainRepository @Inject constructor(
         return accDAO.getAllAccountName()
     }
 
+    override fun getAccountByName(accName: String): Double {
+        return accDAO.getAccountByName(accName)
+    }
+
 
     //Budgets
     override fun getAllBudgets(): Flow<List<budgets>> {

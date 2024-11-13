@@ -24,6 +24,8 @@ interface MainRepository {
 
     fun getAccountById(accountId: Long): Flow<accounts>
 
+    fun getAccountByName(accName: String): Double
+
     //Budgets
     fun getAllBudgets(): Flow<List<budgets>>
 

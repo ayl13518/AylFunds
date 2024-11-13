@@ -15,15 +15,20 @@ class WorkManagerRepository(context: Context) : WorkRepository {
     override fun applyInterest(){
         val interestWorker = PeriodicWorkRequestBuilder<DailyInterest>(
             //1, TimeUnit.DAYS,
-            60, TimeUnit.MINUTES,
+            15, TimeUnit.MINUTES,
             15, TimeUnit.MINUTES
         )
-        workManager.enqueueUniquePeriodicWork("interest",
+        workManager.enqueueUniquePeriodicWork("dailyInterest",
             ExistingPeriodicWorkPolicy.UPDATE,
             interestWorker.build())
 
 //        val interestWorker = OneTimeWorkRequestBuilder<DailyInterest>().build()
 //        workManager.enqueue(interestWorker)
 
+    }
+
+    override fun backupDatabase(){
+        val backupWorker = OneTimeWorkRequestBuilder<BackUpWorker>().build()
+        workManager.enqueue(backupWorker)
     }
 }

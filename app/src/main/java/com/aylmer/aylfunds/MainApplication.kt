@@ -2,6 +2,7 @@ package com.aylmer.aylfunds
 
 import android.app.Application
 import android.content.Context
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
@@ -25,6 +26,7 @@ class AylFundsApp : Application()
             .setWorkerFactory(workerFactory)
             .build()
 
+
 }
 
 
@@ -39,6 +41,8 @@ class CustomWorkerFactory @Inject constructor(private val mainRepo:MainRepositor
                         workerParameters,
                         mainRepo,
                         )
+
+
 }
 
 

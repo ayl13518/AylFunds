@@ -26,5 +26,9 @@ data class ScheduleState(
 
     val computeType: String ="",
     val computePercent: Double = 0.0,
+    val tmpPercent: String = "0.00",
+
+    val taxPercent: Double = 0.0,
+    val tmpTaxPercent: String = "0.00",
 )
 

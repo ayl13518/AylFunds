@@ -7,6 +7,8 @@ import androidx.work.WorkerParameters
 import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.data.Schedule
 import com.aylmer.aylfunds.di.MainRepository
+import com.aylmer.aylfunds.models.ComputeType
+import com.aylmer.aylfunds.models.PeriodType
 import com.aylmer.aylfunds.utils.addDaysToDate
 import com.aylmer.aylfunds.utils.convertMillisToDate
 import com.aylmer.aylfunds.utils.convertToLocalDate
@@ -29,15 +31,29 @@ class DailyInterest @AssistedInject constructor (
 
             if (schedules.isNotEmpty()) {
                 schedules.forEach { sched ->
+                    var newAmount = sched.amount
+
+                    if(sched.computeType == ComputeType.Per_Annum.name){
+
+                        var balance = mainRepo.getAccountByName(sched.accName)
+
+                        if(sched.period == PeriodType.Daily.name) {
+
+                            newAmount = (balance * (sched.computePercent / 100))/365
+                            newAmount = newAmount - (newAmount * (sched.taxPercent / 100))
+                        }
+                    }
+
 
                     val newExp = ExpTrans(
                         id = 0,
-                        amount = sched.amount,
+                        amount = newAmount,
                         dateTrans = sched.dateTrans,
                         budName = sched.budName,
                         accName = sched.accName,
                         tranType = sched.tranType,
-                        note = sched.note
+                        note = sched.note,
+
                     )
                     mainRepo.updateAccountBalance(newExp)
 
@@ -46,13 +62,16 @@ class DailyInterest @AssistedInject constructor (
 
                     val newSched = Schedule(
                         id = sched.id,
-                        amount = sched.amount,
+                        amount = newAmount,
                         dateTrans = strDate,
                         budName = sched.budName,
                         accName = sched.accName,
                         tranType = sched.tranType,
                         note = sched.note,
-                        period = sched.period
+                        period = sched.period,
+                        computeType = sched.computeType,
+                        computePercent = sched.computePercent,
+                        taxPercent = sched.taxPercent
                     )
                     mainRepo.upsertSchedule(newSched)
 

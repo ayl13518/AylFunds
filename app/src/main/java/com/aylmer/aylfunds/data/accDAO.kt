@@ -23,4 +23,7 @@ interface accDAO {
     @Query("SELECT * FROM accounts WHERE `id` = :accountId")
     fun getAccountById(accountId: Long): Flow<accounts>
 
+    @Query("SELECT balance FROM accounts WHERE `name` = :accName")
+    fun getAccountByName(accName: String): Double
+
 }
