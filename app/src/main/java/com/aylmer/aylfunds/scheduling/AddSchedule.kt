@@ -31,6 +31,7 @@ import com.aylmer.aylfunds.designsys.component.AylTab
 import com.aylmer.aylfunds.designsys.component.AylTabRow
 import com.aylmer.aylfunds.designsys.component.DropdownList
 import com.aylmer.aylfunds.designsys.component.OutlinedDatesField
+import com.aylmer.aylfunds.models.ComputeType
 import com.aylmer.aylfunds.models.PeriodType
 import com.aylmer.aylfunds.models.TransactionType
 import com.aylmer.aylfunds.navigation.AylTopBar
@@ -157,6 +158,25 @@ fun AddSchedule(
                 modifier = Modifier.fillMaxWidth(),
                 defaultSelectedItem = state.period,
             )
+
+            DropdownList(
+                label = "Compute Type",
+                itemList = ComputeType.entries.map { it.name },
+                onTypeChange = {
+                    //viewModel.onPeriodUpdate(it)
+                               },
+                modifier = Modifier.fillMaxWidth(),
+                defaultSelectedItem = state.computeType,
+            )
+
+            if (state.computeType != ComputeType.Fixed_Amount.name) {
+                AylOutlinedNumber(
+                    label = "Percentage",
+                    value = state.computePercent.toString(),
+                    onValueChange = {viewModel.onAmountUpdate(it)},
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
 
         }
     }

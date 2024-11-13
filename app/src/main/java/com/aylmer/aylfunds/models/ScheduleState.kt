@@ -23,5 +23,8 @@ data class ScheduleState(
     val id: Long=0,
     val accNameTo: String = "",
     val period: String = "",
+
+    val computeType: String ="",
+    val computePercent: Double = 0.0,
 )
 

@@ -1,48 +1,36 @@
 package com.aylmer.aylfunds
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
-
-
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import com.aylmer.aylfunds.ui.theme.NewNavTheme
-import kotlinx.serialization.Serializable
 import com.aylmer.aylfunds.accounts.AccListScreen
 import com.aylmer.aylfunds.accounts.AccountTran
 import com.aylmer.aylfunds.budgets.BudgetListScreen
 import com.aylmer.aylfunds.budgets.BudgetTran
 import com.aylmer.aylfunds.models.TransactionType
-
 import com.aylmer.aylfunds.models.UserData
 import com.aylmer.aylfunds.preference.SettingsScreen
-import com.aylmer.aylfunds.transactions.AddTranScreen
-import com.aylmer.aylfunds.transactions.ExpListScreen
 import com.aylmer.aylfunds.preference.SettingsViewModel
 import com.aylmer.aylfunds.scheduling.AddSchedule
 import com.aylmer.aylfunds.scheduling.ScheduleScreen
-import com.aylmer.aylfunds.workers.DailyInterest
+import com.aylmer.aylfunds.transactions.AddTranScreen
+import com.aylmer.aylfunds.transactions.ExpListScreen
+import com.aylmer.aylfunds.ui.theme.NewNavTheme
 import com.aylmer.aylfunds.workers.WorkManagerRepository
-
-
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.concurrent.TimeUnit
+import kotlinx.serialization.Serializable
 import kotlin.reflect.typeOf
 
 
@@ -58,18 +46,8 @@ class MainActivity : ComponentActivity() {
         val worker = WorkManagerRepository(applicationContext)
         worker.applyInterest()
 
-//        val interestWorker = PeriodicWorkRequestBuilder<DailyInterest>(
-//            //1, TimeUnit.DAYS,
-//            15, TimeUnit.MINUTES,
-//            15, TimeUnit.MINUTES
-//        ).build()
-//
-//        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork("interest2",ExistingPeriodicWorkPolicy.UPDATE,interestWorker)
-//        val interestWorker = OneTimeWorkRequestBuilder<DailyInterest>().build()
-//        WorkManager.getInstance(applicationContext).enqueue(interestWorker)
-
-       // var uiState: UserData by mutableStateOf(UserData())
-        val userData= viewModel.state
+        // var uiState: UserData by mutableStateOf(UserData())
+        val userData = viewModel.state
 
 
         enableEdgeToEdge()
@@ -103,12 +81,12 @@ class MainActivity : ComponentActivity() {
                     composable<ScreenHome> {
                         Greeting(navController)
                     }
-                    composable<ScreenAddTran> (
+                    composable<ScreenAddTran>(
                         typeMap = mapOf(
                             typeOf<Long>() to NavType.LongType,
                             typeOf<String>() to NavType.StringType
-                            )
-                    ){
+                        )
+                    ) {
                         val arguments = it.toRoute<ScreenAddTran>()
                         AddTranScreen(
                             navController = navController,
@@ -119,16 +97,20 @@ class MainActivity : ComponentActivity() {
                     composable<ScreenExpenseList> {
                         ExpListScreen(
                             navController = navController,
-                            onClickList = { tranId, tranType -> navController.navigate(
-                                ScreenAddTran(tranId, tranType))
+                            onClickList = { tranId, tranType ->
+                                navController.navigate(
+                                    ScreenAddTran(tranId, tranType)
+                                )
                             }
                         )
                     }
                     composable<ScreenAccountList> {
                         AccListScreen(
                             navController = navController,
-                            onClickList = { accountId -> navController.navigate(
-                                ScreenAccount(accountId))
+                            onClickList = { accountId ->
+                                navController.navigate(
+                                    ScreenAccount(accountId)
+                                )
                             }
                         )
                     }
@@ -136,42 +118,46 @@ class MainActivity : ComponentActivity() {
                         typeMap = mapOf(
                             typeOf<Long>() to NavType.LongType
                         )
-                    ){
+                    ) {
                         val arguments = it.toRoute<ScreenAccount>()
                         AccountTran(
                             navController = navController,
                             accountId = arguments.accountId
                         )
                     }
-                    composable<ScreenBudgetList>{
-                       BudgetListScreen(
-                           navController = navController,
-                           onClickList = { budgetId -> navController.navigate(
-                               ScreenBudget(budgetId) )
-                           }
+                    composable<ScreenBudgetList> {
+                        BudgetListScreen(
+                            navController = navController,
+                            onClickList = { budgetId ->
+                                navController.navigate(
+                                    ScreenBudget(budgetId)
+                                )
+                            }
                         )
                     }
                     composable<ScreenBudget>(
                         typeMap = mapOf(
                             typeOf<Long>() to NavType.LongType
                         )
-                    ){
+                    ) {
                         val arguments = it.toRoute<ScreenBudget>()
                         BudgetTran(
                             budgetId = arguments.budgetID,
                             navController = navController,
                         )
                     }
-                    composable<ScreenSetting>{
+                    composable<ScreenSetting> {
                         SettingsScreen(
                             navController = navController,
                         )
                     }
-                    composable<ScreenSchedule>{
+                    composable<ScreenSchedule> {
                         ScheduleScreen(
                             navController = navController,
-                            onClickList = { id, tranType -> navController.navigate(
-                                ScreenAddSchedule(id, tranType))
+                            onClickList = { id, tranType ->
+                                navController.navigate(
+                                    ScreenAddSchedule(id, tranType)
+                                )
                             }
                         )
                     }
@@ -180,7 +166,7 @@ class MainActivity : ComponentActivity() {
                             typeOf<Long>() to NavType.LongType,
                             typeOf<String>() to NavType.StringType
                         )
-                    ){
+                    ) {
                         val arguments = it.toRoute<ScreenAddSchedule>()
                         AddSchedule(
                             id = arguments.id,
@@ -208,18 +194,18 @@ object ScreenAccountList
 object ScreenBudgetList
 
 @Serializable
-data class ScreenAddTran (
+data class ScreenAddTran(
     val tranId: Long,
     val tranType: String = TransactionType.Expense.name
 )
 
 @Serializable
-data class ScreenAccount (
+data class ScreenAccount(
     val accountId: Long,
 )
 
 @Serializable
-data class ScreenBudget (
+data class ScreenBudget(
     val budgetID: Long,
 )
 
@@ -230,11 +216,10 @@ object ScreenSetting
 object ScreenSchedule
 
 @Serializable
-data class ScreenAddSchedule (
+data class ScreenAddSchedule(
     val id: Long,
     val tranType: String = TransactionType.Expense.name
 )
-
 
 
 /**
@@ -244,11 +229,10 @@ data class ScreenAddSchedule (
 @Composable
 private fun shouldUseDarkTheme(
     uiState: UserData,
-): Boolean
-{
+): Boolean {
     var useDarkTheme = false
 
-    useDarkTheme = if(uiState.useDarkTheme=="true") true else false
+    useDarkTheme = if (uiState.useDarkTheme == "true") true else false
 
     return useDarkTheme
 }

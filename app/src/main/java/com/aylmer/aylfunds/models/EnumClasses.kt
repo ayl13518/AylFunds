@@ -32,3 +32,7 @@ enum class PeriodType {
     Daily, Weekly, SemiMonthly, Monthly , Annually,
 
 }
+
+enum class ComputeType {
+    Fixed_Amount, Percentage, Per_Annum
+}
