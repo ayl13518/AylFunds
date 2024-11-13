@@ -37,6 +37,7 @@ import com.aylmer.aylfunds.preference.SettingsViewModel
 import com.aylmer.aylfunds.scheduling.AddSchedule
 import com.aylmer.aylfunds.scheduling.ScheduleScreen
 import com.aylmer.aylfunds.workers.DailyInterest
+import com.aylmer.aylfunds.workers.WorkManagerRepository
 
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,6 +55,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val worker = WorkManagerRepository(applicationContext)
+        worker.applyInterest()
+
 //        val interestWorker = PeriodicWorkRequestBuilder<DailyInterest>(
 //            //1, TimeUnit.DAYS,
 //            15, TimeUnit.MINUTES,
@@ -61,8 +65,8 @@ class MainActivity : ComponentActivity() {
 //        ).build()
 //
 //        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork("interest2",ExistingPeriodicWorkPolicy.UPDATE,interestWorker)
-        val interestWorker = OneTimeWorkRequestBuilder<DailyInterest>().build()
-        WorkManager.getInstance(applicationContext).enqueue(interestWorker)
+//        val interestWorker = OneTimeWorkRequestBuilder<DailyInterest>().build()
+//        WorkManager.getInstance(applicationContext).enqueue(interestWorker)
 
        // var uiState: UserData by mutableStateOf(UserData())
         val userData= viewModel.state
