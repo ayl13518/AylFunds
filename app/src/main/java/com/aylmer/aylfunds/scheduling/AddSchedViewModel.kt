@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -78,10 +79,46 @@ class AddSchedViewModel @Inject constructor(
             ,selectedMonth = state.selectedMonth
             ,id = state.id
             ,schedule = state.schedule
+            , period = state.period
         )
     }.stateIn(viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         ScheduleState())
+
+    init {
+        if (tranType != null && tranType == TransactionType.Transfer.name)
+            //refreshTransfer()
+        else
+            refresh()
+    }
+
+    fun refresh() {
+        if (id != null && id != 0L) {
+            newTran = id
+            val curTran = mainRepo.getScheduleById(newTran)
+
+            viewModelScope.launch {
+                curTran.collectLatest { cur ->
+                    //if (cur == null) return@collectLatest
+
+                    _state.update { st ->
+                        st.copy(
+                            amount =  cur.amount,
+                            dateTrans = cur.dateTrans
+                            , accName = cur.accName
+                            , budName = cur.budName
+                            , tranType = cur.tranType
+                            , note = cur.note
+                            , tmpAmount = cur.amount.toString()
+                            ,id = cur.id
+                            ,selectedType = TransactionType.valueOf(cur.tranType).ordinal
+                             ,period = cur.period
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     fun onAmountUpdate(newAmount: String) {
         _state.update { it.copy(
@@ -163,9 +200,7 @@ class AddSchedViewModel @Inject constructor(
                 period = _state.value.period
             )
             viewModelScope.launch {
-                //mainRepo.updateAccountBalance(newExp)
                 mainRepo.upsertSchedule(newExp)
-                //mainRepo.updatePref(newExp)
             }
         }
     }

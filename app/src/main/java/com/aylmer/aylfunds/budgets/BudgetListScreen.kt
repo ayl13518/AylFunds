@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.rounded.Dehaze
@@ -47,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.ScreenBudget
+import com.aylmer.aylfunds.ScreenSchedule
 import com.aylmer.aylfunds.ScreenSetting
 import com.aylmer.aylfunds.designsys.component.AylTab
 import com.aylmer.aylfunds.designsys.component.AylTabRow
@@ -107,12 +109,15 @@ fun BudgetListScreen(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
             AylTopBar(
-                titleRes = "",
+                titleRes = "Budget",
                 navigationIcon = Icons.Rounded.Dehaze,
                 navigationIconContentDescription = "Navigation icon",
                 onNavigationClick = { navController.navigate(ScreenSetting) },
                 actionIcon = Icons.Default.AddBox,
                 actionIconContentDescription = "Action icon",
+                actionIcon2 = Icons.Default.AccessTime,
+                actionIconContentDescription2 = "Schedule",
+                onActionClick2 = {navController.navigate(ScreenSchedule)}
             )
         },
         bottomBar = {

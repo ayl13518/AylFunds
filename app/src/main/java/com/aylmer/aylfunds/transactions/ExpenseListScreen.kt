@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Help
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.rounded.Dehaze
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,6 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.ScreenAddTran
+import com.aylmer.aylfunds.ScreenSchedule
 import com.aylmer.aylfunds.ScreenSetting
 import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.ExpTrans
@@ -113,6 +115,9 @@ fun ExpListScreen(
                     onNavigationClick = {navController.navigate(ScreenSetting)},
                     actionIcon = Icons.AutoMirrored.Default.Help,
                     actionIconContentDescription = "Action icon",
+                    actionIcon2 = Icons.Default.AccessTime,
+                    actionIconContentDescription2 = "Schedule",
+                    onActionClick2 = {navController.navigate(ScreenSchedule)}
                 )
 
                 Box(modifier = Modifier

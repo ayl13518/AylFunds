@@ -1,8 +1,13 @@
 package com.aylmer.aylfunds.designsys.component
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,8 +21,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import com.aylmer.aylfunds.utils.convertMillisToDate
 
 
@@ -63,4 +72,31 @@ fun OutlinedDatesField(
         },
         colors = textFieldColors
     )
+
+    if (showDatePicker) {
+        Popup(
+            onDismissRequest = {
+                showDatePicker = false
+                onValueChange(datePickerState.selectedDateMillis?.let {
+                    convertMillisToDate(it)
+                }?: selectedDate )
+            },
+            alignment = Alignment.CenterStart
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = 64.dp)
+                    .shadow(elevation = 4.dp)
+                    .background(MaterialTheme.colorScheme.outline)
+                    .padding(16.dp)
+            ) {
+                DatePicker(
+                    state = datePickerState,
+                    showModeToggle = false
+                )
+            }
+        }
+    }
+
 }

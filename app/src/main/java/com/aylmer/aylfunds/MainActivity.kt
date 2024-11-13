@@ -167,7 +167,7 @@ class MainActivity : ComponentActivity() {
                         ScheduleScreen(
                             navController = navController,
                             onClickList = { id, tranType -> navController.navigate(
-                                ScreenAddTran(id, tranType))
+                                ScreenAddSchedule(id, tranType))
                             }
                         )
                     }
