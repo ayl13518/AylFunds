@@ -1,6 +1,7 @@
 package com.aylmer.aylfunds.preference
 
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,8 +37,8 @@ import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.designsys.component.DropdownList
 import com.aylmer.aylfunds.navigation.AylTopBar
 import androidx.compose.runtime.setValue
-import com.aylmer.aylfunds.workers.BackupButton
-import com.aylmer.aylfunds.workers.WorkManagerRepository
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +52,8 @@ fun SettingsScreen(
     var accountList = state.accountList
     var defaultAccount = state.defaultAccount
     var checked by remember { mutableStateOf(false)}
+
+    var fileList = viewModel.files.asList()
 
     if(state.useDarkTheme == "true") checked = true
     else checked = false
@@ -129,20 +132,29 @@ fun SettingsScreen(
 
 
             Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
-            BackupButton()
-//            Button(
-//                onClick = {
-//                    viewModel.onBackup()
-//                },
-//
-//            ) {
-//                Text(text = "Backup Database")
-//            }
 
-            Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
+            //BackupButton2()
             Button(
                 onClick = {
-                    //viewModel.onBackup()
+                    viewModel.onBackup()
+                },
+
+            ) {
+                Text(text = "Backup Database")
+            }
+
+            Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
+            DropdownList(
+                label = "Filename",
+                itemList = fileList,
+                onTypeChange = { viewModel.onRestoreFileChange(it) },
+                modifier = Modifier.fillMaxWidth(),
+                defaultSelectedItem = ""
+            )
+
+            Button(
+                onClick = {
+                    viewModel.onLoadBackUp()
                 },
 
                 ) {

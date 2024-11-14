@@ -1,13 +1,15 @@
 package com.aylmer.aylfunds.preference
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aylmer.aylfunds.di.MainRepository
 import com.aylmer.aylfunds.models.PreferenceConfig
 import com.aylmer.aylfunds.models.UserData
-import com.aylmer.aylfunds.workers.WorkManagerRepository
+import com.aylmer.aylfunds.workers.BackUpWorker2
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,7 +24,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val mainRepo: MainRepository,
     private val savedStateHandle: SavedStateHandle,
-    //private val worker: WorkManagerRepository,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
 
@@ -34,6 +36,8 @@ class SettingsViewModel @Inject constructor(
     private val _defaultAccount = mainRepo.getPrefName(PreferenceConfig.DefaultAccount.keyValue)
 
     val searchCategory = savedStateHandle.getStateFlow(key = SEARCH_Category, initialValue = "Expense")
+
+    val files: Array<String> = context.fileList()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val categoryFiltered = searchCategory.flatMapLatest { query ->
@@ -52,7 +56,8 @@ class SettingsViewModel @Inject constructor(
 //                ,
             useDarkTheme = preference
                 .find { item -> item.key.toString()
-                    .takeIf { it==PreferenceConfig.UseDarkTheme.keyValue } != null }?.name.toString()
+                    .takeIf { it==PreferenceConfig.UseDarkTheme.keyValue } != null }?.name.toString(),
+            restoreFile = state.restoreFile
         )
     }.stateIn(viewModelScope,
         SharingStarted.WhileSubscribed(5000),
@@ -78,9 +83,26 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-//    fun onBackup() {
-//        worker.backupDatabase()
-//    }
+    fun onRestoreFileChange(newFileName: String) {
+        _state.update {
+            it.copy(
+                restoreFile = newFileName
+            )
+        }
+    }
+
+    fun onBackup() {
+        val backupWorker: BackUpWorker2 = BackUpWorker2(context)
+        backupWorker.doBackUp()
+    }
+
+    fun onLoadBackUp(){
+        if(_state.value.restoreFile == "") return
+
+        val backupWorker: BackUpWorker2 = BackUpWorker2(context)
+        backupWorker.doRestore(_state.value.restoreFile)
+
+    }
 
 
 }

@@ -28,7 +28,7 @@ class WorkManagerRepository(context: Context) : WorkRepository {
     }
 
     override fun backupDatabase(){
-        val backupWorker = OneTimeWorkRequestBuilder<BackUpWorker>().build()
-        workManager.enqueue(backupWorker)
+//        val backupWorker = OneTimeWorkRequestBuilder<BackUpWorker>().build()
+//        workManager.enqueue(backupWorker)
     }
 }

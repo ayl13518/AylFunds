@@ -10,5 +10,6 @@ data class UserData(
     val incomeCategory: String? = null,
     val useDarkTheme: String = "false",
 
+    val restoreFile: String = "",
 )
 

@@ -2,7 +2,10 @@ package com.aylmer.aylfunds.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.aylmer.aylfunds.data.BudgetDatabase
+import com.aylmer.aylfunds.workers.WorkManagerRepository
+import com.aylmer.aylfunds.workers.WorkRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -22,7 +25,9 @@ object RoomModule {
             context,
             BudgetDatabase::class.java,
             "budgetdatabase.db"
-        ).build()
+        )
+            .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
+            .build()
     }
 
     @Provides
@@ -51,3 +56,25 @@ abstract class RepositoryModule {
     @Binds
     abstract fun bindExpRepository(repository: DefaultMainRepository): MainRepository
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class WorkRepositoryModule {
+    @Singleton
+    @Binds
+    abstract fun bindWorkRepository(repository: WorkManagerRepository): WorkRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+    @Singleton
+    @Provides
+    fun provideContext(
+        @ApplicationContext context: Context): Context {
+        return context
+    }
+}
+
+
+

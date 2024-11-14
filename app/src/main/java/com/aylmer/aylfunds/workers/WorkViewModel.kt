@@ -26,22 +26,24 @@ import androidx.lifecycle.lifecycleScope
 //
 //}
 
-@HiltViewModel
-class WorkViewModel @Inject constructor(
-    //private val workManagerRepository: WorkManagerRepository,
-): ViewModel()
-{
-    fun onBackup()
-    {
-        //workManagerRepository.backupDatabase()
-    }
-}
+//@HiltViewModel
+//class WorkViewModel @Inject constructor(
+//    private val workManagerRepository: WorkRepository,
+//): ViewModel()
+//{
+//    fun onBackup()
+//    {
+////       workManagerRepository.backupDatabase()
+////        val worker = WorkManagerRepository()
+////        worker.backupDatabase()
+//    }
+//}
 
 @Composable
-fun BackupButton(viewModel: WorkViewModel = hiltViewModel())
+fun BackupButton()
 {
     Button(onClick = {
-        //viewModel.onBackup()
+       // viewModel.onBackup()
     })
     {
         Text("Backup Database")
