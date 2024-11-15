@@ -19,4 +19,8 @@ interface TransferDAO {
 
     @Query("DELETE FROM transfer_transactions WHERE id = :id")
     suspend fun deleteTransferTransaction(id: Long)
+
+    @Query("SELECT * FROM transfer_transactions")
+    fun getAllTransfer(): Flow<List<TransferTransactions>>
+
 }

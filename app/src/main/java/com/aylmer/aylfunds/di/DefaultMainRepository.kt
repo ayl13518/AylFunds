@@ -109,6 +109,10 @@ class DefaultMainRepository @Inject constructor(
         expDao.deleteTransaction(id)
     }
 
+    override fun getAllTransactions(): Flow<List<ExpTrans>> {
+        return expDao.getAllExpTrans()
+    }
+
 
     //Preferences
     override fun getAllPreference(): Flow<List<Preferences>> {
@@ -158,6 +162,10 @@ class DefaultMainRepository @Inject constructor(
 
     override suspend fun deleteTransferTransaction(id: Long){
         transferDAO.deleteTransferTransaction(id)
+    }
+
+    override fun getAllTransfer(): Flow<List<TransferTransactions>> {
+        return transferDAO.getAllTransfer()
     }
 
     //Schedule

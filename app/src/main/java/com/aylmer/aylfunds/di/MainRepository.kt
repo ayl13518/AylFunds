@@ -35,15 +35,17 @@ interface MainRepository {
 
     fun getAllCategory(): Flow<List<String>>
 
+    fun getCategoryByType(type: String): Flow<List<String>>
+
 
     //Transactions
     fun getExpByMonth(month: Int): Flow<List<ExpTrans>>
 
     fun getTransactionById(tranId: Long): Flow<ExpTrans>
 
-    fun getCategoryByType(type: String): Flow<List<String>>
-
     suspend fun deleteTransaction(id: Long)
+
+    fun getAllTransactions(): Flow<List<ExpTrans>>
 
 
     //preference
@@ -64,6 +66,8 @@ interface MainRepository {
     fun getTransferTransactionById(id: Long): Flow<TransferTransactions>
 
     suspend fun deleteTransferTransaction(id: Long)
+
+    fun getAllTransfer(): Flow<List<TransferTransactions>>
 
     //Schedule
     fun getAllSchedule(): Flow<List<Schedule>>

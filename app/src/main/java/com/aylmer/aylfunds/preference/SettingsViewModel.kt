@@ -1,13 +1,13 @@
 package com.aylmer.aylfunds.preference
 
 import android.content.Context
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aylmer.aylfunds.di.MainRepository
 import com.aylmer.aylfunds.models.PreferenceConfig
 import com.aylmer.aylfunds.models.UserData
-import com.aylmer.aylfunds.workers.BackUpWorker2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,7 +19,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.aylmer.aylfunds.workers.ExportCSV
+import com.aylmer.aylfunds.backuprestore.ExportCSV
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 
 
 @HiltViewModel
@@ -32,43 +36,50 @@ class SettingsViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(UserData())
 
-    private val _prefAll = mainRepo.getAllPreference()
-    private val _accountList = mainRepo.getAllAccountName()
+    private val _prefAll = mainRepo.getAllPreference().flowOn(Dispatchers.IO)
+    private val _accountList = mainRepo.getAllAccountName().flowOn(Dispatchers.IO)
 
     private val _defaultAccount = mainRepo.getPrefName(PreferenceConfig.DefaultAccount.keyValue)
 
-    val searchCategory = savedStateHandle.getStateFlow(key = SEARCH_Category, initialValue = "Expense")
+    val searchCategory =
+        savedStateHandle.getStateFlow(key = SEARCH_Category, initialValue = "Expense")
 
     val files: Array<String> = context.fileList()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val categoryFiltered = searchCategory.flatMapLatest { query ->
         mainRepo.getCategoryByType(query)
-    }.stateIn(viewModelScope,
+    }.stateIn(
+        viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        emptyList())
+        emptyList()
+    )
 
-    val state= combine(_state,_prefAll,_accountList,_defaultAccount
-    ) {  state, preference,accountList, defaultAccount ->
+    val state = combine(
+        _state, _prefAll, _accountList, _defaultAccount
+    ) { state, preference, accountList, defaultAccount ->
         state.copy(
-              accountList = accountList,
-              defaultAccount = defaultAccount,
-//            useDarkTheme = preference
-//                .find { it.key==PreferenceConfig.UseDarkTheme.keyValue}
-//                ,
+            accountList = accountList,
+            defaultAccount = defaultAccount,
             useDarkTheme = preference
-                .find { item -> item.key.toString()
-                    .takeIf { it==PreferenceConfig.UseDarkTheme.keyValue } != null }?.name.toString(),
+                .find { item ->
+                    item.key.toString()
+                        .takeIf { it == PreferenceConfig.UseDarkTheme.keyValue } != null
+                }?.name.toString(),
             restoreFile = state.restoreFile
         )
-    }.stateIn(viewModelScope,
+    }.stateIn(
+        viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        UserData())
+        UserData()
+    )
 
     fun onUpdateDarkTheme(newTheme: String) {
-        _state.update { it.copy(
-            useDarkTheme = newTheme
-        ) }
+        _state.update {
+            it.copy(
+                useDarkTheme = newTheme
+            )
+        }
         viewModelScope.launch {
             mainRepo.updatePref(keyValue = PreferenceConfig.UseDarkTheme.keyValue, name = newTheme)
         }
@@ -81,7 +92,10 @@ class SettingsViewModel @Inject constructor(
             )
         }
         viewModelScope.launch {
-            mainRepo.updatePref(keyValue = PreferenceConfig.DefaultAccount.keyValue, name = newAccount)
+            mainRepo.updatePref(
+                keyValue = PreferenceConfig.DefaultAccount.keyValue,
+                name = newAccount
+            )
         }
     }
 
@@ -93,23 +107,45 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onBackup() {
-//        val backupWorker: BackUpWorker2 = BackUpWorker2(context)
-//        backupWorker.doBackUp()
+    fun onBackup(
+//        scope: CoroutineScope,
+//        snackbarHostState: SnackbarHostState
+    ) {
 
         val backupWorker: ExportCSV = ExportCSV(context, mainRepo)
         backupWorker.checkDir()
 
         viewModelScope.launch {
-            backupWorker.doExportCSV()
+            withContext(Dispatchers.IO) { backupWorker.doExportAccounts() }
         }
+
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { backupWorker.doExportBudgets() }
+        }
+
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { backupWorker.doExportTransactions() }
+        }
+
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { backupWorker.doExportTransfer() }
+        }
+
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { backupWorker.doExportSchedules() }
+        }
+
+       // viewModelScope.launch{
+//            scope.launch(
+//                snackbarHostState.showSnackbar("Done Backup")
+//            )
+       // }
+
     }
 
-    fun onLoadBackUp(){
-        if(_state.value.restoreFile == "") return
+    fun onLoadBackUp() {
+        if (_state.value.restoreFile == "") return
 
-        //val backupWorker: BackUpWorker2 = BackUpWorker2(context)
-        //backupWorker.doRestore(_state.value.restoreFile)
         val backupWorker: ExportCSV = ExportCSV(context, mainRepo)
         viewModelScope.launch {
             backupWorker.doRestoreCSV()

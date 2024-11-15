@@ -15,7 +15,7 @@ class WorkManagerRepository(context: Context) : WorkRepository {
     override fun applyInterest(){
         val interestWorker = PeriodicWorkRequestBuilder<DailyInterest>(
             //1, TimeUnit.DAYS,
-            15, TimeUnit.MINUTES,
+            60, TimeUnit.MINUTES,
             15, TimeUnit.MINUTES
         )
         workManager.enqueueUniquePeriodicWork("dailyInterest",
