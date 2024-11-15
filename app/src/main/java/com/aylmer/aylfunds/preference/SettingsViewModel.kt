@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.aylmer.aylfunds.workers.ExportCSV
+
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -92,15 +94,26 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onBackup() {
-        val backupWorker: BackUpWorker2 = BackUpWorker2(context)
-        backupWorker.doBackUp()
+//        val backupWorker: BackUpWorker2 = BackUpWorker2(context)
+//        backupWorker.doBackUp()
+
+        val backupWorker: ExportCSV = ExportCSV(context, mainRepo)
+        backupWorker.checkDir()
+
+        viewModelScope.launch {
+            backupWorker.doExportCSV()
+        }
     }
 
     fun onLoadBackUp(){
         if(_state.value.restoreFile == "") return
 
-        val backupWorker: BackUpWorker2 = BackUpWorker2(context)
-        backupWorker.doRestore(_state.value.restoreFile)
+        //val backupWorker: BackUpWorker2 = BackUpWorker2(context)
+        //backupWorker.doRestore(_state.value.restoreFile)
+        val backupWorker: ExportCSV = ExportCSV(context, mainRepo)
+        viewModelScope.launch {
+            backupWorker.doRestoreCSV()
+        }
 
     }
 
