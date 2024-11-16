@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.aylmer.aylfunds.backuprestore.ExportCSV
+import com.aylmer.aylfunds.backuprestore.RestoreCSV
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -144,11 +145,27 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onLoadBackUp() {
-        if (_state.value.restoreFile == "") return
 
-        val backupWorker: ExportCSV = ExportCSV(context, mainRepo)
+        val backupWorker: RestoreCSV = RestoreCSV(context, mainRepo)
+
         viewModelScope.launch {
-            backupWorker.doRestoreCSV()
+            backupWorker.doRestoreAccounts()
+        }
+
+        viewModelScope.launch {
+            backupWorker.doRestoreBudgets()
+        }
+
+        viewModelScope.launch {
+            backupWorker.doRestoreTransactions()
+        }
+
+        viewModelScope.launch {
+            backupWorker.doRestoreTransfers()
+        }
+
+        viewModelScope.launch {
+            backupWorker.doRestoreSchedules()
         }
 
     }

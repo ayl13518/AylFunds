@@ -47,6 +47,8 @@ interface MainRepository {
 
     fun getAllTransactions(): Flow<List<ExpTrans>>
 
+    suspend fun upsertExpTran(expTrans: ExpTrans)
+
 
     //preference
     fun getAllPreference(): Flow<List<Preferences>>

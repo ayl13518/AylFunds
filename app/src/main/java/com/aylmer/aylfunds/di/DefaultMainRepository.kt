@@ -113,6 +113,10 @@ class DefaultMainRepository @Inject constructor(
         return expDao.getAllExpTrans()
     }
 
+    override suspend fun upsertExpTran(expTrans: ExpTrans) {
+        expDao.upsertExpTran(expTrans)
+    }
+
 
     //Preferences
     override fun getAllPreference(): Flow<List<Preferences>> {

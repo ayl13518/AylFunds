@@ -27,27 +27,6 @@ class ExportCSV @Inject constructor(
         }
     }
 
-    suspend fun doExportAll(
-//        scope: CoroutineScope,
-//        snackbarHostState: SnackbarHostState,
-    ) : Boolean {
-        doExportAccounts()
-        println("done export")
-        doExportBudgets()
-        println("done export")
-        doExportTransactions()
-        println("done export")
-        doExportTransfer()
-        println("done export")
-        doExportSchedules()
-        println("done export")
-
-        return true
-
-//        scope.launch {
-//            snackbarHostState.showSnackbar("Backup Complete")
-//        }
-    }
 
     fun formatExportData(dataFields: List<String>, account: String) : String {
         val reg = Regex("[()=]")
@@ -181,34 +160,6 @@ class ExportCSV @Inject constructor(
         }
     }
 
-
-        suspend fun doRestoreCSV() {
-
-        val file = File(exportDir, "accounts.csv")
-        if (file.exists()) {
-            println(file.length().toString())
-            val input = file.reader()
-
-            input.readLines().forEach { txt ->
-                println(txt.toString())
-
-                var linetxt = txt.split(",")
-                val oldAccounts = accounts(
-                    id = linetxt[0].toLong(),
-                    name = linetxt[1].trimStart().toString(),
-                    accType = linetxt[2].trimStart().toString(),
-                    balance = linetxt[3].toDouble(),
-                    description = linetxt[4].trimStart().toString(),
-                )
-                println(oldAccounts.toString())
-                mainRepo.upsertAccount(oldAccounts)
-            }
-            input.close()
-            println("done reading")
-
-
-        }
-    }
 
 }
 
