@@ -142,6 +142,7 @@ class AddTranViewModel @Inject constructor(
                             ,selectedType = _typeList.indexOf(cur.tranType)
                         )
                     }
+                    savedStateHandle[SEARCH_Category] = cur.tranType
                 }
             }
         }
@@ -173,11 +174,15 @@ class AddTranViewModel @Inject constructor(
     }
 
     fun onTranTypeUpdate(newTranType: String) {
-        _state.update { it.copy(
-            tranType = newTranType,
-            selectedType = _typeList.indexOf(newTranType)
-        ) }
-        savedStateHandle[SEARCH_Category] = newTranType
+        if (newTran !=0L) {
+            _state.update {
+                it.copy(
+                    tranType = newTranType,
+                    selectedType = _typeList.indexOf(newTranType)
+                )
+            }
+            savedStateHandle[SEARCH_Category] = newTranType
+        }
     }
 
     fun onNoteUpdate(newNote: String) {
@@ -195,7 +200,10 @@ class AddTranViewModel @Inject constructor(
     fun onDeleteTransaction() {
         if (newTran !=0L) {
             viewModelScope.launch {
-                mainRepo.deleteTransaction(newTran)
+                if (_state.value.tranType != TransactionType.Transfer.name)
+                    mainRepo.deleteTransaction(newTran)
+                else
+                    mainRepo.deleteTransferTransaction(newTran)
             }
         }
     }
@@ -227,6 +235,7 @@ class AddTranViewModel @Inject constructor(
                 note = _state.value.note
             )
             viewModelScope.launch {
+                mainRepo.updateOldBalance(newExp.id)
                 mainRepo.updateAccountBalance(newExp)
                 mainRepo.updatePref(newExp)
             }

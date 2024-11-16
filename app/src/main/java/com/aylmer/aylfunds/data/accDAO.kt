@@ -17,7 +17,7 @@ interface accDAO {
     @Query("SELECT name FROM accounts")
     fun getAllAccountName(): Flow<List<String>>
 
-    @Query("UPDATE accounts set balance = balance + :amount WHERE name = :name")
+    @Query("UPDATE accounts SET balance = balance + :amount WHERE name = :name")
     suspend fun updateAccountBalance(name: String, amount: Double)
 
     @Query("SELECT * FROM accounts WHERE `id` = :accountId")
@@ -25,5 +25,10 @@ interface accDAO {
 
     @Query("SELECT balance FROM accounts WHERE `name` = :accName")
     fun getAccountByName(accName: String): Double
+
+    @Query("UPDATE accounts " +
+            "SET balance = balance + (Select amount * (CASE WHEN tranType = 'Expense' THEN 1 ELSE -1 END) FROM expTrans where id = :id)" +
+            "WHERE name = (SELECT accName FROM expTrans WHERE id = :id)")
+    suspend fun updateOldAccountBalance(id: Long)
 
 }

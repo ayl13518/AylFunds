@@ -26,6 +26,8 @@ interface MainRepository {
 
     fun getAccountByName(accName: String): Double
 
+    suspend fun updateOldBalance( id: Long)
+
     //Budgets
     fun getAllBudgets(): Flow<List<budgets>>
 

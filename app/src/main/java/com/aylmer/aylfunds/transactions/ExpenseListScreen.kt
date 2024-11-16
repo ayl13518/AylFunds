@@ -78,15 +78,6 @@ fun ExpListScreen(
     val accountBalance by viewModel.accountBalance.collectAsStateWithLifecycle()
     val currentMonth = state.selectedMonth
 
-//    val transbyDate = transMonthList
-//        .groupBy { it.dateTrans }
-//        .mapValues { (_, value) -> value.sortedBy { it.dateTrans }.reversed() }.toSortedMap(reverseOrder())
-//
-//    val sumByDate = transMonthList
-//        .groupingBy { it.dateTrans }
-//        .fold(0.0) { acc, expTrans -> acc + expTrans.amount }
-//
-//    val rollTransList=rollList(transMonthList,accountBalance)
 
     val rollTransList=roll2(transMonthList,transferMonthList,accountBalance)
 
@@ -258,13 +249,13 @@ fun ExpListScreen(
                                     style = typography.bodyMedium,
                                     modifier = Modifier
                                         .padding(start = 10.dp)
-                                        .weight(.5f),
+                                        .weight(.4f),
                                 )
                                 Text(
                                     text = exp.accName,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                                     style = typography.bodyMedium,
-                                    modifier = Modifier.weight(.2f),
+                                    modifier = Modifier.weight(.3f),
                                 )
                                 Text(
                                     text = decimalFormatter.formatForVisual(
@@ -275,7 +266,7 @@ fun ExpListScreen(
                                     style = typography.bodyMedium,
                                     modifier = Modifier
                                         .padding(end = 10.dp)
-                                        .weight(.2f),
+                                        .weight(.3f),
                                     textAlign = TextAlign.End
                                 )
                             }

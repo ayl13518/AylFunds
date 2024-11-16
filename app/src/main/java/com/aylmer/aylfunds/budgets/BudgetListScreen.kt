@@ -85,7 +85,12 @@ fun BudgetListScreen(
     val transMonthList by viewModel.transMonthList.collectAsStateWithLifecycle()
     var budgetTypes = BudgetType.entries.map { it.name }
 
-    val accbyType = state.budgets.groupBy { it.type }
+    val accbyType = state.budgets
+        //.sortedBy { it.type }
+        .sortedByDescending { it.balance }
+        .sortedBy { it.type }
+        .groupBy { it.type }
+
 
     val allBudget = state.budgets
 
@@ -190,7 +195,7 @@ fun BudgetListScreen(
                     }
                 }
             }
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(10.dp))
             LazyColumn(
                 modifier = Modifier
                     .consumeWindowInsets(paddingValues)
@@ -199,14 +204,16 @@ fun BudgetListScreen(
             ) {
                 accbyType.forEach { (initialDate, expsByDate) ->
                     stickyHeader {
-                        Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
+                        Spacer(Modifier.height(30.dp))
+
                         Text(
                             text = initialDate,
                             textAlign = TextAlign.Center,
-                            style = typography.titleMedium,
+                            style = typography.titleLarge,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(MaterialTheme.colorScheme.primaryContainer)
+                                .height(30.dp)
                         )
                     }
                     items(expsByDate) { item ->
@@ -214,12 +221,15 @@ fun BudgetListScreen(
                             modifier = Modifier
                                 .background(MaterialTheme.colorScheme.secondaryContainer)
                                 .clickable { onClickList(item.budgetid) }
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .fillMaxWidth()
+                                .height(30.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.Bottom,
                         ) {
                             Text(
                                 text = item.name,
-                                modifier = Modifier.padding(start = 16.dp)
+                                modifier = Modifier
+                                    .padding(start = 16.dp)
                             )
                             Text(
                                 text = progress.find { it.budgetName == item.name }?.textOut ?: "",

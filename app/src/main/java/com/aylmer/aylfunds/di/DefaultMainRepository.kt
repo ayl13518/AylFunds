@@ -20,6 +20,10 @@ import com.aylmer.aylfunds.models.PreferenceConfig
 import com.aylmer.aylfunds.models.TransactionType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.transformWhile
+import kotlinx.coroutines.yield
 
 
 @Singleton
@@ -49,6 +53,10 @@ class DefaultMainRepository @Inject constructor(
         accDAO.updateAccountBalance(transaction.accName, transaction.amount * (-1))
         accDAO.updateAccountBalance(transaction.accNameTo, transaction.amount)
         transferDAO.upsertTransferTransaction(transaction)
+    }
+
+    override suspend fun updateOldBalance(id : Long) {
+        return accDAO.updateOldAccountBalance(id)
     }
 
     override fun getAllAccounts(): Flow<List<accounts>> {
@@ -106,6 +114,7 @@ class DefaultMainRepository @Inject constructor(
     }
 
     override suspend fun deleteTransaction(id: Long) {
+        accDAO.updateOldAccountBalance(id)
         expDao.deleteTransaction(id)
     }
 

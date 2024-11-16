@@ -131,7 +131,7 @@ fun AddTranScreen(
                     itemList = categoryList,
                     onTypeChange = { viewModel.onBudgetUpdate(it) },
                     modifier = Modifier.fillMaxWidth(),
-                    defaultSelectedItem = defaultCategory
+                    defaultSelectedItem = if(state.budName == "") defaultCategory else state.budName,
                 )
             }
 
