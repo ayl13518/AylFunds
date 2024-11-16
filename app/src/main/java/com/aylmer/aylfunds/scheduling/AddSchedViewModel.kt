@@ -167,11 +167,15 @@ class AddSchedViewModel @Inject constructor(
     }
 
     fun onTranTypeUpdate(newTranType: String) {
-        _state.update { it.copy(
-            tranType = newTranType,
-            selectedType =  TransactionType.valueOf(newTranType).ordinal ,
-        ) }
-        savedStateHandle[SEARCH_Category] = newTranType
+        if (newTran ==0L) {
+            _state.update {
+                it.copy(
+                    tranType = newTranType,
+                    selectedType = TransactionType.valueOf(newTranType).ordinal,
+                )
+            }
+            savedStateHandle[SEARCH_Category] = newTranType
+        }
     }
 
     fun onNoteUpdate(newNote: String) {

@@ -174,7 +174,7 @@ class AddTranViewModel @Inject constructor(
     }
 
     fun onTranTypeUpdate(newTranType: String) {
-        if (newTran !=0L) {
+        if (newTran ==0L) {
             _state.update {
                 it.copy(
                     tranType = newTranType,
@@ -183,6 +183,7 @@ class AddTranViewModel @Inject constructor(
             }
             savedStateHandle[SEARCH_Category] = newTranType
         }
+
     }
 
     fun onNoteUpdate(newNote: String) {
