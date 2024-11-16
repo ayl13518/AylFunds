@@ -30,12 +30,13 @@ fun AylOutlinedNumber(
         unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer
     )
     val decimalFormatter = DecimalFormatter()
-
+    var value2: Double = 0.0
     value.toDoubleOrNull()?.let {
+        value2 = value.toDouble()
+    }
         OutlinedTextField(
             label = { Text(text = label) },
-            //placeholder = { Text(text = label) },
-            value = if(it <= 0.0) "" else value,
+            value = if (value2 == 0.0) "" else value,
             modifier = modifier,
             onValueChange = { onValueChange( decimalFormatter.cleanup(it))},
             maxLines = 1,
@@ -46,7 +47,6 @@ fun AylOutlinedNumber(
                 keyboardType = KeyboardType.Decimal),
             visualTransformation = DecimalInputVisualTransformation(decimalFormatter)
         )
-    }
 }
 
 @ThemePreviews
@@ -55,7 +55,7 @@ fun PreviewAylOutlinedNumber() {
     NewNavTheme {
         AylOutlinedNumber(
             label = "Ayl",
-            value = "100",
+            value = "1,000.0",
             onValueChange = {}
         )
     }

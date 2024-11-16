@@ -1,13 +1,11 @@
 package com.aylmer.aylfunds
 
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -30,11 +28,9 @@ import com.aylmer.aylfunds.scheduling.ScheduleScreen
 import com.aylmer.aylfunds.transactions.AddTranScreen
 import com.aylmer.aylfunds.transactions.ExpListScreen
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
-import com.aylmer.aylfunds.workers.BackUpWorker2
 import com.aylmer.aylfunds.workers.WorkManagerRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable
-import javax.inject.Inject
 import kotlin.reflect.typeOf
 
 
@@ -42,12 +38,6 @@ import kotlin.reflect.typeOf
 class MainActivity : ComponentActivity() {
 
     private val viewModel: SettingsViewModel by viewModels()
-
-//    @Inject
-//    lateinit var backUpWorker2: BackUpWorker2
-
-    private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +47,6 @@ class MainActivity : ComponentActivity() {
 
         // var uiState: UserData by mutableStateOf(UserData())
         val userData = viewModel.state
-
-        //backUpWorker2.doBackUp()
-
 
         enableEdgeToEdge()
         setContent {

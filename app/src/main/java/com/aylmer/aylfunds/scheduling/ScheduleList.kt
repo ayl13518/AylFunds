@@ -179,13 +179,13 @@ fun ScheduleScreen(
                                 style = typography.bodyMedium,
                                 modifier = Modifier
                                     .padding(start = 10.dp)
-                                    .weight(.5f),
+                                    .weight(.4f),
                             )
                             Text(
                                 text = schedule.accName,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 style = typography.bodyMedium,
-                                modifier = Modifier.weight(.2f),
+                                modifier = Modifier.weight(.3f),
                             )
                             Text(
                                 text = schedule.period,
@@ -193,7 +193,7 @@ fun ScheduleScreen(
                                 style = typography.bodyMedium,
                                 modifier = Modifier
                                     .padding(end = 10.dp)
-                                    .weight(.2f),
+                                    .weight(.3f),
                                 textAlign = TextAlign.End
                             )
                         }
