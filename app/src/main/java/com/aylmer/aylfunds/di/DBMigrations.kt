@@ -39,7 +39,7 @@ val Migration8to9 = object : Migration(8, 9) {
         database.execSQL("UPDATE transfer_transactions SET accountToId = 0, accountId = 0")
         database.execSQL("UPDATE transfer_transactions " +
                 "SET accountToId = (SELECT id FROM accounts WHERE name = accNameTo) ")
-        database.execSQL("UPDATE expTrans " +
+        database.execSQL("UPDATE transfer_transactions " +
                 "SET accountId = (SELECT id FROM accounts WHERE name = accName) ")
 
         //schedules
@@ -50,7 +50,7 @@ val Migration8to9 = object : Migration(8, 9) {
         database.execSQL("UPDATE schedule SET budgetId = 0, accountId = 0")
         database.execSQL("UPDATE schedule " +
                 "SET budgetId = (SELECT budgetid FROM budgets WHERE name = budName) ")
-        database.execSQL("UPDATE expTrans " +
+        database.execSQL("UPDATE schedule " +
                 "SET accountId = (SELECT id FROM accounts WHERE name = accName) ")
 
     }
