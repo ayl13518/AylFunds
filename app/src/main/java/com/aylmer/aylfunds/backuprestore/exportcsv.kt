@@ -2,14 +2,11 @@ package com.aylmer.aylfunds.backuprestore
 
 import android.content.Context
 import androidx.compose.material3.SnackbarHostState
-import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.di.MainRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -40,7 +37,7 @@ class ExportCSV @Inject constructor(
         return strData
     }
 
-    suspend fun doExportAccounts() {
+    suspend fun doExportAccounts(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
         val accounts = mainRepo.getAllAccounts()
         val file = File(exportDir, "accounts.csv")
         if (file.exists()) file.delete()
@@ -62,6 +59,7 @@ class ExportCSV @Inject constructor(
                 //println("done writing")
                 writer.flush()
                 writer.close()
+                scope.launch { snackBarHostState.showSnackbar("Done Accounts Backup")    }
                 return@collect
             }
         }
@@ -70,7 +68,7 @@ class ExportCSV @Inject constructor(
         }
     }
 
-    suspend fun doExportBudgets() {
+    suspend fun doExportBudgets(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
         val accounts = mainRepo.getAllBudgets()
         val file = File(exportDir, "budgets.csv")
         if (file.exists()) file.delete()
@@ -90,10 +88,11 @@ class ExportCSV @Inject constructor(
             //println("done writing")
             writer.flush()
             writer.close()
+            scope.launch { snackBarHostState.showSnackbar("Done Budgets Backup")    }
         }
     }
 
-    suspend fun doExportTransactions()  {
+    suspend fun doExportTransactions(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
         val accounts = mainRepo.getAllTransactions()
         val file = File(exportDir, "transactions.csv")
         if (file.exists()) file.delete()
@@ -113,10 +112,11 @@ class ExportCSV @Inject constructor(
             //println("done writing transactions")
             writer.flush()
             writer.close()
+            scope.launch { snackBarHostState.showSnackbar("Done Transactions Backup")    }
         }
     }
 
-    suspend fun doExportTransfer() {
+    suspend fun doExportTransfer(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
         val accounts = mainRepo.getAllTransfer()
         val file = File(exportDir, "transfer.csv")
         if (file.exists()) file.delete()
@@ -136,10 +136,11 @@ class ExportCSV @Inject constructor(
             //println("done writing")
             writer.flush()
             writer.close()
+            scope.launch { snackBarHostState.showSnackbar("Done Transfer Backup")    }
         }
     }
 
-    suspend fun doExportSchedules() {
+    suspend fun doExportSchedules(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
         val accounts = mainRepo.getAllSchedule()
         val file = File(exportDir, "schedules.csv")
         if (file.exists()) file.delete()
@@ -157,6 +158,7 @@ class ExportCSV @Inject constructor(
             }
             writer.flush()
             writer.close()
+            scope.launch { snackBarHostState.showSnackbar("Done Schedules Backup")    }
         }
     }
 

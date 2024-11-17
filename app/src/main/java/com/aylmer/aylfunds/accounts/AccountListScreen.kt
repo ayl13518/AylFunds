@@ -53,7 +53,7 @@ fun AccListScreen(
 
     val decimalFormatter = DecimalFormatter()
 
-    val mainList = state.accounts
+    val mainList = state.accounts.sortedByDescending { it.balance }
 
     val groupTotal = mainList.fold(0.0) { total, acc ->
         total + acc.balance

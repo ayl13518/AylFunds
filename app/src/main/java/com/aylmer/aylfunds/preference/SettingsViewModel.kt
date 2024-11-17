@@ -108,32 +108,29 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onBackup(
-//        scope: CoroutineScope,
-//        snackbarHostState: SnackbarHostState
-    ) {
+    fun onBackup(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
 
         val backupWorker: ExportCSV = ExportCSV(context, mainRepo)
         backupWorker.checkDir()
 
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { backupWorker.doExportAccounts() }
+            withContext(Dispatchers.IO) { backupWorker.doExportAccounts(scope, snackBarHostState) }
         }
 
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { backupWorker.doExportBudgets() }
+            withContext(Dispatchers.IO) { backupWorker.doExportBudgets(scope,snackBarHostState) }
         }
 
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { backupWorker.doExportTransactions() }
+            withContext(Dispatchers.IO) { backupWorker.doExportTransactions(scope, snackBarHostState) }
         }
 
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { backupWorker.doExportTransfer() }
+            withContext(Dispatchers.IO) { backupWorker.doExportTransfer(scope, snackBarHostState) }
         }
 
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { backupWorker.doExportSchedules() }
+            withContext(Dispatchers.IO) { backupWorker.doExportSchedules(scope, snackBarHostState) }
         }
 
        // viewModelScope.launch{
