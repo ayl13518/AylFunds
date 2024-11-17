@@ -46,7 +46,7 @@ class ExportCSV @Inject constructor(
 
         try {
 
-            accounts.collect() {
+            accounts.collect {
                 it.forEach { account ->
                     var strData = formatExportData(
                         Account_List.entries.map { it.name },

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,9 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,6 +37,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,7 +51,11 @@ import com.aylmer.aylfunds.ScreenSetting
 import com.aylmer.aylfunds.designsys.component.AylTab
 import com.aylmer.aylfunds.designsys.component.AylTabRow
 import com.aylmer.aylfunds.designsys.component.ThemePreviews
+import com.aylmer.aylfunds.designsys.theme.Green40
+import com.aylmer.aylfunds.designsys.theme.Green80
+import com.aylmer.aylfunds.designsys.theme.Red40
 import com.aylmer.aylfunds.models.BudgetType
+import com.aylmer.aylfunds.models.TransactionType
 import com.aylmer.aylfunds.navigation.AylTopBar
 import com.aylmer.aylfunds.navigation.NavigationBottomBar
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
@@ -96,7 +98,7 @@ fun BudgetListScreen(
 
     val sumByBudget = transMonthList
         .groupingBy { it.budName }
-        .fold(0.0) { acc, ExpTrans -> acc + ExpTrans.amount  }
+        .fold(0.0) { acc, expTrans -> acc + expTrans.amount  }
 
     val progress = allBudget.map { budget ->
         RollingBalance(
@@ -107,6 +109,14 @@ fun BudgetListScreen(
                     + " of " + decimalFormatter.formatForVisual( budget.balance.toString())
         )
     }
+
+    val sumBudgetType =allBudget
+        .groupingBy { it.type }
+        .fold(0.0) { acc, expTrans -> acc + expTrans.balance  }
+
+    val sumTransType = transMonthList
+        .groupingBy { it.tranType }
+        .fold(0.0) { acc, expTrans -> acc + expTrans.amount  }
 
 
 
@@ -205,7 +215,6 @@ fun BudgetListScreen(
                 accbyType.forEach { (initialDate, expsByDate) ->
                     stickyHeader {
                         Spacer(Modifier.height(30.dp))
-
                         Text(
                             text = initialDate,
                             textAlign = TextAlign.Center,
@@ -214,6 +223,12 @@ fun BudgetListScreen(
                                 .fillMaxWidth()
                                 .background(MaterialTheme.colorScheme.primaryContainer)
                                 .height(30.dp)
+                        )
+                        CustomProgressBar( progress = (sumTransType[initialDate]?: 0f).toFloat()  / (sumBudgetType[initialDate]?: 0f).toFloat(),
+                            modifier = Modifier
+                                .fillMaxWidth(.95f)
+                                .offset(x = 10.dp),
+                            progressColor= if(initialDate == TransactionType.Income.name) Green80 else Red40,
                         )
                     }
                     items(expsByDate) { item ->
@@ -267,6 +282,7 @@ fun CustomProgressBar(
             .background(backgroundColor,RoundedCornerShape(16.dp))
             .height(20.dp)
             .border(1.dp, MaterialTheme.colorScheme.onPrimaryContainer,RoundedCornerShape(16.dp))
+            .shadow(8.dp,RoundedCornerShape(16.dp))
             //.padding(start = 1.dp)
     ) {
         Box(
@@ -275,6 +291,7 @@ fun CustomProgressBar(
                 .background(progressColor)
                 .fillMaxHeight()
                 .fillMaxWidth(progress)
+                .shadow(8.dp,RoundedCornerShape(16.dp))
                 //.offset(x = 10.dp)
         )
     }
