@@ -45,14 +45,16 @@ class DefaultMainRepository @Inject constructor(
             else
                 accDAO.updateAccountBalance(expTrans.accName, expTrans.amount)
         }
-        expDao.upsertExpTran(expTrans)
+        val id = expDao.upsertExpTran(expTrans)
+        expDao.updatedId(if(id>0) id else expTrans.id)
     }
 
     override suspend fun updateAccountBalance(transaction: TransferTransactions)
     {
         accDAO.updateAccountBalance(transaction.accName, transaction.amount * (-1))
         accDAO.updateAccountBalance(transaction.accNameTo, transaction.amount)
-        transferDAO.upsertTransferTransaction(transaction)
+        val id =transferDAO.upsertTransferTransaction(transaction)
+        transferDAO.updateId(if(id>0) id else transaction.id)
     }
 
     override suspend fun updateOldBalance(id : Long) {
@@ -131,7 +133,8 @@ class DefaultMainRepository @Inject constructor(
     }
 
     override suspend fun upsertExpTran(expTrans: ExpTrans) {
-        expDao.upsertExpTran(expTrans)
+        val id = expDao.upsertExpTran(expTrans)
+        expDao.updatedId(if(id>0) id else expTrans.id)
     }
 
 
@@ -168,13 +171,13 @@ class DefaultMainRepository @Inject constructor(
 
 
     //Transfers
-
     override fun getTransferByMonth(id: Int): Flow<List<TransferTransactions>> {
         return transferDAO.getTransferByMonth(id)
     }
 
     override suspend fun upsertTransferTransaction(transferTransaction: TransferTransactions) {
-        transferDAO.upsertTransferTransaction(transferTransaction)
+        val id = transferDAO.upsertTransferTransaction(transferTransaction)
+        transferDAO.updateId(if(id>0) id else transferTransaction.id)
     }
 
     override fun getTransferTransactionById(id: Long): Flow<TransferTransactions> {

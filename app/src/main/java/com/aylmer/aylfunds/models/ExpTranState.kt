@@ -22,6 +22,10 @@ data class ExpTranState(
 
     val tranId: Long=0,
     val accNameTo: String = "",
+
+    val budgetId: Long = 0L,
+    val accountId: Long = 0L,
+    val accountToId: Long = 0L,
 )
 
 data class CurrentTransactions(

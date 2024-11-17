@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface expDAO {
 
     @Upsert
-    suspend fun upsertExpTran(expTrans: ExpTrans)
+    suspend fun upsertExpTran(expTrans: ExpTrans): Long
 
     @Query("SELECT * FROM expTrans")
     fun getAllExpTrans(): Flow<List<ExpTrans>>
@@ -26,6 +26,11 @@ interface expDAO {
 
     @Query("DELETE FROM expTrans WHERE id = :id")
     suspend fun deleteTransaction(id: Long)
+
+    @Query("UPDATE expTrans SET budgetId = (SELECT budgetid FROM budgets WHERE name = budName), " +
+            "accountId = (SELECT id FROM accounts WHERE name = accName) " +
+            "WHERE id = :id ")
+    suspend fun updatedId(id: Long)
 
 
 }

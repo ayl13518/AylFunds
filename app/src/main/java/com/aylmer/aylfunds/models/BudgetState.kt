@@ -14,4 +14,6 @@ data class BudgetState(
     val budScopeList: List<String> = BudgetScope.entries.map { it.name },
 
     val tmpBalance: String = "0.00",
+
+
 )

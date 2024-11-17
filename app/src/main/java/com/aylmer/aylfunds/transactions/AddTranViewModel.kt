@@ -157,7 +157,7 @@ class AddTranViewModel @Inject constructor(
 
     fun onBudgetUpdate(newBud: String) {
         _state.update { it.copy(
-            budName = newBud
+            budName = newBud,
         ) }
     }
 

@@ -12,7 +12,7 @@ interface TransferDAO {
     fun getTransferByMonth(id: Int): Flow<List<TransferTransactions>>
 
     @Upsert
-    suspend fun upsertTransferTransaction(transferTransaction: TransferTransactions)
+    suspend fun upsertTransferTransaction(transferTransaction: TransferTransactions): Long
 
     @Query("SELECT * FROM transfer_transactions WHERE id = :id")
     fun getTransferTransactionById(id: Long): Flow<TransferTransactions>
@@ -22,5 +22,10 @@ interface TransferDAO {
 
     @Query("SELECT * FROM transfer_transactions")
     fun getAllTransfer(): Flow<List<TransferTransactions>>
+
+    @Query("UPDATE transfer_transactions SET accountId = (SELECT id FROM accounts WHERE name = accName), " +
+            "accountToId = (SELECT id FROM accounts WHERE name = accNameTo) " +
+            "WHERE id = :id ")
+    suspend fun updateId(id: Long)
 
 }

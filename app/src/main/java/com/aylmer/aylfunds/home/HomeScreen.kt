@@ -220,7 +220,7 @@ fun CustomBarChart(
      )
      {
          val canvasHeight = size.height
-         val progressHeight = size.height * progress
+         val progressHeight = size.height * if (progress > 1f) 1f else progress
          val progressMax = size.height * progressMax
 
          drawRect(

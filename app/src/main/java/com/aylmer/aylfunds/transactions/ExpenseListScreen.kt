@@ -244,7 +244,7 @@ fun ExpListScreen(
                             )
                             {
                                 Text(
-                                    text = exp.budName,
+                                    text = if (exp.tranType == TransactionType.Transfer.name) "Transfer" else exp.budName,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                                     style = typography.bodyMedium,
                                     modifier = Modifier
