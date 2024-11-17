@@ -1,6 +1,7 @@
 package com.aylmer.aylfunds.data
 
 import androidx.room.Dao
+import androidx.room.DatabaseView
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
@@ -28,3 +29,5 @@ interface expDAO {
 
 
 }
+
+

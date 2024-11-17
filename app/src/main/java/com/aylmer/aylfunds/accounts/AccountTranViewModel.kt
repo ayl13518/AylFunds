@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.di.MainRepository
 import com.aylmer.aylfunds.models.AccState
+import com.aylmer.aylfunds.models.TransactionType
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +35,7 @@ class AccountTranViewModel @Inject constructor(
 
             viewModelScope.launch {
                 curAccount.collectLatest { cur ->
+                    if (cur == null) return@collectLatest
                     _state.update { st ->
                         st.copy(
                             name = cur.name,
@@ -71,6 +73,15 @@ class AccountTranViewModel @Inject constructor(
                 tmpBalance = newBalance,
                 balance = newBalance.toDoubleOrNull() ?: 0.0
             )
+        }
+    }
+
+    fun onDeleteTransaction() {
+        if (newAccountId !=0L) {
+            viewModelScope.launch {
+                repo.deleteAccount(newAccountId)
+
+            }
         }
     }
 

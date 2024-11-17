@@ -31,4 +31,7 @@ interface accDAO {
             "WHERE name = (SELECT accName FROM expTrans WHERE id = :id)")
     suspend fun updateOldAccountBalance(id: Long)
 
+    @Query("DELETE FROM accounts WHERE id = :id")
+    suspend fun deleteAccount(id: Long)
+
 }

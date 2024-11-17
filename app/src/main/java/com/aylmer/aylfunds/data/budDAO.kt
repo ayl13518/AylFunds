@@ -26,5 +26,6 @@ interface budDAO {
     @Query("SELECT * FROM budgets WHERE budgetid = :budid")
     fun getBudgetById(budid: Long): Flow<budgets>
 
-
+    @Query("DELETE FROM budgets WHERE budgetid = :id")
+    suspend fun deleteBudget(id: Long)
 }

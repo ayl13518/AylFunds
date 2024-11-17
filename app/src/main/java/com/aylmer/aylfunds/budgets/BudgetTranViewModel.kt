@@ -35,6 +35,7 @@ class BudgetTranViewModel @Inject constructor(
 
             viewModelScope.launch {
                 curBud.collectLatest { cur ->
+                    if (cur == null) return@collectLatest
                     _state.update { st ->
                         st.copy(
                             name = cur.name,
@@ -79,6 +80,14 @@ class BudgetTranViewModel @Inject constructor(
                 tmpBalance = newBalance,
                 balance = newBalance.toDoubleOrNull() ?: 0.0
             )
+        }
+    }
+
+    fun onDeleteTransaction() {
+        if (newBudget !=0L) {
+            viewModelScope.launch {
+                repo.deleteBudget(newBudget)
+            }
         }
     }
 

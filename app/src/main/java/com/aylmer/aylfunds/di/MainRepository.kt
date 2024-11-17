@@ -28,6 +28,8 @@ interface MainRepository {
 
     suspend fun updateOldBalance( id: Long)
 
+    suspend fun deleteAccount(id: Long)
+
     //Budgets
     fun getAllBudgets(): Flow<List<budgets>>
 
@@ -38,6 +40,8 @@ interface MainRepository {
     fun getAllCategory(): Flow<List<String>>
 
     fun getCategoryByType(type: String): Flow<List<String>>
+
+    suspend fun deleteBudget(id: Long)
 
 
     //Transactions

@@ -79,6 +79,10 @@ class DefaultMainRepository @Inject constructor(
         return accDAO.getAccountByName(accName)
     }
 
+    override suspend fun deleteAccount(id: Long) {
+        accDAO.deleteAccount(id)
+    }
+
 
     //Budgets
     override fun getAllBudgets(): Flow<List<budgets>> {
@@ -100,6 +104,10 @@ class DefaultMainRepository @Inject constructor(
     override fun getBudgetById(id: Long): Flow<budgets> {
         return budDAO.getBudgetById(id)
 
+    }
+
+    override suspend fun deleteBudget(id: Long) {
+        budDAO.deleteBudget(id)
     }
 
 

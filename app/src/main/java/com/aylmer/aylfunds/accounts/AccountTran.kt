@@ -75,6 +75,10 @@ fun AccountTran(
                 onNavigationClick = {navController.popBackStack()},
                 actionIcon = Icons.Default.DeleteForever,
                 actionIconContentDescription = "Delete Forever",
+                onActionClick = {
+                    viewModel.onDeleteTransaction()
+                    navController.popBackStack()
+                }
             )
 
             val textFieldColors = OutlinedTextFieldDefaults.colors(
