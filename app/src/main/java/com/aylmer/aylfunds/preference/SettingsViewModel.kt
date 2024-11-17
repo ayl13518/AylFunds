@@ -141,28 +141,28 @@ class SettingsViewModel @Inject constructor(
 
     }
 
-    fun onLoadBackUp() {
+    fun onLoadBackUp(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
 
         val backupWorker: RestoreCSV = RestoreCSV(context, mainRepo)
 
         viewModelScope.launch {
-            backupWorker.doRestoreAccounts()
+            backupWorker.doRestoreAccounts( scope, snackBarHostState)
         }
 
         viewModelScope.launch {
-            backupWorker.doRestoreBudgets()
+            backupWorker.doRestoreBudgets(scope, snackBarHostState)
         }
 
         viewModelScope.launch {
-            backupWorker.doRestoreTransactions()
+            backupWorker.doRestoreTransactions(scope, snackBarHostState)
         }
 
         viewModelScope.launch {
-            backupWorker.doRestoreTransfers()
+            backupWorker.doRestoreTransfers(scope, snackBarHostState)
         }
 
         viewModelScope.launch {
-            backupWorker.doRestoreSchedules()
+            backupWorker.doRestoreSchedules(scope, snackBarHostState)
         }
 
     }

@@ -1,6 +1,7 @@
 package com.aylmer.aylfunds.backuprestore
 
 import android.content.Context
+import androidx.compose.material3.SnackbarHostState
 import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.budgets
 import com.aylmer.aylfunds.data.ExpTrans
@@ -8,6 +9,8 @@ import com.aylmer.aylfunds.data.Schedule
 import com.aylmer.aylfunds.data.TransferTransactions
 import com.aylmer.aylfunds.di.MainRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -18,7 +21,7 @@ class RestoreCSV @Inject constructor(
 
     val exportDir = File(context.filesDir, "export")
 
-    suspend fun doRestoreAccounts() {
+    suspend fun doRestoreAccounts(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
 
         val file = File(exportDir, "accounts.csv")
         if (file.exists()) {
@@ -36,10 +39,11 @@ class RestoreCSV @Inject constructor(
                 mainRepo.upsertAccount(oldAccounts)
             }
             input.close()
+            scope.launch { snackBarHostState.showSnackbar("Done Accounts Restore") }
         }
     }
 
-    suspend fun doRestoreBudgets() {
+    suspend fun doRestoreBudgets(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
 
         val file = File(exportDir, "budgets.csv")
         if (file.exists()) {
@@ -57,10 +61,11 @@ class RestoreCSV @Inject constructor(
                 mainRepo.upsertBudget(oldAccounts)
             }
             input.close()
+            scope.launch { snackBarHostState.showSnackbar("Done Budgets Restore") }
         }
     }
 
-    suspend fun doRestoreTransactions() {
+    suspend fun doRestoreTransactions(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
 
         val file = File(exportDir, "transactions.csv")
         if (file.exists()) {
@@ -83,7 +88,7 @@ class RestoreCSV @Inject constructor(
         }
     }
 
-    suspend fun doRestoreTransfers() {
+    suspend fun doRestoreTransfers(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
 
         val file = File(exportDir, "transfer.csv")
         if (file.exists()) {
@@ -106,7 +111,7 @@ class RestoreCSV @Inject constructor(
         }
     }
 
-    suspend fun doRestoreSchedules() {
+    suspend fun doRestoreSchedules(scope: CoroutineScope, snackBarHostState: SnackbarHostState) {
 
         val file = File(exportDir, "schedules.csv")
         if (file.exists()) {

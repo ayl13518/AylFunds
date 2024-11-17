@@ -20,4 +20,9 @@ data class TransferTransactions(
     val tranType: String = "Transfer",
     @ColumnInfo(defaultValue = "Transfer")
     val note: String = "Transfer",
+
+    @ColumnInfo(defaultValue = "0")
+    val accountId: Long = 0,
+    @ColumnInfo(defaultValue = "0")
+    val accountToId: Long = 0,
 )

@@ -32,4 +32,9 @@ data class Schedule(
     @ColumnInfo(defaultValue = "0")
     val taxPercent: Double = 0.00,
 
+    @ColumnInfo(defaultValue = "0")
+    val budgetId: Long = 0,
+    @ColumnInfo(defaultValue = "0")
+    val accountId: Long = 0,
+
 )

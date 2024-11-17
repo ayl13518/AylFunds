@@ -3,7 +3,6 @@ package com.aylmer.aylfunds.di
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.aylmer.aylfunds.data.BudgetDatabase
 import com.aylmer.aylfunds.workers.WorkManagerRepository
 import com.aylmer.aylfunds.workers.WorkRepository
 import dagger.Binds
@@ -27,6 +26,8 @@ object RoomModule {
             "budgetdatabase.db"
         )
             .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
+            .fallbackToDestructiveMigration()
+            .addMigrations(Migration8to9)
             .build()
     }
 

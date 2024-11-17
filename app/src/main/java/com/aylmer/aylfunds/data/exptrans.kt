@@ -20,6 +20,10 @@ data class ExpTrans(
     val tranType: String = "",
     @ColumnInfo(defaultValue = " ")
     val note: String = "",
+    @ColumnInfo(defaultValue = "0")
+    val budgetId: Long = 0,
+    @ColumnInfo(defaultValue = "0")
+    val accountId: Long = 0,
 )
 
 

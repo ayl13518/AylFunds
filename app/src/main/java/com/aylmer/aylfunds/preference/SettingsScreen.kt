@@ -157,9 +157,13 @@ fun SettingsScreen(
 
             Button(
                 onClick = {
-                    viewModel.onLoadBackUp()
+                    enableBackup=false
+                    viewModel.onLoadBackUp(
+                        scope,
+                        snackBarHostState
+                    )
                 },
-
+                enabled = enableBackup,
                 ) {
                 Text(text = "Restore Database")
             }
