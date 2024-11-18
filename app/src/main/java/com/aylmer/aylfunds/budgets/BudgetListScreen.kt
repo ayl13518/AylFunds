@@ -224,6 +224,16 @@ fun BudgetListScreen(
                                 .background(MaterialTheme.colorScheme.primaryContainer)
                                 .height(30.dp)
                         )
+                        Text(
+                            text = decimalFormatter.formatForVisual((sumTransType[initialDate]?: "0").toString()) +
+                                    " of " +
+                                    decimalFormatter.formatForVisual((sumBudgetType[initialDate]?: "0").toString()),
+                            textAlign = TextAlign.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.primaryContainer)
+                                .padding(end = 16.dp)
+                        )
                         CustomProgressBar( progress = (sumTransType[initialDate]?: 0f).toFloat()  / (sumBudgetType[initialDate]?: 0f).toFloat(),
                             modifier = Modifier
                                 .fillMaxWidth(.95f)

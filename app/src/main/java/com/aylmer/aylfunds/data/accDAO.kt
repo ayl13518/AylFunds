@@ -14,7 +14,12 @@ interface accDAO {
     @Query("SELECT * FROM accounts")
     fun getAllAccounts(): Flow<List<accounts>>
 
-    @Query("SELECT name FROM accounts")
+    @Query("SELECT name FROM accounts ORDER BY " +
+            "CASE " +
+            "WHEN accType = 'Cash' THEN 1 " +
+            "WHEN accType = 'Bank' THEN 2 " +
+            "ELSE 3 END, " +
+            "balance DESC")
     fun getAllAccountName(): Flow<List<String>>
 
     @Query("UPDATE accounts SET balance = balance + :amount WHERE name = :name")

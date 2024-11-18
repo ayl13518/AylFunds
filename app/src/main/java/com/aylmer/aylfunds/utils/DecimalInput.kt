@@ -13,7 +13,7 @@ class DecimalInputVisualTransformation(
     override fun filter(text: AnnotatedString): TransformedText {
 
         val inputText = text.text
-        val formattedNumber = decimalFormatter.formatForVisual(inputText)
+        val formattedNumber = decimalFormatter.formatForVisual4Digit(inputText)
 
         val newText = AnnotatedString(
             text = formattedNumber,
@@ -59,7 +59,7 @@ class DecimalFormatter(
             if (char != decimalSeparator && hasDecimalSep) {
                 decimalCount++
             }
-            if (char.isDigit() && decimalCount <= 2) {
+            if (char.isDigit() && decimalCount <= 4) {
                 sb.append(char)
                 continue
             }
@@ -84,6 +84,21 @@ class DecimalFormatter(
             .reversed()
 
         val fractionPart = split.getOrNull(1)?.take(2)
+
+        return if (fractionPart == null) intPart else intPart + decimalSeparator + fractionPart
+    }
+
+    fun formatForVisual4Digit(input: String): String {
+
+        val split = input.split(decimalSeparator)
+
+        val intPart = split[0]
+            .reversed()
+            .chunked(3)
+            .joinToString(separator = thousandsSeparator.toString())
+            .reversed()
+
+        val fractionPart = split.getOrNull(1)?.take(4)
 
         return if (fractionPart == null) intPart else intPart + decimalSeparator + fractionPart
     }
