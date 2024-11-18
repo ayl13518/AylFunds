@@ -32,18 +32,29 @@ class DailyInterest @AssistedInject constructor (
             if (schedules.isNotEmpty()) {
                 schedules.forEach { sched ->
                     var newAmount = sched.amount
+                    var balance = mainRepo.getAccountByName(sched.accName)
+                    var curDate = convertToLocalDate(sched.dateTrans)
+                    var strDate = addDaysToDate(curDate, 1, sched.period)
 
                     if(sched.computeType == ComputeType.Per_Annum.name){
-
-                        var balance = mainRepo.getAccountByName(sched.accName)
-
                         if(sched.period == PeriodType.Daily.name) {
-
                             newAmount = (balance * (sched.computePercent / 100))/365
-                            newAmount = newAmount - (newAmount * (sched.taxPercent / 100))
+                        }
+                        else if(sched.period == PeriodType.Weekly.name) {
+                            newAmount = (balance * (sched.computePercent / 100))/52
+                        }
+                        else if(sched.period == PeriodType.SemiMonthly.name) {
+                            newAmount = (balance * (sched.computePercent / 100))/26
+                        }
+                        else if(sched.period == PeriodType.Monthly.name) {
+                            newAmount = (balance * (sched.computePercent / 100))/12
                         }
                     }
+                    else if(sched.computeType == ComputeType.Percentage.name){
+                        newAmount = (balance * (sched.computePercent / 100))
+                    }
 
+                    newAmount = newAmount - (newAmount * (sched.taxPercent / 100))
 
                     val newExp = ExpTrans(
                         id = 0,
@@ -53,12 +64,8 @@ class DailyInterest @AssistedInject constructor (
                         accName = sched.accName,
                         tranType = sched.tranType,
                         note = sched.note,
-
                     )
                     mainRepo.updateAccountBalance(newExp)
-
-                    var curDate = convertToLocalDate(sched.dateTrans)
-                    var strDate = addDaysToDate(curDate, 1, sched.period)
 
                     val newSched = Schedule(
                         id = sched.id,
