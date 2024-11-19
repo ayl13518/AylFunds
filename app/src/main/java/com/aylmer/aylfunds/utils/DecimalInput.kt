@@ -13,7 +13,7 @@ class DecimalInputVisualTransformation(
     override fun filter(text: AnnotatedString): TransformedText {
 
         val inputText = text.text
-        val formattedNumber = decimalFormatter.formatForVisual4Digit(inputText)
+        val formattedNumber = decimalFormatter.formatForVisual(inputText)
 
         val newText = AnnotatedString(
             text = formattedNumber,
@@ -39,7 +39,8 @@ private class FixedCursorOffsetMapping(
 }
 
 class DecimalFormatter(
-    symbols: DecimalFormatSymbols = DecimalFormatSymbols.getInstance()
+    symbols: DecimalFormatSymbols = DecimalFormatSymbols.getInstance(),
+    private val theDigits: Int = 2
 ) {
 
     private val thousandsSeparator = symbols.groupingSeparator
@@ -59,7 +60,7 @@ class DecimalFormatter(
             if (char != decimalSeparator && hasDecimalSep) {
                 decimalCount++
             }
-            if (char.isDigit() && decimalCount <= 4) {
+            if (char.isDigit() && decimalCount <= theDigits) {
                 sb.append(char)
                 continue
             }
@@ -67,9 +68,7 @@ class DecimalFormatter(
                 sb.append(char)
                 hasDecimalSep = true
             }
-
         }
-
         return sb.toString()
     }
 
@@ -83,23 +82,8 @@ class DecimalFormatter(
             .joinToString(separator = thousandsSeparator.toString())
             .reversed()
 
-        val fractionPart = split.getOrNull(1)?.take(2)
-
+        val fractionPart = split.getOrNull(1)?.take(theDigits)
         return if (fractionPart == null) intPart else intPart + decimalSeparator + fractionPart
     }
 
-    fun formatForVisual4Digit(input: String): String {
-
-        val split = input.split(decimalSeparator)
-
-        val intPart = split[0]
-            .reversed()
-            .chunked(3)
-            .joinToString(separator = thousandsSeparator.toString())
-            .reversed()
-
-        val fractionPart = split.getOrNull(1)?.take(4)
-
-        return if (fractionPart == null) intPart else intPart + decimalSeparator + fractionPart
-    }
 }

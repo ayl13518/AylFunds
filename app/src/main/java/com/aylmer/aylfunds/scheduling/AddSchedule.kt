@@ -173,6 +173,7 @@ fun AddSchedule(
                     value = state.tmpPercent.toString(),
                     onValueChange = {viewModel.onPercentUpdate(it)},
                     modifier = Modifier.fillMaxWidth(),
+                    digits = 6,
                 )
 
                 AylOutlinedNumber(

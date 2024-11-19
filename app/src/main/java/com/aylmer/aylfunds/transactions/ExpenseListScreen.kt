@@ -83,7 +83,11 @@ fun ExpListScreen(
 
     val sumByDate = rollTransList
         .groupingBy { it.dateTrans }
-        .fold(0.0) { acc, expTrans -> acc + expTrans.amount }
+        .fold(0.0) { acc, expTrans -> acc +
+                if(expTrans.tranType == "Income") expTrans.amount
+                else if(expTrans.tranType == "Expense") -expTrans.amount
+                else acc
+        }
 
     val transByDate = rollTransList
         .groupBy { it.dateTrans }

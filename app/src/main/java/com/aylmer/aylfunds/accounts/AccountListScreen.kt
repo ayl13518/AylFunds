@@ -16,7 +16,11 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddBox
+import androidx.compose.material.icons.rounded.Dehaze
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,14 +37,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.ScreenAccount
+import com.aylmer.aylfunds.ScreenSchedule
+import com.aylmer.aylfunds.ScreenSetting
 import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.designsys.component.ThemePreviews
+import com.aylmer.aylfunds.navigation.AylTopBar
 import com.aylmer.aylfunds.navigation.NavigationBottomBar
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
 import com.aylmer.aylfunds.utils.DecimalFormatter
 
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AccListScreen(
     navController: NavHostController = rememberNavController(),
@@ -67,6 +74,19 @@ fun AccListScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        topBar = {
+            AylTopBar(
+                titleRes = "Accounts",
+                navigationIcon = Icons.Rounded.Dehaze,
+                navigationIconContentDescription = "Navigation icon",
+                onNavigationClick = { navController.navigate(ScreenSetting) },
+                actionIcon = Icons.Default.AddBox,
+                actionIconContentDescription = "Action icon",
+                actionIcon2 = Icons.Default.AccessTime,
+                actionIconContentDescription2 = "Schedule",
+                onActionClick2 = {navController.navigate(ScreenSchedule)}
+            )
+        },
         bottomBar = {
             NavigationBottomBar(
                 navController = navController, selected = 2
@@ -87,7 +107,7 @@ fun AccListScreen(
             contentPadding = paddingValues
         ) {
             item {
-                Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
+                //Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

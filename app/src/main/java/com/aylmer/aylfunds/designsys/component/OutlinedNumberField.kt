@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 fun AylOutlinedNumber(
     label: String,
     value: String,
+    digits: Int = 2,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -33,7 +34,7 @@ fun AylOutlinedNumber(
         focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
         unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer
     )
-    val decimalFormatter = DecimalFormatter()
+    val decimalFormatter = DecimalFormatter(theDigits = digits)
     var value2: Double = 0.0
     var first by remember { mutableStateOf(true) }
 
