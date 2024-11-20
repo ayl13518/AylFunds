@@ -49,12 +49,12 @@ class DailyInterest @AssistedInject constructor (
                         else if(sched.period == PeriodType.Monthly.name) {
                             newAmount = (balance * (sched.computePercent / 100))/12
                         }
+                        newAmount = newAmount - (newAmount * (sched.taxPercent / 100))
                     }
                     else if(sched.computeType == ComputeType.Percentage.name){
                         newAmount = (balance * (sched.computePercent / 100))
+                        newAmount = newAmount - (newAmount * (sched.taxPercent / 100))
                     }
-
-                    newAmount = newAmount - (newAmount * (sched.taxPercent / 100))
 
                     val newExp = ExpTrans(
                         id = 0,
