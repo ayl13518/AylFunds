@@ -2,11 +2,7 @@ package com.aylmer.aylfunds.transactions
 
 import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.di.MainRepository
-import com.aylmer.aylfunds.models.CurrentTransactions
-import com.aylmer.aylfunds.models.ResultTransactions
-import com.aylmer.aylfunds.models.UserData
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class GetCurrentTransactions @Inject constructor(
@@ -19,21 +15,27 @@ class GetCurrentTransactions @Inject constructor(
         mainRepo.getExpByMonth(searchQuery)
 //            .mapToCurrentTransactions( userRepository.userData)
 
+    operator fun invoke(
+        searchMonth: Int,
+        searchYear: Int,
+    ): Flow<List<ExpTrans>> =
+        mainRepo.getExpMonthYear(searchMonth, searchYear)
+
 }
 
-private fun Flow<ResultTransactions>.mapToCurrentTransactions(userDataStream: Flow<UserData>): Flow<CurrentTransactions> =
-    combine(userDataStream) { searchResult, userData ->
-        CurrentTransactions(
-            currentTransactions = searchResult.resultTransactions.map { transaction ->
-                ExpTrans(
-                    id = transaction.id,
-                    amount = transaction.amount,
-                    dateTrans = transaction.dateTrans,
-                    accName = transaction.accName,
-                    budName = transaction.budName,
-                    tranType = transaction.tranType,
-                    note = transaction.note,
-                )
-            }
-        )
-    }
+//private fun Flow<ResultTransactions>.mapToCurrentTransactions(userDataStream: Flow<UserData>): Flow<CurrentTransactions> =
+//    combine(userDataStream) { searchResult, userData ->
+//        CurrentTransactions(
+//            currentTransactions = searchResult.resultTransactions.map { transaction ->
+//                ExpTrans(
+//                    id = transaction.id,
+//                    amount = transaction.amount,
+//                    dateTrans = transaction.dateTrans,
+//                    accName = transaction.accName,
+//                    budName = transaction.budName,
+//                    tranType = transaction.tranType,
+//                    note = transaction.note,
+//                )
+//            }
+//        )
+//    }

@@ -10,24 +10,28 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class BudgetViewModel @Inject constructor(
     private val repo: MainRepository,
-    savedStateHandle: SavedStateHandle,
-    getcurrentMonth: GetCurrentTransactions,
-): ViewModel() {
+    private val savedStateHandle: SavedStateHandle,
+    getCurrentMonth: GetCurrentTransactions,
+) : ViewModel() {
 
     private val _state = MutableStateFlow(BudgetState())
 
     private val _budgets = repo.getAllBudgets()
 
-    val state =  combine(
+    //val transMonthList = mutableStateOf(ExpTrans())
+
+    val state = combine(
         _state,
         _budgets
     ) { state, budgets ->
@@ -37,8 +41,10 @@ class BudgetViewModel @Inject constructor(
             balance = state.balance,
             type = state.type,
             scope = state.scope,
-            tmpBalance = state.tmpBalance
-            )
+            tmpBalance = state.tmpBalance,
+            selectedMonth = state.selectedMonth,
+            selectedYear = state.selectedYear,
+        )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
@@ -47,18 +53,50 @@ class BudgetViewModel @Inject constructor(
 
     val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH)
 
-    val searchQuery = savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = selectedMonth)
+    val searchQuery =
+        savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = selectedMonth)
+    val searchYear =
+        savedStateHandle.getStateFlow(key = SEARCH_YEAR, initialValue = _state.value.selectedYear)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val transMonthList = searchQuery.flatMapLatest { query ->
-        getcurrentMonth(query + 1)
-    }.stateIn(viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        emptyList())
+        getCurrentMonth(query + 1, searchYear.value)
+    }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
 
     //TODO: Add Event(s)
+
+    fun onSwipe(newMonth: Int) {
+        if (newMonth >= 0 && newMonth <= 11) {
+            _state.update {
+                it.copy(
+                    selectedMonth = newMonth
+                )
+            }
+            savedStateHandle[SEARCH_QUERY] = newMonth
+        } else if (newMonth >= 12) {
+            _state.update {
+                it.copy(
+                    selectedMonth = 0
+                )
+            }
+            savedStateHandle[SEARCH_QUERY] = 0
+        } else {
+            _state.update {
+                it.copy(
+                    selectedMonth = 11
+                )
+            }
+            savedStateHandle[SEARCH_QUERY] = 11
+        }
+    }
 
 
 }
 
 private const val SEARCH_QUERY = "searchQuery"
+private const val SEARCH_YEAR = "searchYear"

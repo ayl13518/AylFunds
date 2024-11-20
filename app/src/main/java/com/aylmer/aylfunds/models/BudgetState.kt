@@ -2,6 +2,7 @@ package com.aylmer.aylfunds.models
 
 
 import com.aylmer.aylfunds.data.budgets
+import java.util.Calendar
 
 data class BudgetState(
     val budgets: List<budgets> = emptyList(),
@@ -15,5 +16,6 @@ data class BudgetState(
 
     val tmpBalance: String = "0.00",
 
-
+    val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH),
+    val selectedYear: Int = Calendar.getInstance().get(Calendar.YEAR),
 )

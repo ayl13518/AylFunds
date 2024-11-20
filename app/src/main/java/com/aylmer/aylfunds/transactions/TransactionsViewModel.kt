@@ -4,9 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aylmer.aylfunds.models.ExpTranState
-
 import com.aylmer.aylfunds.di.MainRepository
-
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +14,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import java.util.Calendar
-
 import javax.inject.Inject
 
 
@@ -85,6 +82,22 @@ class ExpTransViewModel @Inject constructor(
                 )
             }
             savedStateHandle[SEARCH_QUERY] = newMonth
+        }
+        else if(newMonth >= 12 ) {
+            _state.update {
+                it.copy(
+                    selectedMonth = 0
+                )
+            }
+            savedStateHandle[SEARCH_QUERY] = 0
+        }
+        else {
+            _state.update {
+                it.copy(
+                    selectedMonth = 11
+                )
+            }
+            savedStateHandle[SEARCH_QUERY] = 11
         }
     }
 

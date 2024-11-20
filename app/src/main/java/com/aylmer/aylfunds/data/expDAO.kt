@@ -1,7 +1,7 @@
 package com.aylmer.aylfunds.data
 
 import androidx.room.Dao
-import androidx.room.DatabaseView
+
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +20,10 @@ interface expDAO {
 
     @Query(  "SELECT * FROM expTrans WHERE cast(STRFTIME('%m', dateTrans) as integer) = :id")
     fun getExpByMonth(id: Int): Flow<List<ExpTrans>>
+
+    @Query(  "SELECT * FROM expTrans WHERE cast(STRFTIME('%m', dateTrans) as integer) = :month " +
+            "AND cast(STRFTIME('%Y', dateTrans) as integer) = :year")
+    fun getExpMonthYear(month: Int,year: Int): Flow<List<ExpTrans>>
 
     @Query("SELECT * FROM expTrans WHERE `id` = :tranId")
     fun getTransactionById(tranId: Long): Flow<ExpTrans>

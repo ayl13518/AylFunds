@@ -1,29 +1,23 @@
 package com.aylmer.aylfunds.di
 
-import androidx.room.Query
-import androidx.room.Upsert
+import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.data.PrefDAO
 import com.aylmer.aylfunds.data.Preferences
-import javax.inject.Inject
-import javax.inject.Singleton
-import com.aylmer.aylfunds.data.expDAO
-import com.aylmer.aylfunds.data.accDAO
-import com.aylmer.aylfunds.data.accounts
-import com.aylmer.aylfunds.data.budDAO
-import com.aylmer.aylfunds.data.budgets
-import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.data.Schedule
 import com.aylmer.aylfunds.data.ScheduleDAO
 import com.aylmer.aylfunds.data.TransferDAO
 import com.aylmer.aylfunds.data.TransferTransactions
+import com.aylmer.aylfunds.data.accDAO
+import com.aylmer.aylfunds.data.accounts
+import com.aylmer.aylfunds.data.budDAO
+import com.aylmer.aylfunds.data.budgets
+import com.aylmer.aylfunds.data.expDAO
 import com.aylmer.aylfunds.models.PreferenceConfig
 import com.aylmer.aylfunds.models.TransactionType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.transformWhile
-import kotlinx.coroutines.yield
+import javax.inject.Inject
+import javax.inject.Singleton
 
 
 @Singleton
@@ -117,6 +111,10 @@ class DefaultMainRepository @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getExpByMonth(month: Int): Flow<List<ExpTrans>> {
         return expDao.getExpByMonth(month)
+    }
+
+    override fun getExpMonthYear(month: Int,year: Int): Flow<List<ExpTrans>> {
+        return expDao.getExpMonthYear(month,year)
     }
 
     override fun getTransactionById(tranId: Long): Flow<ExpTrans> {

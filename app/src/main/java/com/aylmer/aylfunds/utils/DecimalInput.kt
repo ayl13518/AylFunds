@@ -74,8 +74,10 @@ class DecimalFormatter(
 
     fun formatForVisual(input: String): String {
 
-        val split = input.split(decimalSeparator)
+        val isNegative = input.startsWith("-")
+        val number = if (isNegative) input.substring(1) else input
 
+        val split = number.split(decimalSeparator)
         val intPart = split[0]
             .reversed()
             .chunked(3)
@@ -83,7 +85,10 @@ class DecimalFormatter(
             .reversed()
 
         val fractionPart = split.getOrNull(1)?.take(theDigits)
-        return if (fractionPart == null) intPart else intPart + decimalSeparator + fractionPart
+
+        val withNegative = if (isNegative) "-$intPart" else intPart
+
+        return if (fractionPart == null) withNegative else withNegative + decimalSeparator + fractionPart
     }
 
 }
