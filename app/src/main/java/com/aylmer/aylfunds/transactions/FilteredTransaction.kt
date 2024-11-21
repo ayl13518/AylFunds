@@ -22,9 +22,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Help
-import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.rounded.Dehaze
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,7 +33,6 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,17 +44,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.ScreenAddTran
-import com.aylmer.aylfunds.ScreenSchedule
-import com.aylmer.aylfunds.ScreenSetting
-import com.aylmer.aylfunds.data.accounts
+import com.aylmer.aylfunds.ScreenBudget
 import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.data.TransferTransactions
+import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.designsys.component.ThemePreviews
-import com.aylmer.aylfunds.models.TransactionType
-import com.aylmer.aylfunds.models.RollingList
 import com.aylmer.aylfunds.models.BalanceList
+import com.aylmer.aylfunds.models.RollingList
+import com.aylmer.aylfunds.models.TransactionType
 import com.aylmer.aylfunds.navigation.AylTopBar
-import com.aylmer.aylfunds.navigation.NavigationBottomBar
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
 import com.aylmer.aylfunds.ui.theme.expenseColor
 import com.aylmer.aylfunds.ui.theme.incomeColor
@@ -67,21 +64,24 @@ import java.time.Month
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ExpListScreen(
+fun FilteredTransaction(
     navController: NavHostController = rememberNavController(),
-    viewModel: ExpTransViewModel = hiltViewModel(),
+    viewModel: FilteredTransactionViewModel = hiltViewModel(),
     onClickList: (tranId: Long, tranType: String) -> Unit,
     modifier: Modifier = Modifier,
+    id: Long = 0,
+    type: String = ""
+
 ){
 
-    val state by viewModel.state.collectAsState()
-    val transMonthList by viewModel.transMonthList.collectAsState(emptyList())
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val transMonthList by viewModel.transMonthList.collectAsStateWithLifecycle()
     val transferMonthList by viewModel.transferMonthList.collectAsStateWithLifecycle()
     val accountBalance by viewModel.accountBalance.collectAsStateWithLifecycle()
     val currentMonth = state.selectedMonth
+    val currentId by viewModel.searchQuery.collectAsStateWithLifecycle()
 
-
-    val rollTransList=roll2(transMonthList,transferMonthList,accountBalance)
+    val rollTransList=roll3(transMonthList,transferMonthList,accountBalance)
 
     val sumByDate = rollTransList
         .groupingBy { it.dateTrans }
@@ -107,14 +107,17 @@ fun ExpListScreen(
         topBar = {
                 AylTopBar(
                     titleRes = "",
-                    navigationIcon = Icons.Rounded.Dehaze,
+                    navigationIcon = Icons.Rounded.ArrowBackIosNew,
                     navigationIconContentDescription = "Navigation icon",
-                    onNavigationClick = {navController.navigate(ScreenSetting)},
+                    onNavigationClick = {navController.popBackStack()},
                     actionIcon = Icons.AutoMirrored.Default.Help,
                     actionIconContentDescription = "Action icon",
-                    actionIcon2 = Icons.Default.AccessTime,
-                    actionIconContentDescription2 = "Schedule",
-                    onActionClick2 = {navController.navigate(ScreenSchedule)}
+//                    actionIcon2 = Icons.Default.AccessTime,
+//                    actionIconContentDescription2 = "Schedule",
+//                    onActionClick2 = {navController.navigate(ScreenSchedule)}
+                     actionIcon2 = Icons.Default.Edit,
+                    actionIconContentDescription2 = "Edit",
+                    onActionClick2 = { navController.navigate(ScreenBudget(currentId)) }
                 )
 
                 Box(modifier = Modifier
@@ -144,12 +147,12 @@ fun ExpListScreen(
                     }
                 }
         },
-        bottomBar = {
-            NavigationBottomBar(
-                navController= navController
-                , selected = 1
-            )
-        },
+//        bottomBar = {
+//            NavigationBottomBar(
+//                navController= navController
+//                , selected = 1
+//            )
+//        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -222,7 +225,7 @@ fun ExpListScreen(
                                         modifier = Modifier.padding(end = 10.dp),
                                         color = incomeColor,
                                     )
-                                else if (exp.tranType == "Transfer" && exp.accNameTo != "")
+                                else if (exp.tranType == "Transfer" && exp.accNameTo == "")
                                     Text(
                                         text = decimalFormatter.formatForVisual(exp.amount.toString()),
                                         modifier = Modifier.padding(end = 10.dp),
@@ -290,9 +293,10 @@ fun ExpListScreen(
 }
 
 
-private fun roll2(expList: List<ExpTrans>,
+fun roll3(expList: List<ExpTrans>,
           transferList: List<TransferTransactions>,
-          accountList: List<accounts>) : List<RollingList> {
+          accountList: List<accounts>
+) : List<RollingList> {
 
     var rollList = mutableListOf<RollingList>()
     var balanceList = mutableListOf<BalanceList>()
@@ -398,10 +402,11 @@ private fun roll2(expList: List<ExpTrans>,
 }
 
 
+
 @OptIn(ExperimentalFoundationApi::class)
 @ThemePreviews
 @Composable
-fun ExpListScreenPreview(){
+fun FilteredTransactionPreview(){
     NewNavTheme {
         Scaffold(
             modifier = Modifier

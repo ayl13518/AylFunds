@@ -28,6 +28,7 @@ import com.aylmer.aylfunds.scheduling.AddSchedule
 import com.aylmer.aylfunds.scheduling.ScheduleScreen
 import com.aylmer.aylfunds.transactions.AddTranScreen
 import com.aylmer.aylfunds.transactions.ExpListScreen
+import com.aylmer.aylfunds.transactions.FilteredTransaction
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
 import com.aylmer.aylfunds.workers.WorkManagerRepository
 import dagger.hilt.android.AndroidEntryPoint
@@ -129,7 +130,8 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             onClickList = { budgetId ->
                                 navController.navigate(
-                                    ScreenBudget(budgetId)
+                                    //ScreenBudget(budgetId)
+                                    FilteredTransactionScreen(budgetId, "Budget")
                                 )
                             }
                         )
@@ -171,6 +173,24 @@ class MainActivity : ComponentActivity() {
                             id = arguments.id,
                             tranType = arguments.tranType,
                             navController = navController,
+                        )
+                    }
+                    composable<FilteredTransactionScreen>(
+                        typeMap = mapOf(
+                            typeOf<Long>() to NavType.LongType,
+                            typeOf<String>() to NavType.StringType
+                        )
+                    ) {
+                        val arguments = it.toRoute<FilteredTransactionScreen>()
+                        FilteredTransaction(
+                            id = arguments.id,
+                            type =arguments.type,
+                            navController = navController,
+                            onClickList = { tranId, tranType ->
+                                navController.navigate(
+                                    ScreenAddTran(tranId, tranType)
+                                )
+                            }
                         )
                     }
                 }
@@ -218,6 +238,12 @@ object ScreenSchedule
 data class ScreenAddSchedule(
     val id: Long,
     val tranType: String = TransactionType.Expense.name
+)
+
+@Serializable
+data class FilteredTransactionScreen(
+    val id: Long,
+    val type: String,
 )
 
 

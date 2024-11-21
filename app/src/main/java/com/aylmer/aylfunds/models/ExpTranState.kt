@@ -28,10 +28,30 @@ data class ExpTranState(
     val accountToId: Long = 0L,
 )
 
-data class CurrentTransactions(
-    val currentTransactions: List<ExpTrans> = emptyList(),
+//data class CurrentTransactions(
+//    val currentTransactions: List<ExpTrans> = emptyList(),
+//)
+//
+//data class ResultTransactions(
+//    val resultTransactions: List<ExpTrans> = emptyList(),
+//)
+
+
+data class RollingList(
+    val accName: String,
+    val amount: Double,
+    val balance: Double,
+    val dateTrans: String,
+    val id: Long,
+
+    val tranType: String="",
+    val budName: String="",
+    val note: String="",
+    val accNameTo: String="",
 )
 
-data class ResultTransactions(
-    val resultTransactions: List<ExpTrans> = emptyList(),
+data class BalanceList(
+    val accName: String,
+    val balance: Double,
+    val rolling: Double,
 )

@@ -57,6 +57,8 @@ interface MainRepository {
 
     suspend fun upsertExpTran(expTrans: ExpTrans)
 
+    fun getExpByType(month: Int,year: Int, id: Long, type: String): Flow<List<ExpTrans>>
+
 
     //preference
     fun getAllPreference(): Flow<List<Preferences>>
@@ -78,6 +80,8 @@ interface MainRepository {
     suspend fun deleteTransferTransaction(id: Long)
 
     fun getAllTransfer(): Flow<List<TransferTransactions>>
+
+    fun getTransferByType(month: Int,year: Int, id: Long, type: String): Flow<List<TransferTransactions>>
 
     //Schedule
     fun getAllSchedule(): Flow<List<Schedule>>

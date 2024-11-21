@@ -135,6 +135,13 @@ class DefaultMainRepository @Inject constructor(
         expDao.updatedId(if(id>0) id else expTrans.id)
     }
 
+    override fun getExpByType(month: Int,year: Int, id: Long, type: String): Flow<List<ExpTrans>> {
+        return if (type == "Budget")
+            expDao.getExpByBudget(month,year,id)
+        else
+            expDao.getExpByAccount(month,year,id)
+    }
+
 
     //Preferences
     override fun getAllPreference(): Flow<List<Preferences>> {
@@ -188,6 +195,13 @@ class DefaultMainRepository @Inject constructor(
 
     override fun getAllTransfer(): Flow<List<TransferTransactions>> {
         return transferDAO.getAllTransfer()
+    }
+
+    override fun getTransferByType(month: Int,year: Int, id: Long, type: String): Flow<List<TransferTransactions>> {
+        return if (type == "Budget")
+            transferDAO.getTransferByAccount(month,year,0)
+        else
+            transferDAO.getTransferByAccount(month,year,id)
     }
 
     //Schedule

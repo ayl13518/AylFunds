@@ -138,6 +138,7 @@ fun BudgetListScreen(
                     actionIcon2 = Icons.Default.AccessTime,
                     actionIconContentDescription2 = "Schedule",
                     onActionClick2 = { navController.navigate(ScreenSchedule) }
+
                 )
 
                 Box(
