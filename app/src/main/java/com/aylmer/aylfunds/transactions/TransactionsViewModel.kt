@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.update
 import java.util.Calendar
 import javax.inject.Inject
 
+private const val SEARCH_QUERY = "searchQuery"
+private const val SEARCH_YEAR = "searchYear"
+
 
 @HiltViewModel
 class ExpTransViewModel @Inject constructor(
@@ -29,17 +32,18 @@ class ExpTransViewModel @Inject constructor(
     private val _accountList = mainRepo.getAllAccountName()
     private val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH)
     private val searchQuery = savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = selectedMonth)
+    private val searchYear = savedStateHandle.getStateFlow(key = SEARCH_YEAR, initialValue = Calendar.getInstance().get(Calendar.YEAR))
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val transMonthList = searchQuery.flatMapLatest { query ->
-        getCurrentMonth(query + 1)
+        getCurrentMonth(query + 1, searchYear.value)
     }.stateIn(viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val transferMonthList = searchQuery.flatMapLatest { query ->
-       mainRepo.getTransferByMonth(query + 1)
+       mainRepo.getTransferMonthYear(query + 1, searchYear.value)
     }.stateIn(viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList())
@@ -90,6 +94,7 @@ class ExpTransViewModel @Inject constructor(
                 )
             }
             savedStateHandle[SEARCH_QUERY] = 0
+            savedStateHandle[SEARCH_YEAR] = searchYear.value+1
         }
         else {
             _state.update {
@@ -98,10 +103,10 @@ class ExpTransViewModel @Inject constructor(
                 )
             }
             savedStateHandle[SEARCH_QUERY] = 11
+            savedStateHandle[SEARCH_YEAR] = searchYear.value-1
         }
     }
 
 
 }
 
-private const val SEARCH_QUERY = "searchQuery"

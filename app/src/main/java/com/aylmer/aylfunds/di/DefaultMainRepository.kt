@@ -204,6 +204,10 @@ class DefaultMainRepository @Inject constructor(
             transferDAO.getTransferByAccount(month,year,id)
     }
 
+    override fun getTransferMonthYear(month: Int,year: Int): Flow<List<TransferTransactions>>{
+        return transferDAO.getTransferMonthYear(month,year)
+    }
+
     //Schedule
     override fun getAllSchedule(): Flow<List<Schedule>> {
         return scheduleDAO.getAll()

@@ -82,6 +82,7 @@ interface MainRepository {
     fun getAllTransfer(): Flow<List<TransferTransactions>>
 
     fun getTransferByType(month: Int,year: Int, id: Long, type: String): Flow<List<TransferTransactions>>
+    fun getTransferMonthYear(month: Int,year: Int): Flow<List<TransferTransactions>>
 
     //Schedule
     fun getAllSchedule(): Flow<List<Schedule>>
