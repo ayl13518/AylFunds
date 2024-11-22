@@ -79,7 +79,7 @@ fun FilteredTransaction(
     val transferMonthList by viewModel.transferMonthList.collectAsStateWithLifecycle()
     val accountBalance by viewModel.accountBalance.collectAsStateWithLifecycle()
     val currentMonth = state.selectedMonth
-    val currentId by viewModel.searchQuery.collectAsStateWithLifecycle()
+    //val currentSelect by viewModel.title.collectAsStateWithLifecycle()
 
     val rollTransList=roll3(transMonthList,transferMonthList,accountBalance)
 
@@ -106,7 +106,7 @@ fun FilteredTransaction(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
                 AylTopBar(
-                    titleRes = "",
+                    titleRes = state.title,
                     navigationIcon = Icons.Rounded.ArrowBackIosNew,
                     navigationIconContentDescription = "Navigation icon",
                     onNavigationClick = {navController.popBackStack()},
@@ -117,7 +117,7 @@ fun FilteredTransaction(
 //                    onActionClick2 = {navController.navigate(ScreenSchedule)}
                      actionIcon2 = Icons.Default.Edit,
                     actionIconContentDescription2 = "Edit",
-                    onActionClick2 = { navController.navigate(ScreenBudget(currentId)) }
+                    onActionClick2 = { navController.navigate(ScreenBudget(state.id)) }
                 )
 
                 Box(modifier = Modifier

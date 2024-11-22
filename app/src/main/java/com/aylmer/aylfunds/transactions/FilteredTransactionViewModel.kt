@@ -4,15 +4,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aylmer.aylfunds.di.MainRepository
-import com.aylmer.aylfunds.models.ExpTranState
+import com.aylmer.aylfunds.models.FilteredState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -29,13 +30,11 @@ class FilteredTransactionViewModel @Inject constructor(
     getCurrentMonth: GetCurrentTransactions,
     ): ViewModel() {
 
-    private val _state = MutableStateFlow(ExpTranState())
-    private val _categoryList = mainRepo.getAllCategory()
-    private val _accountList = mainRepo.getAllAccountName()
+    private val _state = MutableStateFlow(FilteredState())
 
     private val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH)
 
-    val searchQuery = savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = 0L)
+    private val searchQuery = savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = 0L)
     private val searchType = savedStateHandle.getStateFlow(key = SEARCH_TYPE, initialValue = "")
 
     private val searchYear = savedStateHandle.getStateFlow(key = SEARCH_YEAR, initialValue = Calendar.getInstance().get(Calendar.YEAR))
@@ -60,30 +59,47 @@ class FilteredTransactionViewModel @Inject constructor(
         SharingStarted.WhileSubscribed(5000),
         emptyList())
 
-    val state= combine(
-        _state,
-        _categoryList,
-        _accountList,
-        ) { state,
-            categoryList,
-            accountList ->
-        state.copy(
-                amount = state.amount,
-                dateTrans = state.dateTrans
-                , accName = state.accName
-                , budName = state.budName
-                , tranType = state.tranType
-                , note = state.note
-                , categoryList = categoryList
-            , accountList = accountList
-            , tmpAmount = state.tmpAmount
-            , selectedType = state.selectedType
-            ,selectedMonth = state.selectedMonth
-        )
-    }.stateIn(viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        ExpTranState())
 
+    val state= _state
+    .stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        FilteredState())
+
+    init {
+        onLoad()
+    }
+
+    fun onLoad(){
+        if(searchType.value=="Budget"){
+            viewModelScope.launch {
+                mainRepo.getBudgetById(searchQuery.value).collectLatest { budget ->
+                    _state.update {
+                        it.copy(
+                            id = budget.budgetid,
+                            title = budget.name,
+                        )
+                    }
+                }
+            }
+        }
+        else if(searchType.value=="Account"){
+            viewModelScope.launch {
+                mainRepo.getAccountById(searchQuery.value).collectLatest { account ->
+                    _state.update {
+                        it.copy(
+                            id = account.id,
+                            title = account.name,
+                        )
+                    }
+                }
+            }
+        }
+        _state.update {
+            it.copy(
+                selectedMonth = searchMonth.value
+            )
+        }
+    }
 
     fun onSwipe(newMonth: Int) {
         if(newMonth >=0 && newMonth <= 11 ) {
