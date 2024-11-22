@@ -43,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.aylmer.aylfunds.ScreenAccount
 import com.aylmer.aylfunds.ScreenAddTran
 import com.aylmer.aylfunds.ScreenBudget
 import com.aylmer.aylfunds.data.ExpTrans
@@ -117,7 +118,12 @@ fun FilteredTransaction(
 //                    onActionClick2 = {navController.navigate(ScreenSchedule)}
                      actionIcon2 = Icons.Default.Edit,
                     actionIconContentDescription2 = "Edit",
-                    onActionClick2 = { navController.navigate(ScreenBudget(state.id)) }
+                    onActionClick2 = {
+                        if (type == "Account")
+                            navController.navigate(ScreenAccount(state.id))
+                        else
+                            navController.navigate(ScreenBudget(state.id))
+                    }
                 )
 
                 Box(modifier = Modifier

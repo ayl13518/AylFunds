@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -82,6 +83,7 @@ fun AccListScreen(
                 onNavigationClick = { navController.navigate(ScreenSetting) },
                 actionIcon = Icons.Default.AddBox,
                 actionIconContentDescription = "Action icon",
+                onActionClick = {navController.navigate(ScreenAccount(0))},
                 actionIcon2 = Icons.Default.AccessTime,
                 actionIconContentDescription2 = "Schedule",
                 onActionClick2 = {navController.navigate(ScreenSchedule)}
@@ -93,7 +95,7 @@ fun AccListScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            SmallFloatingActionButton(
                 onClick = {
                     navController.navigate(ScreenAccount(0))
                 },

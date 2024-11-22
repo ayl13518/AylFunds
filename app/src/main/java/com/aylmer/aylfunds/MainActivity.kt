@@ -109,7 +109,8 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             onClickList = { accountId ->
                                 navController.navigate(
-                                    ScreenAccount(accountId)
+                                    //ScreenAccount(accountId)
+                                    FilteredTransactionScreen(accountId, "Account")
                                 )
                             }
                         )
