@@ -3,7 +3,6 @@ package com.aylmer.aylfunds.scheduling
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.data.Schedule
 import com.aylmer.aylfunds.di.MainRepository
 import com.aylmer.aylfunds.models.ComputeType
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -112,7 +110,7 @@ class AddSchedViewModel @Inject constructor(
 
             viewModelScope.launch {
                 curTran.collectLatest { cur ->
-                    //if (cur == null) return@collectLatest
+                    if (cur == null) return@collectLatest
 
                     _state.update { st ->
                         st.copy(
@@ -276,6 +274,17 @@ class AddSchedViewModel @Inject constructor(
             )
             viewModelScope.launch {
                 mainRepo.upsertSchedule(newExp)
+            }
+        }
+    }
+
+    fun onDeleteTransaction() {
+        if (newTran !=0L) {
+            viewModelScope.launch {
+                if (_state.value.tranType != TransactionType.Transfer.name)
+                    mainRepo.deleteSchedule(newTran)
+//                else
+//                    mainRepo.deleteTransferTransaction(newTran)
             }
         }
     }

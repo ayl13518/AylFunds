@@ -81,16 +81,16 @@ fun AddSchedule(
                 actionIcon = Icons.Default.DeleteForever,
                 actionIconContentDescription = "Delete Forever",
                 onActionClick = {
-                    //viewModel.onDeleteTransaction()
+                    viewModel.onDeleteTransaction()
                     navController.popBackStack()
                 }
             )
 
-            AylTabRow(selectedTabIndex = 0) {
+            AylTabRow(selectedTabIndex =  state.selectedType) {
                 TransactionType.entries.forEach {  title ->
                     //var index : Int
                     AylTab(
-                        selected =  false,
+                        selected =  true,
                         onClick = { viewModel.onTranTypeUpdate(title.name)
                                   },
                         text = { Text(text = title.name) },
