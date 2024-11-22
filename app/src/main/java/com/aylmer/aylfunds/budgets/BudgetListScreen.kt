@@ -283,9 +283,9 @@ fun BudgetListScreen(
                         )
                     }
                     val randomColor = Color(
-                        red = Random.nextFloat(),
-                        green = Random.nextFloat(),
-                        blue = Random.nextFloat(),
+                         red = (Random.nextInt(156) + 100).toFloat() / 255 ,
+                         green = (Random.nextInt(156) + 100).toFloat() / 255 ,
+                         blue = (Random.nextInt(156) + 100).toFloat() / 255,
                         alpha = 1f
                     )
                     CustomProgressBar(
