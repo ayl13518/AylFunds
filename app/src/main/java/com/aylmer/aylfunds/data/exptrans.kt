@@ -1,7 +1,6 @@
 package com.aylmer.aylfunds.data
 
 import androidx.room.ColumnInfo
-import androidx.room.DatabaseView
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -28,14 +27,9 @@ data class ExpTrans(
 )
 
 
-@DatabaseView("SELECT expTrans.id, expTrans.amount, expTrans.dateTrans, accounts.name AS accName, " +
-        "budgets.name AS budName, expTrans.tranType, expTrans.note FROM expTrans " +
-        "LEFT JOIN accounts ON expTrans.accountId = accounts.id " +
-        "LEFT JOIN budgets ON expTrans.budgetId = budgets.budgetId")
-data class TransactionView(
-    val id: Long,
-    val amount: Double,
-    val dateTrans: String,
-    val accName: String,
-    val tranType: String,
+data class PrevMonth(
+    val totalExpense: Double,
+    val totalIncome: Double,
+    val month: Int,
+    val year: Int,
 )

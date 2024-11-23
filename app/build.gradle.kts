@@ -86,5 +86,8 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
 
+    //charts
+    implementation(libs.vico.compose.m3)
+
 
 }

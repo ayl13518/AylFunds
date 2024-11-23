@@ -294,6 +294,9 @@ fun Greeting(
                 )
 
             }
+
+            //vico charts
+            ColumnChart(Modifier,state.prevMonth)
         }
     }
 }

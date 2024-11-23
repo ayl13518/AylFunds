@@ -5,6 +5,7 @@ import com.aylmer.aylfunds.data.Preferences
 import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.budgets
 import com.aylmer.aylfunds.data.ExpTrans
+import com.aylmer.aylfunds.data.PrevMonth
 import com.aylmer.aylfunds.data.Schedule
 import com.aylmer.aylfunds.data.TransferTransactions
 import kotlinx.coroutines.flow.Flow
@@ -68,6 +69,8 @@ interface MainRepository {
     suspend fun updatePref(expTrans: ExpTrans)
 
     suspend fun updatePref(keyValue: String, name: String)
+
+    fun getPrevMonth(): Flow<List<PrevMonth>>
 
 
     //Transfers

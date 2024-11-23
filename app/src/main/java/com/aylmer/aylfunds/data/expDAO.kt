@@ -46,6 +46,15 @@ interface expDAO {
             "AND accountId= :accountId")
     fun getExpByAccount(month: Int,year: Int,accountId: Long): Flow<List<ExpTrans>>
 
+    @Query( "select SUM(CASE WHEN tranType = 'Expense' THEN amount ELSE 0 END) AS totalExpense, " +
+            "SUM(CASE WHEN tranType = 'Income' THEN amount ELSE 0 END) AS totalIncome, " +
+            "cast(STRFTIME('%m', dateTrans) as integer) as month, " +
+            "cast(STRFTIME('%Y', dateTrans) as integer) as year from expTrans " +
+            "where dateTrans >= DATE(DATE('now', 'start of month', '-2 months')) " +
+            "group by month, year " +
+            "order by year desc, month desc")
+    fun getPrevMonth(): Flow<List<PrevMonth>>
+
 
 
 }

@@ -3,6 +3,7 @@ package com.aylmer.aylfunds.di
 import com.aylmer.aylfunds.data.ExpTrans
 import com.aylmer.aylfunds.data.PrefDAO
 import com.aylmer.aylfunds.data.Preferences
+import com.aylmer.aylfunds.data.PrevMonth
 import com.aylmer.aylfunds.data.Schedule
 import com.aylmer.aylfunds.data.ScheduleDAO
 import com.aylmer.aylfunds.data.TransferDAO
@@ -142,6 +143,9 @@ class DefaultMainRepository @Inject constructor(
             expDao.getExpByAccount(month,year,id)
     }
 
+    override fun getPrevMonth(): Flow<List<PrevMonth>> {
+        return  expDao.getPrevMonth()
+    }
 
     //Preferences
     override fun getAllPreference(): Flow<List<Preferences>> {

@@ -28,6 +28,7 @@ class HomeScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeState())
     private val _accounts = mainRepo.getAllAccounts()
     private val _budgets = mainRepo.getAllBudgets()
+    private val _prevMonth = mainRepo.getPrevMonth()
 
     private val selectedMonth: Int = Calendar.getInstance().get(Calendar.MONTH)
     private val searchQuery = savedStateHandle.getStateFlow(key = SEARCH_QUERY, initialValue = selectedMonth)
@@ -43,15 +44,18 @@ class HomeScreenViewModel @Inject constructor(
         _state,
         _accounts,
         _budgets,
-        transMonthList
+        transMonthList,
+        _prevMonth
     ) { state,
         accounts,
         budgets,
-        transMonthList ->
+        transMonthList,
+        prevMonth->
         state.copy(
             accounts = accounts,
             budgets = budgets,
-            expTrans = transMonthList
+            expTrans = transMonthList,
+            prevMonth = prevMonth
         )
     }.stateIn(
         viewModelScope,
