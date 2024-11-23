@@ -132,6 +132,7 @@ class AddSchedViewModel @Inject constructor(
                             ,tmpTaxPercent = cur.taxPercent.toString()
                         )
                     }
+                    savedStateHandle[SEARCH_Category] = cur.tranType
                 }
             }
         }
