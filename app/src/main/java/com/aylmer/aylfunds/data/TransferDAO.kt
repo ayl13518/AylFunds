@@ -30,7 +30,7 @@ interface TransferDAO {
 
     @Query( "SELECT * FROM transfer_transactions WHERE cast(STRFTIME('%m', dateTrans) as integer) = :month " +
             "AND cast(STRFTIME('%Y', dateTrans) as integer) = :year " +
-            "AND accountId= :accountId")
+            "AND (accountId= :accountId or accountToId = :accountId)")
     fun getTransferByAccount(month: Int,year: Int,accountId: Long): Flow<List<TransferTransactions>>
 
     @Query( "SELECT * FROM transfer_transactions WHERE cast(STRFTIME('%m', dateTrans) as integer) = :month " +

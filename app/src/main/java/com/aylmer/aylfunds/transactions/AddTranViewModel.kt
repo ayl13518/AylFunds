@@ -244,6 +244,17 @@ class AddTranViewModel @Inject constructor(
     }
 
     fun onSaveTransfer() {
+
+        if (_state.value.accName=="" && defaultAccount.value != "") {
+            _state.update { it.copy(
+                accName = defaultAccount.value
+            ) }
+        }
+        if (_state.value.accName=="" && defaultAccount.value != "") {
+            _state.update { it.copy(
+                accNameTo = defaultAccount.value
+            ) }
+        }
         val newExp = TransferTransactions(
             id = _state.value.tranId,
             amount = _state.value.amount
