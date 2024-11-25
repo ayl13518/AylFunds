@@ -1,6 +1,12 @@
 package com.aylmer.aylfunds.preference
 
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,15 +36,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.designsys.component.DropdownList
 import com.aylmer.aylfunds.navigation.AylTopBar
-import androidx.compose.runtime.setValue
-
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,16 +69,15 @@ fun SettingsScreen(
 //    val categoryList by viewModel.categoryFiltered.collectAsState(emptyList())
     var accountList = state.accountList
     var defaultAccount = state.defaultAccount
-    var checked by remember { mutableStateOf(false)}
+    var checked by remember { mutableStateOf(false) }
 
-    var fileList = viewModel.files.asList()
+    viewModel.files.asList()
 
-    if(state.useDarkTheme == "true") checked = true
-    else checked = false
-
+    checked = state.useDarkTheme == "true"
 
 
-    Scaffold (
+
+    Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState)
         },
@@ -74,7 +86,7 @@ fun SettingsScreen(
                 titleRes = "Preferences",
                 navigationIcon = Icons.Rounded.ArrowBackIosNew,
                 navigationIconContentDescription = "Navigation icon",
-                onNavigationClick = {navController.popBackStack()},
+                onNavigationClick = { navController.popBackStack() },
                 actionIcon = Icons.AutoMirrored.Default.Help,
                 actionIconContentDescription = "Action icon",
             )
@@ -88,7 +100,7 @@ fun SettingsScreen(
                 Icon(Icons.Default.Save, contentDescription = "Save")
             }
         }
-    ){ innerPadding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -98,17 +110,18 @@ fun SettingsScreen(
         ) {
             //Text(text = "SettingsScreen")
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
                 //.background(MaterialTheme.colorScheme.primaryContainer)
-                ,horizontalArrangement = Arrangement.SpaceBetween
-            ){
+                , horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(text = "Use DarkTheme")
                 Switch(
                     checked = checked,
                     onCheckedChange = {
                         checked = it
-                        if(it==true) viewModel.onUpdateDarkTheme("true")
+                        if (it == true) viewModel.onUpdateDarkTheme("true")
                         else viewModel.onUpdateDarkTheme("false")
                     }
                 )
@@ -142,7 +155,7 @@ fun SettingsScreen(
 
             Button(
                 onClick = {
-                    enableBackup=false
+                    enableBackup = false
                     viewModel.onBackup(
                         scope,
                         snackBarHostState
@@ -157,17 +170,91 @@ fun SettingsScreen(
 
             Button(
                 onClick = {
-                    enableBackup=false
+                    enableBackup = false
                     viewModel.onLoadBackUp(
                         scope,
                         snackBarHostState
                     )
                 },
                 enabled = enableBackup,
-                ) {
+            ) {
                 Text(text = "Restore Database")
             }
 
+            // for files
+            Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
+            FilePicker()
+//            Button(
+//                onClick = {
+//                    enableBackup=false
+//                    viewModel.onCreateFile(
+//                        scope,
+//                        snackBarHostState
+//                    )
+//                },
+//                enabled = enableBackup,
+//            ) {
+//                Text(text = "Create File")
+//            }
+
+        }
+    }
+}
+
+
+@Composable
+fun FilePicker() {
+
+    val context = LocalContext.current
+    val exportDir = File(context.filesDir, "export")
+    val accounts = File(exportDir, "accounts.csv")
+    val budgets = File(exportDir, "budgets.csv")
+    val file3 = File(exportDir, "transactions.csv")
+    val file4 = File(exportDir, "transfer.csv")
+    val file5 = File(exportDir, "schedules.csv")
+    val sourceFile = File(context.filesDir, "export.zip")
+
+    val launcher = rememberLauncherForActivityResult(StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+
+                zipFiles(listOf(accounts, budgets, file3, file4, file5), sourceFile)
+
+                val contentResolver = context.contentResolver
+                contentResolver.openOutputStream(uri)?.use { outputStream ->
+                    FileInputStream(sourceFile).use { inputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                }
+            }
+        }
+    }
+
+    Button(onClick = { launch(launcher, context) }) {
+        Text(text = "Copy BackUp to External")
+    }
+
+}
+
+private fun launch(launcher: ActivityResultLauncher<Intent>, context: Context) {
+    val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+        addCategory(Intent.CATEGORY_OPENABLE)
+        type = "application/zip"
+        putExtra(Intent.EXTRA_TITLE, "newfile.zip")
+    }
+    launcher.launch(intent)
+}
+
+fun zipFiles(files: List<File>, zipFile: File) {
+    ZipOutputStream(BufferedOutputStream(FileOutputStream(zipFile))).use { out ->
+        files.forEach { file ->
+            FileInputStream(file).use { fi ->
+                BufferedInputStream(fi).use { origin ->
+                    val entry = ZipEntry(file.name)
+                    out.putNextEntry(entry)
+                    origin.copyTo(out, 1024)
+                }
+            }
         }
     }
 }
