@@ -1,5 +1,6 @@
 package com.aylmer.aylfunds.budgets
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,8 +39,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -60,6 +63,7 @@ import com.aylmer.aylfunds.navigation.NavigationBottomBar
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
 import com.aylmer.aylfunds.utils.DecimalFormatter
 import java.time.Month
+import java.util.Calendar
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.random.Random
@@ -327,9 +331,38 @@ fun CustomProgressBar(
                 .shadow(8.dp, RoundedCornerShape(16.dp))
             //.offset(x = 10.dp)
         )
+        DayBasedVerticalLine(
+            color = Color.Yellow
+        )
     }
 }
 
+@Composable
+fun DayBasedVerticalLine(
+    modifier: Modifier = Modifier,
+    color: Color = Color.Black,
+    strokeWidth: Dp = 1.dp,
+) {
+    val calendar = Calendar.getInstance()
+    val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+
+    Canvas(modifier = modifier
+        .fillMaxWidth()
+        .height(25.dp)) {
+        val canvasWidth = size.width
+        val dayWidth = canvasWidth / 31 // Assuming 31 days in a month
+
+        val startX = dayWidth * (currentDay - 1)
+        val endX = startX
+
+        drawLine(
+            start = Offset(startX, 0f),
+            end = Offset(endX, size.height),
+            color = color,
+            strokeWidth = strokeWidth.toPx()
+        )
+    }
+}
 
 @ThemePreviews
 @Composable
