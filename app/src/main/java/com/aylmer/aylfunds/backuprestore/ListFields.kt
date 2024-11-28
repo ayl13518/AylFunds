@@ -29,6 +29,8 @@ enum class Transaction_List {
     budName,
     tranType,
     note,
+    budgetId,
+    accountId,
 }
 
 enum class Transfer_List {
@@ -40,6 +42,8 @@ enum class Transfer_List {
     accNameTo,
     tranType,
     note,
+    budgetId,
+    accountId,
 }
 
 enum class Schedule_List {
@@ -56,4 +60,6 @@ enum class Schedule_List {
     computeType,
     computePercent,
     taxPercent,
+    budgetId,
+    accountId,
 }

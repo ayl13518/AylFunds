@@ -18,6 +18,7 @@ enum class PreferenceConfig (val keyValue: String, val description: String) {
     DefaultAccount("defacc", "Default Account"),
     TransactionType("trantyp", "Default Transaction Type"),
     UseDarkTheme("dark", "Use Dark Theme"),
+    BudgetScope("budscope", "Default Budget Scope"),
 }
 
 enum class BudgetType {
@@ -25,7 +26,7 @@ enum class BudgetType {
 }
 
 enum class BudgetScope {
-    Month, Week, Year,
+    Week, Month, Year,
 }
 
 enum class PeriodType {

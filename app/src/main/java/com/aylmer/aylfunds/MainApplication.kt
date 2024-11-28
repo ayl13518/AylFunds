@@ -2,17 +2,12 @@ package com.aylmer.aylfunds
 
 import android.app.Application
 import android.content.Context
-import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import androidx.work.CoroutineWorker
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import com.aylmer.aylfunds.di.MainRepository
-
 import com.aylmer.aylfunds.workers.DailyInterest
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
