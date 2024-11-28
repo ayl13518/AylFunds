@@ -51,11 +51,14 @@ import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.ScreenBudget
 import com.aylmer.aylfunds.ScreenSchedule
 import com.aylmer.aylfunds.ScreenSetting
+import com.aylmer.aylfunds.designsys.component.AylScrollTab
+import com.aylmer.aylfunds.designsys.component.AylScrollTabRow
 import com.aylmer.aylfunds.designsys.component.AylTab
 import com.aylmer.aylfunds.designsys.component.AylTabRow
 import com.aylmer.aylfunds.designsys.component.ThemePreviews
 import com.aylmer.aylfunds.designsys.theme.Green80
 import com.aylmer.aylfunds.designsys.theme.Red40
+import com.aylmer.aylfunds.models.BudgetScope
 import com.aylmer.aylfunds.models.BudgetType
 import com.aylmer.aylfunds.models.TransactionType
 import com.aylmer.aylfunds.navigation.AylTopBar
@@ -161,17 +164,17 @@ fun BudgetListScreen(
                         verticalAlignment = Alignment.CenterVertically
                     )
                     {
-                        AylTabRow(
-                            selectedTabIndex = 0, modifier = Modifier
+                        AylScrollTabRow(
+                            selectedTabIndex = BudgetScope.valueOf(state.scope).ordinal, modifier = Modifier
                                 .clip(RoundedCornerShape(30.dp))
                                 .width(200.dp)
                         )
                         {
-                            budgetTypes.forEachIndexed { index, title ->
-                                AylTab(
-                                    selected = index == 0,
-                                    onClick = { },
-                                    text = { Text(text = title) },
+                            BudgetScope.entries.forEach { index ->
+                                AylScrollTab(
+                                    selected = index.ordinal == 0,
+                                    onClick = { viewModel.onScopeChange(index.name) },
+                                    text = { Text(text = index.name) },
                                 )
                             }
                         }
