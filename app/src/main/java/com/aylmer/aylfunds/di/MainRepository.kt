@@ -50,6 +50,8 @@ interface MainRepository {
 
     fun getExpMonthYear(month: Int,year: Int): Flow<List<ExpTrans>>
 
+    fun getExpByScope(month: Int, year: Int,newScope: String): Flow<List<ExpTrans>>
+
     fun getTransactionById(tranId: Long): Flow<ExpTrans>
 
     suspend fun deleteTransaction(id: Long)

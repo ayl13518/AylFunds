@@ -13,6 +13,7 @@ import com.aylmer.aylfunds.data.accounts
 import com.aylmer.aylfunds.data.budDAO
 import com.aylmer.aylfunds.data.budgets
 import com.aylmer.aylfunds.data.expDAO
+import com.aylmer.aylfunds.models.BudgetScope
 import com.aylmer.aylfunds.models.PreferenceConfig
 import com.aylmer.aylfunds.models.TransactionType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -145,6 +146,13 @@ class DefaultMainRepository @Inject constructor(
 
     override fun getPrevMonth(): Flow<List<PrevMonth>> {
         return  expDao.getPrevMonth()
+    }
+
+    override fun getExpByScope(month: Int, year: Int,newScope: String): Flow<List<ExpTrans>> {
+        return if (newScope == BudgetScope.Year.name)
+            expDao.getExpYear(year)
+        else
+            expDao.getExpMonthYear(month,year)
     }
 
     //Preferences

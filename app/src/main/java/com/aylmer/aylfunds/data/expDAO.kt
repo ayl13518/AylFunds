@@ -25,6 +25,9 @@ interface expDAO {
             "AND cast(STRFTIME('%Y', dateTrans) as integer) = :year")
     fun getExpMonthYear(month: Int,year: Int): Flow<List<ExpTrans>>
 
+    @Query( "SELECT * FROM expTrans WHERE cast(STRFTIME('%Y', dateTrans) as integer) = :year")
+    fun getExpYear(year: Int): Flow<List<ExpTrans>>
+
     @Query( "SELECT * FROM expTrans WHERE `id` = :tranId")
     fun getTransactionById(tranId: Long): Flow<ExpTrans>
 

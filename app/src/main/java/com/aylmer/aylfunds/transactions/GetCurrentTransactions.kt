@@ -24,6 +24,13 @@ class GetCurrentTransactions @Inject constructor(
     operator fun invoke(
         searchMonth: Int,
         searchYear: Int,
+        newScope: String,
+    ): Flow<List<ExpTrans>> =
+        mainRepo.getExpByScope(searchMonth,searchYear,newScope)
+
+    operator fun invoke(
+        searchMonth: Int,
+        searchYear: Int,
         id: Long,
         type: String): Flow<List<ExpTrans>> =
         mainRepo.getExpByType(searchMonth, searchYear, id, type)

@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.collectLatest
 
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -32,8 +31,8 @@ class BudgetViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(BudgetState())
-
-    private val _budgets = repo.getAllBudgets()
+//
+//    private val _budgets = repo.getAllBudgets()
 
     private val _defaultScope = repo.getPrefName(PreferenceConfig.BudgetScope.keyValue)
         .stateIn(
@@ -84,15 +83,32 @@ class BudgetViewModel @Inject constructor(
     val searchYear =
         savedStateHandle.getStateFlow(key = SEARCH_YEAR, initialValue = _state.value.selectedYear)
 
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    val transMonthList = searchQuery.flatMapLatest { query ->
+//        getCurrentMonth(query + 1, searchYear.value)
+//    }
+//        .stateIn(
+//            viewModelScope,
+//            SharingStarted.WhileSubscribed(5000),
+//            emptyList()
+//        )
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val transMonthList = searchQuery.flatMapLatest { query ->
-        getCurrentMonth(query + 1, searchYear.value)
-    }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            emptyList()
+    val transMonthList = combine(searchQuery,searchYear,state
+        //_state.value.scope
+    ) { month, year,state
+        //newScope
+        ->
+        Pair(month, year,
+            //newScope
         )
+    }.flatMapLatest {
+        getCurrentMonth(it.first + 1, it.second,  state.value.scope)
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
 
     //TODO: Add Event(s)
 
@@ -188,4 +204,4 @@ class BudgetViewModel @Inject constructor(
 
 private const val SEARCH_QUERY = "searchQuery"
 private const val SEARCH_YEAR = "searchYear"
-private const val SEARCH_SCOPE = "searchScope"
+//private const val SEARCH_SCOPE = "searchScope"
