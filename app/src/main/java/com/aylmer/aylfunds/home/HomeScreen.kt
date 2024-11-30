@@ -296,6 +296,7 @@ fun Greeting(
             }
 
             //vico charts
+            viewModel.formatPrevMonths()
             ColumnChart(Modifier,state.prevMonth)
         }
     }

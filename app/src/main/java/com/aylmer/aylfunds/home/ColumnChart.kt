@@ -45,8 +45,12 @@ internal fun ColumnChart(modifier: Modifier,
                 https://patrykandpatrick.com/vico/wiki/cartesian-charts/layers/column-layer#data. */
                     columnSeries {
                         if (prevMonth.isNotEmpty()) {
-                            series(prevMonth.map { it.totalExpense }.reversed().toList())
-                            series(prevMonth.map { it.totalIncome }.reversed().toList())
+                            series(prevMonth.map { it.totalExpense }
+                                //.reversed()
+                                .toList())
+                            series(prevMonth.map { it.totalIncome }
+                                //.reversed()
+                                .toList())
                         } else
                             series(0, 0, 0)
                     }
@@ -71,9 +75,13 @@ private fun ComposeChart2(modelProducer: CartesianChartModelProducer,
 
     if(prevMonth.isNotEmpty()) {
 
-        val listMonth = prevMonth.map { it.month-1 }.reversed().toTypedArray()
+        val listMonth = prevMonth.map { it.month-1 }
+            //.reversed()
+            .toTypedArray()
 
-        val listYear = prevMonth.map { it.year % 100 }.reversed().toTypedArray()
+        val listYear = prevMonth.map { it.year % 100 }
+            //.reversed()
+            .toTypedArray()
 
         bottomAxisValueFormatter = CartesianValueFormatter { _, x, _ ->
             "${monthNames[listMonth[x.toInt() % listMonth.size ] % monthNames.size ]} ${listYear[x.toInt() % listYear.size]}  "
