@@ -334,16 +334,14 @@ fun CustomProgressBar(
                 .shadow(8.dp, RoundedCornerShape(16.dp))
             //.offset(x = 10.dp)
         )
-        DayBasedVerticalLine(
-            color = Color.Yellow
-        )
+        DayBasedVerticalLine()
     }
 }
 
 @Composable
-fun DayBasedVerticalLine(
+private fun DayBasedVerticalLine(
     modifier: Modifier = Modifier,
-    color: Color = Color.Black,
+    color: Color = Color.Yellow,
     strokeWidth: Dp = 1.dp,
 ) {
     val calendar = Calendar.getInstance()
@@ -355,7 +353,7 @@ fun DayBasedVerticalLine(
         val canvasWidth = size.width
         val dayWidth = canvasWidth / 31 // Assuming 31 days in a month
 
-        val startX = dayWidth * (currentDay - 1)
+        val startX = dayWidth * (currentDay-1)
         val endX = startX
 
         drawLine(

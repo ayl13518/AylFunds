@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -25,11 +24,11 @@ import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.rounded.Dehaze
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,9 +37,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,6 +55,7 @@ import com.aylmer.aylfunds.navigation.AylTopBar
 import com.aylmer.aylfunds.navigation.NavigationBottomBar
 import com.aylmer.aylfunds.ui.theme.NewNavTheme
 import com.aylmer.aylfunds.utils.DecimalFormatter
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,13 +82,13 @@ fun Greeting(
         total + trans.amount
     }
 
-    val budIncome = ((budTotal[TransactionType.Income.name] ?: 0.0).toDouble() /
-            ((budTotal[TransactionType.Income.name] ?: 0.0).toDouble() +
-                    (budTotal[TransactionType.Expense.name] ?: 0.0).toDouble())).toFloat()
-
-    val budExpense = ((budTotal[TransactionType.Expense.name] ?: 0.0).toDouble() /
-            ((budTotal[TransactionType.Income.name] ?: 0.0).toDouble() +
-                    (budTotal[TransactionType.Expense.name] ?: 0.0).toDouble())).toFloat()
+//    val budIncome = ((budTotal[TransactionType.Income.name] ?: 0.0).toDouble() /
+//            ((budTotal[TransactionType.Income.name] ?: 0.0).toDouble() +
+//                    (budTotal[TransactionType.Expense.name] ?: 0.0).toDouble())).toFloat()
+//
+//    val budExpense = ((budTotal[TransactionType.Expense.name] ?: 0.0).toDouble() /
+//            ((budTotal[TransactionType.Income.name] ?: 0.0).toDouble() +
+//                    (budTotal[TransactionType.Expense.name] ?: 0.0).toDouble())).toFloat()
 
     val transIncome = ((transTotal[TransactionType.Income.name]
         ?: 0.0).toDouble() / (budTotal[TransactionType.Income.name] ?: 0.0).toDouble()).toFloat()
@@ -115,7 +115,7 @@ fun Greeting(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            SmallFloatingActionButton(
                 onClick = {
                     navController.navigate(ScreenAddTran(0))
                 }
@@ -236,11 +236,13 @@ fun Greeting(
             ) {
                 Text(text = " ", Modifier.weight(.25f))
                 Text(text = decimalFormatter.formatForVisual(
-                    transTotal[TransactionType.Expense.name].toString()),
+                    (transTotal[TransactionType.Expense.name]?:0).toString()
+                ),
                     Modifier.weight(.35f))
                 Text(
                     text =  decimalFormatter.formatForVisual(
-                        budTotal[TransactionType.Expense.name].toString()),
+                        (budTotal[TransactionType.Expense.name]?:0).toString()
+                    ),
                     Modifier.weight(.4f),
                     textAlign = TextAlign.End)
             }
@@ -269,14 +271,17 @@ fun Greeting(
             ) {
                 Text(text = " ", Modifier.weight(.25f))
                 Text(text = decimalFormatter.formatForVisual(
-                    transTotal[TransactionType.Income.name].toString()),
+                    (transTotal[TransactionType.Income.name]?:0).toString()
+                ),
                     Modifier.weight(.35f))
                 Text(
                     text =  decimalFormatter.formatForVisual(
-                        budTotal[TransactionType.Income.name].toString()),
+                        (budTotal[TransactionType.Income.name]?:0).toString()
+                    ),
                     Modifier.weight(.4f),
                     textAlign = TextAlign.End)
             }
+            //income progress
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -302,73 +307,7 @@ fun Greeting(
     }
 }
 
-@Composable
-fun CustomBarChart(
-    modifier: Modifier = Modifier,
-    progress: Float,
-    progressMax: Float = 1f,
-    progressColor: Color = Green80,
-    progressMaxColor: Color = com.aylmer.aylfunds.designsys.theme.Green40,
-    backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainer
-) {
-    val theWidth = 50.dp
-    val theHeight = 100.dp
 
-    Canvas(
-        modifier = Modifier
-            .width(theWidth)
-            .height(theHeight)
-            .border(1.dp, color = backgroundColor)
-    )
-    {
-        val canvasHeight = size.height
-        val progressHeight = size.height * if (progress > 1f) 1f else progress
-        val progressMax = size.height * progressMax
-
-        drawRect(
-            color = progressMaxColor,
-            size = Size(theWidth.toPx(), progressMax),
-            topLeft = Offset(x = 0.dp.toPx(), canvasHeight - progressMax)
-        )
-
-        drawRect(
-            color = progressColor,
-            size = Size(theWidth.toPx(), progressHeight),
-            topLeft = Offset(x = 0.dp.toPx(), canvasHeight - progressHeight)
-        )
-    }
-}
-
-@ThemePreviews
-@Composable
-fun BarChartPreview() {
-    NewNavTheme {
-        //BarChart
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    MaterialTheme.colorScheme.primaryContainer,
-                    //RoundedCornerShape(16.dp)
-                )
-                .height(150.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.Bottom
-        )
-        {
-            CustomBarChart(
-                progress = .7f, progressMax = .8f,
-                progressColor = Red40,
-                progressMaxColor = com.aylmer.aylfunds.designsys.theme.Red30,
-            )
-            CustomBarChart(
-                progress = .5f, progressMax = .7f,
-                progressColor = Green80,
-                progressMaxColor = com.aylmer.aylfunds.designsys.theme.Green40,
-            )
-        }
-    }
-}
 
 
 @Composable
@@ -397,6 +336,7 @@ fun CustomProgressBar(
                 .shadow(8.dp, RoundedCornerShape(16.dp))
             //.offset(x = 10.dp)
         )
+        DayBasedVerticalLine()
     }
 }
 
@@ -478,5 +418,33 @@ fun ProgressPreview() {
                 )
             }
         }
+    }
+}
+
+
+@Composable
+private fun DayBasedVerticalLine(
+    modifier: Modifier = Modifier,
+    color: Color = Color.Yellow,
+    strokeWidth: Dp = 1.dp,
+) {
+    val calendar = Calendar.getInstance()
+    val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+
+    Canvas(modifier = modifier
+        .fillMaxWidth()
+        .height(20.dp)) {
+        val canvasWidth = size.width
+        val dayWidth = canvasWidth / 31 // Assuming 31 days in a month
+
+        val startX = dayWidth * (currentDay -1)
+        val endX = startX
+
+        drawLine(
+            start = Offset(startX, 0f),
+            end = Offset(endX, size.height),
+            color = color,
+            strokeWidth = strokeWidth.toPx()
+        )
     }
 }
