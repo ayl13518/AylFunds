@@ -123,17 +123,21 @@ class BudgetViewModel @Inject constructor(
         } else if (newMonth >= 12) {
             _state.update {
                 it.copy(
-                    selectedMonth = 0
+                    selectedMonth = 0,
+                    selectedYear = searchYear.value+1
                 )
             }
             savedStateHandle[SEARCH_QUERY] = 0
+            savedStateHandle[SEARCH_YEAR] = searchYear.value+1
         } else {
             _state.update {
                 it.copy(
-                    selectedMonth = 11
+                    selectedMonth = 11,
+                    selectedYear = searchYear.value-1
                 )
             }
             savedStateHandle[SEARCH_QUERY] = 11
+            savedStateHandle[SEARCH_YEAR] = searchYear.value-1
         }
     }
 

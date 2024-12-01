@@ -59,7 +59,6 @@ import com.aylmer.aylfunds.designsys.component.ThemePreviews
 import com.aylmer.aylfunds.designsys.theme.Green80
 import com.aylmer.aylfunds.designsys.theme.Red40
 import com.aylmer.aylfunds.models.BudgetScope
-import com.aylmer.aylfunds.models.BudgetType
 import com.aylmer.aylfunds.models.TransactionType
 import com.aylmer.aylfunds.navigation.AylTopBar
 import com.aylmer.aylfunds.navigation.NavigationBottomBar
@@ -92,7 +91,7 @@ fun BudgetListScreen(
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val transMonthList by viewModel.transMonthList.collectAsStateWithLifecycle()
-    var budgetTypes = BudgetType.entries.map { it.name }
+    //var budgetTypes = BudgetType.entries.map { it.name }
     val currentMonth = state.selectedMonth
 
     val monthName = Month.of(currentMonth + 1).toString().take(3)
@@ -145,7 +144,6 @@ fun BudgetListScreen(
                     actionIcon2 = Icons.Default.AccessTime,
                     actionIconContentDescription2 = "Schedule",
                     onActionClick2 = { navController.navigate(ScreenSchedule) }
-
                 )
 
                 Box(
@@ -155,21 +153,18 @@ fun BudgetListScreen(
                     //.offset(y = paddingValues.calculateTopPadding()),
                     //.padding(top = 90.dp)
                     , contentAlignment = Alignment.BottomEnd
-                )
-                {
+                ){
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Absolute.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
-                    )
-                    {
+                    ){
                         AylScrollTabRow(
                             selectedTabIndex = BudgetScope.valueOf(state.scope).ordinal, modifier = Modifier
                                 .clip(RoundedCornerShape(30.dp))
                                 .width(200.dp)
-                        )
-                        {
+                        ){
                             BudgetScope.entries.forEach { index ->
                                 AylScrollTab(
                                     selected = index.ordinal == 0,
@@ -180,7 +175,6 @@ fun BudgetListScreen(
                         }
 
                         Spacer(Modifier.width(50.dp))
-
                         Box(
                             modifier = Modifier
                                 .height(40.dp)
@@ -190,14 +184,14 @@ fun BudgetListScreen(
                                 })
                                 .align(Alignment.CenterVertically)
                                 .background(MaterialTheme.colorScheme.primaryContainer),
-                        ) {
+                        ){
                             Text(
                                 text = " < ",
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 modifier = Modifier.align(Alignment.Center)
                             )
                         }
-                        Text(text = monthName)
+                        Text(text = monthName + " " + state.selectedYear)
                         Box(
                             modifier = Modifier
                                 .height(40.dp)
