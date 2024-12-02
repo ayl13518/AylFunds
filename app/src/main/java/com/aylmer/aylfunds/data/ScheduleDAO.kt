@@ -12,7 +12,7 @@ interface ScheduleDAO {
     fun getAll(): Flow<List<Schedule>>
 
     @Upsert
-    suspend fun upsertSchedule(schedule: Schedule)
+    suspend fun upsertSchedule(schedule: Schedule): Long
 
     @Query("SELECT * FROM schedule WHERE id = :id")
     fun getScheduleById(id: Long): Flow<Schedule>
@@ -22,5 +22,10 @@ interface ScheduleDAO {
 
     @Query( "SELECT * FROM schedule WHERE dateTrans = :day")
     fun getScheduleDay(day: String): List<Schedule>
+
+    @Query( "UPDATE schedule SET budgetId = (SELECT budgetid FROM budgets WHERE name = budName), " +
+            "accountId = (SELECT id FROM accounts WHERE name = accName) " +
+            "WHERE id = :id ")
+    suspend fun updatedId(id: Long)
 
 }

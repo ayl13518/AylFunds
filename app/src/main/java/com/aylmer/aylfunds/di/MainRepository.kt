@@ -31,6 +31,8 @@ interface MainRepository {
 
     suspend fun deleteAccount(id: Long)
 
+    fun getAccountBalance(accountId: Long): Double
+
     //Budgets
     fun getAllBudgets(): Flow<List<budgets>>
 

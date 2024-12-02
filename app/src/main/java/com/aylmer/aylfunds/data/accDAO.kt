@@ -31,6 +31,9 @@ interface accDAO {
     @Query("SELECT balance FROM accounts WHERE `name` = :accName")
     fun getAccountByName(accName: String): Double
 
+    @Query("SELECT balance FROM accounts WHERE `id` = :accountId")
+    fun getAccountBalance(accountId: Long): Double
+
     @Query("UPDATE accounts " +
             "SET balance = balance + (Select amount * (CASE WHEN tranType = 'Expense' THEN 1 ELSE -1 END) FROM expTrans where id = :id)" +
             "WHERE name = (SELECT accName FROM expTrans WHERE id = :id)")

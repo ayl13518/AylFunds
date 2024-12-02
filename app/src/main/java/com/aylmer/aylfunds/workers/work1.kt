@@ -32,7 +32,8 @@ class DailyInterest @AssistedInject constructor (
             if (schedules.isNotEmpty()) {
                 schedules.forEach { sched ->
                     var newAmount = sched.amount
-                    var balance = mainRepo.getAccountByName(sched.accName)
+                    //var balance = mainRepo.getAccountByName(sched.accName)
+                    var balance = mainRepo.getAccountBalance(sched.accountId)
                     var curDate = convertToLocalDate(sched.dateTrans)
                     var strDate = addDaysToDate(curDate, 1, sched.period)
 

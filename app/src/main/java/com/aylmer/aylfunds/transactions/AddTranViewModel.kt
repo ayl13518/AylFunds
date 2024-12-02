@@ -250,7 +250,7 @@ class AddTranViewModel @Inject constructor(
                 accName = defaultAccount.value
             ) }
         }
-        if (_state.value.accName=="" && defaultAccount.value != "") {
+        if (_state.value.accNameTo=="" && defaultAccount.value != "") {
             _state.update { it.copy(
                 accNameTo = defaultAccount.value
             ) }

@@ -81,6 +81,10 @@ class DefaultMainRepository @Inject constructor(
         accDAO.deleteAccount(id)
     }
 
+    override fun getAccountBalance(accountId: Long): Double {
+        return accDAO.getAccountBalance(accountId)
+    }
+
 
     //Budgets
     override fun getAllBudgets(): Flow<List<budgets>> {
@@ -226,7 +230,8 @@ class DefaultMainRepository @Inject constructor(
     }
 
     override suspend fun upsertSchedule(schedule: Schedule){
-        return scheduleDAO.upsertSchedule(schedule)
+        val id = scheduleDAO.upsertSchedule(schedule)
+        scheduleDAO.updatedId(if(id>0) id else schedule.id)
     }
 
     override fun getScheduleById(id: Long): Flow<Schedule>{
