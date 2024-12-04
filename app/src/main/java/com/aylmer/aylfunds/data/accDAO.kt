@@ -42,4 +42,14 @@ interface accDAO {
     @Query("DELETE FROM accounts WHERE id = :id")
     suspend fun deleteAccount(id: Long)
 
+    @Query("UPDATE accounts " +
+            "SET balance = balance + (Select amount FROM transfer_transactions where id = :id)" +
+            "WHERE `id` = (SELECT accountId FROM transfer_transactions WHERE id = :id)")
+    suspend fun updateOldAccountFrom(id: Long)
+
+    @Query("UPDATE accounts " +
+            "SET balance = balance - (Select amount FROM transfer_transactions where id = :id)" +
+            "WHERE `id` = (SELECT accountToId FROM transfer_transactions WHERE id = :id)")
+    suspend fun updateOldAccountTo(id: Long)
+
 }

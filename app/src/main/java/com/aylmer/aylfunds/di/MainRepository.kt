@@ -33,6 +33,8 @@ interface MainRepository {
 
     fun getAccountBalance(accountId: Long): Double
 
+    suspend fun updateTransferBalance(id: Long)
+
     //Budgets
     fun getAllBudgets(): Flow<List<budgets>>
 

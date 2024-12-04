@@ -85,6 +85,11 @@ class DefaultMainRepository @Inject constructor(
         return accDAO.getAccountBalance(accountId)
     }
 
+    override suspend fun updateTransferBalance(id: Long) {
+        accDAO.updateOldAccountFrom(id)
+        accDAO.updateOldAccountTo(id)
+    }
+
 
     //Budgets
     override fun getAllBudgets(): Flow<List<budgets>> {

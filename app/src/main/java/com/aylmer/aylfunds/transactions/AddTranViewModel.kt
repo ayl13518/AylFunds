@@ -92,6 +92,7 @@ class AddTranViewModel @Inject constructor(
             refresh()
     }
 
+    @Suppress("SENSELESS_COMPARISON")
     fun refreshTransfer() {
         if (tranId != null && tranId != 0L) {
             newTran = tranId
@@ -120,6 +121,7 @@ class AddTranViewModel @Inject constructor(
         }
     }
 
+    @Suppress("SENSELESS_COMPARISON")
     fun refresh() {
         if (tranId != null && tranId != 0L) {
             newTran = tranId
@@ -209,6 +211,7 @@ class AddTranViewModel @Inject constructor(
         }
     }
 
+
     fun onSaveExpense() {
         if (_state.value.accName=="" && defaultAccount.value != "") {
             _state.update { it.copy(
@@ -217,14 +220,18 @@ class AddTranViewModel @Inject constructor(
         }
 
         if (_state.value.budName=="" && defaultCategory.value != "") {
-            _state.update { it.copy(
-                budName = defaultCategory.value
-            ) }
+            _state.update {
+                @Suppress("USELESS_ELVIS")
+                it.copy(
+                    budName = defaultCategory.value ?: ""
+                )
+            }
         }
 
         if (_state.value.tranType == "Transfer" ) {
             onSaveTransfer()
         }
+
         else {
             val newExp = ExpTrans(
                 id = _state.value.tranId,
@@ -266,6 +273,7 @@ class AddTranViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
+            mainRepo.updateTransferBalance(newExp.id)
             mainRepo.updateAccountBalance(newExp)
 
         }
