@@ -23,7 +23,7 @@ interface MainRepository {
 
     fun getAllAccountName(): Flow<List<String>>
 
-    fun getAccountById(accountId: Long): Flow<accounts>
+    fun getAccountById(accountId: Long): Flow<accounts?>
 
     fun getAccountByName(accName: String): Double
 
@@ -40,7 +40,7 @@ interface MainRepository {
 
     suspend fun upsertBudget(budgets: budgets)
 
-    fun getBudgetById(id: Long): Flow<budgets>
+    fun getBudgetById(id: Long): Flow<budgets?>
 
     fun getAllCategory(): Flow<List<String>>
 
@@ -98,7 +98,7 @@ interface MainRepository {
 
     suspend fun upsertSchedule(schedule: Schedule)
 
-    fun getScheduleById(id: Long): Flow<Schedule>
+    fun getScheduleById(id: Long): Flow<Schedule?>
 
     suspend fun deleteSchedule(id: Long)
 

@@ -15,7 +15,7 @@ interface ScheduleDAO {
     suspend fun upsertSchedule(schedule: Schedule): Long
 
     @Query("SELECT * FROM schedule WHERE id = :id")
-    fun getScheduleById(id: Long): Flow<Schedule>
+    fun getScheduleById(id: Long): Flow<Schedule?>
 
     @Query("DELETE FROM schedule WHERE id = :id")
     suspend fun deleteSchedule(id: Long)

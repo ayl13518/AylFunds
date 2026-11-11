@@ -65,7 +65,7 @@ class DefaultMainRepository @Inject constructor(
         accDAO.upsertAccount(accounts)
     }
 
-    override fun getAccountById(accountId: Long): Flow<accounts> {
+    override fun getAccountById(accountId: Long): Flow<accounts?> {
         return accDAO.getAccountById(accountId)
     }
 
@@ -108,7 +108,7 @@ class DefaultMainRepository @Inject constructor(
         return budDAO.getCategoryByType(type)
     }
 
-    override fun getBudgetById(id: Long): Flow<budgets> {
+    override fun getBudgetById(id: Long): Flow<budgets?> {
         return budDAO.getBudgetById(id)
 
     }
@@ -239,7 +239,7 @@ class DefaultMainRepository @Inject constructor(
         scheduleDAO.updatedId(if(id>0) id else schedule.id)
     }
 
-    override fun getScheduleById(id: Long): Flow<Schedule>{
+    override fun getScheduleById(id: Long): Flow<Schedule?>{
         return scheduleDAO.getScheduleById(id)
     }
 

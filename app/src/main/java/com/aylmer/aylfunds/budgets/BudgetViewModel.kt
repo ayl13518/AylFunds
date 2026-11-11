@@ -53,11 +53,9 @@ class BudgetViewModel @Inject constructor(
 
         var newScope: String = state.scope
 
-        if (defaultScope != null) {
-            if (defaultScope != "") {
-                newScope = defaultScope
-                updateBudget(defaultScope)
-            }
+        if (defaultScope != "") {
+            newScope = defaultScope
+            updateBudget(defaultScope)
         }
 
         state.copy(

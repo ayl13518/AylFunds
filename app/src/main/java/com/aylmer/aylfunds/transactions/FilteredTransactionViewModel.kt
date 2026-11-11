@@ -73,6 +73,7 @@ class FilteredTransactionViewModel @Inject constructor(
         if(searchType.value=="Budget"){
             viewModelScope.launch {
                 mainRepo.getBudgetById(searchQuery.value).collectLatest { budget ->
+                    if (budget == null) return@collectLatest
                     _state.update {
                         it.copy(
                             id = budget.budgetid,
@@ -85,6 +86,7 @@ class FilteredTransactionViewModel @Inject constructor(
         else if(searchType.value=="Account"){
             viewModelScope.launch {
                 mainRepo.getAccountById(searchQuery.value).collectLatest { account ->
+                    if (account == null) return@collectLatest
                     _state.update {
                         it.copy(
                             id = account.id,

@@ -26,7 +26,7 @@ interface accDAO {
     suspend fun updateAccountBalance(name: String, amount: Double)
 
     @Query("SELECT * FROM accounts WHERE `id` = :accountId")
-    fun getAccountById(accountId: Long): Flow<accounts>
+    fun getAccountById(accountId: Long): Flow<accounts?>
 
     @Query("SELECT balance FROM accounts WHERE `name` = :accName")
     fun getAccountByName(accName: String): Double
