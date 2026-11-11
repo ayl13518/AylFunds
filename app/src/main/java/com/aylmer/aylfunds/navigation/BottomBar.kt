@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.aylmer.aylfunds.ScreenAccountList
 import com.aylmer.aylfunds.ScreenBudgetList
+import com.aylmer.aylfunds.ScreenFundsList
 import com.aylmer.aylfunds.ScreenExpenseList
 import com.aylmer.aylfunds.ScreenHome
 import com.aylmer.aylfunds.designsys.component.ThemePreviews
@@ -107,23 +108,26 @@ fun NavigationBottomBar(
     navController: NavController
     ,selected: Int = 0
 ) {
-    val items = listOf("Main", "Transactions", "Accounts", "Budget")
+    val items = listOf("Main", "Transactions", "Accounts", "Budget", "Funds")
     val screens = listOf(
         ScreenHome,
         ScreenExpenseList,
         ScreenAccountList,
-        ScreenBudgetList)
+        ScreenBudgetList,
+        ScreenFundsList)
     val icons = listOf(
         NiaIcons.UpcomingBorder,
         NiaIcons.BookmarksBorder,
         NiaIcons.Grid3x3,
-        NiaIcons.ViewDay
+        NiaIcons.ViewDay,
+        NiaIcons.WalletBorder
     )
     val selectedIcons = listOf(
         NiaIcons.Upcoming,
         NiaIcons.Bookmarks,
         NiaIcons.Grid3x3,
-        NiaIcons.ViewDay
+        NiaIcons.ViewDay,
+        NiaIcons.Wallet
     )
 
         NiaNavigationBar {
@@ -152,18 +156,20 @@ fun NavigationBottomBar(
 @ThemePreviews
 @Composable
 fun NiaNavigationBarPreview() {
-    val items = listOf("Main", "Transactions", "Accounts", "Budget")
+    val items = listOf("Main", "Transactions", "Accounts", "Budget", "Funds")
     val icons = listOf(
         NiaIcons.UpcomingBorder,
         NiaIcons.BookmarksBorder,
         NiaIcons.Grid3x3,
-        NiaIcons.ViewDay
+        NiaIcons.ViewDay,
+        NiaIcons.WalletBorder
     )
     val selectedIcons = listOf(
         NiaIcons.Upcoming,
         NiaIcons.Bookmarks,
         NiaIcons.Grid3x3,
-        NiaIcons.ViewDay
+        NiaIcons.ViewDay,
+        NiaIcons.Wallet
     )
 
     NiaTheme {

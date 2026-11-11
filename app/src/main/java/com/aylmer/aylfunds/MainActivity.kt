@@ -19,6 +19,7 @@ import com.aylmer.aylfunds.accounts.AccListScreen
 import com.aylmer.aylfunds.accounts.AccountTran
 import com.aylmer.aylfunds.budgets.BudgetListScreen
 import com.aylmer.aylfunds.budgets.BudgetTran
+import com.aylmer.aylfunds.funds.FundsScreen
 import com.aylmer.aylfunds.home.Greeting
 import com.aylmer.aylfunds.models.TransactionType
 import com.aylmer.aylfunds.models.UserData
@@ -137,6 +138,9 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
+                    composable<ScreenFundsList> {
+                        FundsScreen(navController = navController)
+                    }
                     composable<ScreenBudget>(
                         typeMap = mapOf(
                             typeOf<Long>() to NavType.LongType
@@ -212,6 +216,9 @@ object ScreenAccountList
 
 @Serializable
 object ScreenBudgetList
+
+@Serializable
+object ScreenFundsList
 
 @Serializable
 data class ScreenAddTran(
