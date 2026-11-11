@@ -11,6 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.aylmer.aylfunds.designsys.theme.DarkAndroidColorScheme
+import com.aylmer.aylfunds.designsys.theme.DarkDefaultColorScheme
+import com.aylmer.aylfunds.designsys.theme.LightAndroidColorScheme
+import com.aylmer.aylfunds.designsys.theme.LightDefaultColorScheme
+import com.aylmer.aylfunds.models.ColorTheme
 
 
 @Composable
@@ -18,14 +23,23 @@ fun NewNavTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
+    colorTheme: ColorTheme = ColorTheme.Dynamic,
     content: @Composable () -> Unit
 ) {
+    val useDynamic = colorTheme == ColorTheme.Dynamic &&
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        useDynamic -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context)
             else dynamicLightColorScheme(context)
         }
+        colorTheme == ColorTheme.Purple ->
+            if (darkTheme) DarkDefaultColorScheme else LightDefaultColorScheme
+        colorTheme == ColorTheme.Green ->
+            if (darkTheme) DarkAndroidColorScheme else LightAndroidColorScheme
+        colorTheme == ColorTheme.HighContrast ->
+            if (darkTheme) highContrastDarkColorScheme else highContrastLightColorScheme
         darkTheme -> darkScheme
         else -> lightScheme
     }

@@ -23,6 +23,8 @@ import com.aylmer.aylfunds.funds.FundsScreen
 import com.aylmer.aylfunds.home.Greeting
 import com.aylmer.aylfunds.models.TransactionType
 import com.aylmer.aylfunds.models.UserData
+import com.aylmer.aylfunds.models.ThemeMode
+import androidx.compose.foundation.isSystemInDarkTheme
 import com.aylmer.aylfunds.preference.SettingsScreen
 import com.aylmer.aylfunds.preference.SettingsViewModel
 import com.aylmer.aylfunds.scheduling.AddSchedule
@@ -54,7 +56,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             //val darkTheme = isSystemInDarkTheme()
-            val darkTheme = shouldUseDarkTheme(userData.collectAsState().value)
+            val uiState = userData.collectAsState().value
+            val darkTheme = shouldUseDarkTheme(uiState)
             DisposableEffect(darkTheme) {
                 enableEdgeToEdge(
                     statusBarStyle = SystemBarStyle.auto(
@@ -71,7 +74,8 @@ class MainActivity : ComponentActivity() {
 
             NewNavTheme(
                 darkTheme = darkTheme,
-                dynamicColor = true
+                dynamicColor = true,
+                colorTheme = uiState.colorTheme
             ) {
 
                 val navController = rememberNavController()
@@ -262,12 +266,10 @@ data class FilteredTransactionScreen(
 @Composable
 private fun shouldUseDarkTheme(
     uiState: UserData,
-): Boolean {
-    var useDarkTheme = false
-
-    useDarkTheme = if (uiState.useDarkTheme == "true") true else false
-
-    return useDarkTheme
+): Boolean = when (uiState.themeMode) {
+    ThemeMode.System -> isSystemInDarkTheme()
+    ThemeMode.Light -> false
+    ThemeMode.Dark -> true
 }
 
 

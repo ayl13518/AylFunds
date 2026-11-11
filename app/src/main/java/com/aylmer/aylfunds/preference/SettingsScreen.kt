@@ -9,7 +9,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +27,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -44,6 +42,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aylmer.aylfunds.designsys.component.DropdownList
+import com.aylmer.aylfunds.models.ColorTheme
+import com.aylmer.aylfunds.models.ThemeMode
 import com.aylmer.aylfunds.navigation.AylTopBar
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
@@ -69,11 +69,9 @@ fun SettingsScreen(
 //    val categoryList by viewModel.categoryFiltered.collectAsState(emptyList())
     var accountList = state.accountList
     var defaultAccount = state.defaultAccount
-    var checked by remember { mutableStateOf(false) }
 
     viewModel.files.asList()
 
-    checked = state.useDarkTheme == "true"
 
 
 
@@ -110,22 +108,21 @@ fun SettingsScreen(
         ) {
             //Text(text = "SettingsScreen")
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                //.background(MaterialTheme.colorScheme.primaryContainer)
-                , horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "Use DarkTheme")
-                Switch(
-                    checked = checked,
-                    onCheckedChange = {
-                        checked = it
-                        if (it == true) viewModel.onUpdateDarkTheme("true")
-                        else viewModel.onUpdateDarkTheme("false")
-                    }
-                )
-            }
+            DropdownList(
+                label = "Theme Mode",
+                itemList = ThemeMode.entries.map { it.label },
+                onTypeChange = { viewModel.onUpdateThemeMode(ThemeMode.fromLabel(it)) },
+                modifier = Modifier.fillMaxWidth(),
+                defaultSelectedItem = state.themeMode.label
+            )
+
+            DropdownList(
+                label = "Color Theme",
+                itemList = ColorTheme.entries.map { it.label },
+                onTypeChange = { viewModel.onUpdateColorTheme(ColorTheme.fromLabel(it)) },
+                modifier = Modifier.fillMaxWidth(),
+                defaultSelectedItem = state.colorTheme.label
+            )
 
 //            DropdownList(
 //                label = "Default Expense Category",

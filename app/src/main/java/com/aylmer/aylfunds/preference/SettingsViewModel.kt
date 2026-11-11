@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aylmer.aylfunds.di.MainRepository
 import com.aylmer.aylfunds.models.PreferenceConfig
+import com.aylmer.aylfunds.models.ColorTheme
+import com.aylmer.aylfunds.models.ThemeMode
 import com.aylmer.aylfunds.models.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -62,11 +64,12 @@ class SettingsViewModel @Inject constructor(
         state.copy(
             accountList = accountList,
             defaultAccount = defaultAccount,
-            useDarkTheme = preference
-                .find { item ->
-                    item.key.toString()
-                        .takeIf { it == PreferenceConfig.UseDarkTheme.keyValue } != null
-                }?.name.toString(),
+            themeMode = ThemeMode.fromPref(
+                preference.find { it.key == PreferenceConfig.UseDarkTheme.keyValue }?.name
+            ),
+            colorTheme = ColorTheme.fromPref(
+                preference.find { it.key == PreferenceConfig.ColorTheme.keyValue }?.name
+            ),
             restoreFile = state.restoreFile
         )
     }.stateIn(
@@ -75,14 +78,15 @@ class SettingsViewModel @Inject constructor(
         UserData()
     )
 
-    fun onUpdateDarkTheme(newTheme: String) {
-        _state.update {
-            it.copy(
-                useDarkTheme = newTheme
-            )
-        }
+    fun onUpdateThemeMode(mode: ThemeMode) {
         viewModelScope.launch {
-            mainRepo.updatePref(keyValue = PreferenceConfig.UseDarkTheme.keyValue, name = newTheme)
+            mainRepo.updatePref(keyValue = PreferenceConfig.UseDarkTheme.keyValue, name = mode.name)
+        }
+    }
+
+    fun onUpdateColorTheme(theme: ColorTheme) {
+        viewModelScope.launch {
+            mainRepo.updatePref(keyValue = PreferenceConfig.ColorTheme.keyValue, name = theme.name)
         }
     }
 
