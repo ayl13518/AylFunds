@@ -31,10 +31,10 @@ class RestoreCSV @Inject constructor(
                 var linetxt = txt.split(",")
                 val oldAccounts = accounts(
                     id = linetxt[0].toLong(),
-                    name = linetxt[1].trimStart().toString(),
-                    accType = linetxt[2].trimStart().toString(),
+                    name = linetxt[1].trimStart(),
+                    accType = linetxt[2].trimStart(),
                     balance = linetxt[3].toDouble(),
-                    description = linetxt[4].trimStart().toString(),
+                    description = linetxt[4].trimStart(),
                 )
                 mainRepo.upsertAccount(oldAccounts)
             }
@@ -53,10 +53,10 @@ class RestoreCSV @Inject constructor(
                 var linetxt = txt.split(",")
                 val oldAccounts = budgets(
                     budgetid = linetxt[0].toLong(),
-                    name = linetxt[1].trimStart().toString(),
+                    name = linetxt[1].trimStart(),
                     balance = linetxt[2].toDouble(),
-                    type = linetxt[3].trimStart().toString(),
-                    scope = linetxt[4].trimStart().toString(),
+                    type = linetxt[3].trimStart(),
+                    scope = linetxt[4].trimStart(),
                 )
                 mainRepo.upsertBudget(oldAccounts)
             }
@@ -76,11 +76,11 @@ class RestoreCSV @Inject constructor(
                 val oldAccounts = ExpTrans(
                     id = linetxt[0].toLong(),
                     amount = linetxt[1].toDouble(),
-                    dateTrans = linetxt[2].trimStart().toString(),
-                    accName = linetxt[3].trimStart().toString(),
-                    budName = linetxt[4].trimStart().toString(),
-                    tranType = linetxt[5].trimStart().toString(),
-                    note = linetxt[6].trimStart().toString(),
+                    dateTrans = linetxt[2].trimStart(),
+                    accName = linetxt[3].trimStart(),
+                    budName = linetxt[4].trimStart(),
+                    tranType = linetxt[5].trimStart(),
+                    note = linetxt[6].trimStart(),
                 )
                 mainRepo.upsertExpTran(oldAccounts)
             }
@@ -99,11 +99,11 @@ class RestoreCSV @Inject constructor(
                 val oldAccounts = TransferTransactions(
                     id = linetxt[0].toLong(),
                     amount = linetxt[1].toDouble(),
-                    dateTrans = linetxt[2].trimStart().toString(),
-                    accName = linetxt[3].trimStart().toString(),
-                    accNameTo = linetxt[4].trimStart().toString(),
-                    tranType = linetxt[5].trimStart().toString(),
-                    note = linetxt[6].trimStart().toString(),
+                    dateTrans = linetxt[2].trimStart(),
+                    accName = linetxt[3].trimStart(),
+                    accNameTo = linetxt[4].trimStart(),
+                    tranType = linetxt[5].trimStart(),
+                    note = linetxt[6].trimStart(),
                 )
                 mainRepo.upsertTransferTransaction(oldAccounts)
             }
@@ -122,14 +122,14 @@ class RestoreCSV @Inject constructor(
                 val oldAccounts = Schedule(
                     id = linetxt[0].toLong(),
                     amount = linetxt[1].toDouble(),
-                    dateTrans = linetxt[2].trimStart().toString(),
-                    accName = linetxt[3].trimStart().toString(),
-                    budName = linetxt[4].trimStart().toString(),
-                    tranType = linetxt[5].trimStart().toString(),
-                    note = linetxt[6].trimStart().toString(),
-                    period = linetxt[7].trimStart().toString(),
-                    dateNext = linetxt[8].trimStart().toString(),
-                    computeType = linetxt[9].trimStart().toString(),
+                    dateTrans = linetxt[2].trimStart(),
+                    accName = linetxt[3].trimStart(),
+                    budName = linetxt[4].trimStart(),
+                    tranType = linetxt[5].trimStart(),
+                    note = linetxt[6].trimStart(),
+                    period = linetxt[7].trimStart(),
+                    dateNext = linetxt[8].trimStart(),
+                    computeType = linetxt[9].trimStart(),
                     computePercent = linetxt[10].toDouble(),
                     taxPercent = linetxt[11].toDouble(),
                 )

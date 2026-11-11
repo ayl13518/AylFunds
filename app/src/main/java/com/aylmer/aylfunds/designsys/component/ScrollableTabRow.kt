@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -50,14 +48,14 @@ fun AylScrollTabRow(
     modifier: Modifier = Modifier,
     tabs: @Composable () -> Unit,
 ) {
-    ScrollableTabRow (
+    SecondaryScrollableTabRow(
         selectedTabIndex = selectedTabIndex,
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        indicator = { tabPositions ->
+        indicator = {
             TabRowDefaults.SecondaryIndicator(
-                modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                modifier = Modifier.tabIndicatorOffset(selectedTabIndex, matchContentSize = false),
                 height = 2.dp,
                 color = MaterialTheme.colorScheme.onSurface,
             )

@@ -20,7 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -170,7 +170,7 @@ fun AddSchedule(
             if (state.computeType != ComputeType.Fixed_Amount.name) {
                 AylOutlinedNumber(
                     label = "Percentage",
-                    value = state.tmpPercent.toString(),
+                    value = state.tmpPercent,
                     onValueChange = {viewModel.onPercentUpdate(it)},
                     modifier = Modifier.fillMaxWidth(),
                     digits = 6,
@@ -178,7 +178,7 @@ fun AddSchedule(
 
                 AylOutlinedNumber(
                     label = "Tax Percentage",
-                    value = state.tmpTaxPercent.toString(),
+                    value = state.tmpTaxPercent,
                     onValueChange = {viewModel.onTaxUpdate(it)},
                     modifier = Modifier.fillMaxWidth(),
                 )

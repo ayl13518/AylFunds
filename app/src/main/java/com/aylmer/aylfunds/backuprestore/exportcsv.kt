@@ -27,7 +27,7 @@ class ExportCSV @Inject constructor(
 
     fun formatExportData(dataFields: List<String>, account: String) : String {
         val reg = Regex("[()=]")
-        var strData = account.toString()
+        var strData = account
 
         dataFields.forEach { field ->
             strData = strData.replace(field, "")

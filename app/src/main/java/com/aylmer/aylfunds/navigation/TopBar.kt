@@ -32,7 +32,7 @@ fun AylTopBar(
     actionIcon2: ImageVector = Icons.Default.MoreVert,
     actionIconContentDescription2: String="",
     modifier: Modifier = Modifier,
-    colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
     onNavigationClick: () -> Unit = {},
     onActionClick: () -> Unit = {},
     onActionClick2: () -> Unit = {},

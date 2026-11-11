@@ -26,7 +26,7 @@ object RoomModule {
             "budgetdatabase.db"
         )
             .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(dropAllTables = false)
             .addMigrations(Migration8to9)
             .build()
     }

@@ -41,7 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.aylmer.aylfunds.ScreenAddTran
@@ -91,9 +91,9 @@ fun Greeting(
 //                    (budTotal[TransactionType.Expense.name] ?: 0.0).toDouble())).toFloat()
 
     val transIncome = ((transTotal[TransactionType.Income.name]
-        ?: 0.0).toDouble() / (budTotal[TransactionType.Income.name] ?: 0.0).toDouble()).toFloat()
+        ?: 0.0) / (budTotal[TransactionType.Income.name] ?: 0.0)).toFloat()
     val transExpense = ((transTotal[TransactionType.Expense.name]
-        ?: 0.0).toDouble() / (budTotal[TransactionType.Expense.name] ?: 0.0).toDouble()).toFloat()
+        ?: 0.0) / (budTotal[TransactionType.Expense.name] ?: 0.0)).toFloat()
 
     Scaffold(
         topBar = {
